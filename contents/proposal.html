@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> proposal </title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../index.html"> Home </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#"> Proposal </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> Milestone Report </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled"> Final Report </a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <main class="row container">
+        <div class="col-3 p-3 bg-body-tertiary">
+            <div class="position-fixed">
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="#title" class="nav-link active" aria-current="page">
+                            Title
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#url" class="nav-link link-body-emphasis">
+                            URL
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#summary" class="nav-link link-body-emphasis">
+                            Summary
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#background" class="nav-link link-body-emphasis">
+                            Background
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#challenge" class="nav-link link-body-emphasis">
+                            Challenge
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#resources" class="nav-link link-body-emphasis">
+                            Resources
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#goals-and-deliverables" class="nav-link link-body-emphasis">
+                            Goals and Deliverables
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="#plan-to-achieve" class="nav-link link-body-emphasis">
+                                    Plan to Achieve
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#hope-to-achieve" class="nav-link link-body-emphasis">
+                                    Hope to Achieve
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#platform" class="nav-link link-body-emphasis">
+                            Platform
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#schedule" class="nav-link link-body-emphasis">
+                            Schedule
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+            </div>
+        </div>
+
+        <main class="col m-4">
+            <h1 class="display-1"> Proposal </h1>
+
+            <h1 class="display-6 pt-4" id="title"> Title </h1>
+            <hr class="my-2">
+            <div>
+                <span class="fw-light"> Parallel four-color Map Solver </span>
+                <br />
+                <span class="fw-bold"> Teammates: </span>
+                <span class="fw-light"> Chenfei Lou, Yuqing Qiu </span>
+            </div>
+
+            <h1 class="display-6 pt-4" id="url"> URL </h1>
+            <hr class="my-2">
+            <div>
+                <a class="btn btn-outline-dark d-grid gap-2 col-6 mx-auto" type="button" href="../index.html">Project
+                    Home Page</a>
+            </div>
+
+            <h1 class="display-6 pt-4" id="summary"> Summary </h1>
+            <hr class="my-2">
+            <div>
+                <p class="fw-light"> We are going to implement a parallel
+                    map solver for the four-color problem using openMP and
+                    perform a detailed analysis of performance
+                    characteristics. We will measure time and memory costs
+                    on different region maps and compare the performance
+                    between different scheduling algorithms. </p>
+            </div>
+
+            <h1 class="display-6 pt-4" id="background"> Background </h1>
+            <hr class="my-2">
+            <div>
+                <p class="fw-light"> The four-color problem derives from
+                    four-color theorem, which states that any map is
+                    colorable with 4 different colors, such that after
+                    coloring, any two adjacent countries have different
+                    colors. There is a heuristic algorithm for it called
+                    welsh-powell algorithm. However, it does not guarantee
+                    to succeed. When it fails, we need to use backtracking
+                    to do a brute-force search. </p>
+                <p class="fw-light"> There is space for acceleration in both
+                    parts. For the
+                    heuristic algorithm, it constructs a graph and then
+                    sorts the vertices based on their valence, which is
+                    time-consuming when the graph is large. We can partition
+                    the graph into grids, sort vertices in each sub-graph in
+                    parallel, then merge them to a global sorted list. For
+                    the backtracking algorithm, it follows a recursive
+                    pattern and is compute-intensive. We plan to use
+                    fork-join tools such as openMP for realizing
+                    parallelsim. </p>
+            </div>
+
+            <h1 class="display-6 pt-4" id="challenge"> Challenge </h1>
+            <hr class="my-2">
+            <ol>
+                <li>
+                    <p class="fw-light"> The heuristic algorithm is
+                        intrinsically difficult
+                        to parallelize due to high dependencies. It consists
+                        of two phases, sorting and coloring. The second
+                        phase is a traversal over all nodes where the
+                        decision in each iteration depends on the result in
+                        all previous iterations. Such sequential
+                        dependencies prevents itself from being
+                        parallelized. The first sorting phase has less
+                        strict dependencies among its steps, thus giving
+                        more opportunities to parallelize (e.g. merge sort
+                        algorithm), but an efficient algorithm that
+                        minimizes overhead and maximizes memory locality is
+                        still non-intuitive to design. </p>
+                </li>
+                <li>
+                    <p class="fw-light"> Though backtracking algorithm
+                        follows recursive
+                        execution, therefore being suitable for fork-join
+                        parallelization patterns, there is one more
+                        complexity -- the program does not need to wait all
+                        the tasks to be completed, instead it may stop as
+                        soon as one thread finds a valid solution. Therefore
+                        we need to design a way that could stop all other
+                        running/waiting tasks once a solution is found,
+                        which is not intuitive to implement. </p>
+                </li>
+            </ol>
+
+            <h1 class="display-6 pt-4" id="resources"> Resources </h1>
+            <hr class="my-2">
+            <div>
+                <p class="fw-light">
+                    We refer to the material <a class="link-darklink-primary
+                                link-offset-2 link-underline-opacity-25
+                                link-underline-opacity-100-hover"
+                        href="https://www.kleemans.ch/static/fourcolors/welsh-powell.pdf">here</a>,
+                    which explains the mechanism of welsh-powell algorithm
+                    in details. For implementation, we will start from the
+                    code base for an existing <a class="link-darklink-primary link-offset-2
+                                link-underline-opacity-25
+                                link-underline-opacity-100-hover"
+                        href="https://www.kleemans.ch/four-color-theorem-map-solver">map
+                        solver</a>. It is an interactive platform that
+                    prompts users to draw a map by themselves and the
+                    backend will execute the algorithm to color the map with
+                    four colors. We will benefit from its implementation of
+                    the algorithm, which includes both the welsh-powell
+                    algorithm and the backtracking. For testing, We will
+                    utilize the Pittsburgh Supercomputer Cluster (PSC) for
+                    collecting runtime statistics.
+                </p>
+            </div>
+
+            <h1 class="display-6 pt-4" id="goals-and-deliverables"> Goals and Deliverables </h1>
+            <hr class="my-2">
+            <h3 class="pt-2 fw-light" id="plan-to-achieve"> Plan to Achieve </h3>
+            <p class="fw-light">
+                For the heuristic algorithm, we aim to speedup the sorting
+                part by 3x considering the possibility of false sharing,
+                load imbalance and communication overhead. For the
+                backtracking algorithm, we aim to speedup by 6x because the
+                tasks are independent, thus creating more space for
+                parallelism. However, it is restricted by the scheduling and
+                synchronization overhead. We plan to exploit different
+                scheduling algorithms in openMP, including static, dynamic
+                and guided. We try to find the best one based on the
+                performance experiments.
+            </p>
+            <h3 class="pt-2 fw-light" id="hope-to-achieve"> Hope to Achieve </h3>
+            <p class="fw-light">
+                TODO
+            </p>
+
+            <h1 class="display-6 pt-4" id="platform"> Platform </h1>
+            <hr class="my-2">
+            <p>
+                We will use Pittsburgh Supercomputer Cluster (PSC) for
+                evaluation because it provides large number of CPUs, which
+                helps us achieve high parallelism. We decide to use OpenMP
+                because it support shared address space and enable us to
+                test different scheduling algorithms easily. We plan to
+                write code in C++ because it has more compatability with
+                openMP.
+            </p>
+
+            <h1 class="display-6 pt-4" id="schedule"> Schedule </h1>
+            <hr class="my-2">
+            <div>
+                TODO
+            </div>
+        </main>
+    </main>
+
+    <script src="../js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
