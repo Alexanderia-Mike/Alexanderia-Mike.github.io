@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> proposal </title>
+    <title> Proposal </title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -36,7 +36,7 @@
         </div>
     </nav>
 
-    <main class="row container">
+    <main class="row container" >
         <div class="col-3 p-3 bg-body-tertiary">
             <div class="position-fixed">
                 <ul class="nav nav-pills flex-column mb-auto">
@@ -78,6 +78,11 @@
                             <li>
                                 <a href="#plan-to-achieve" class="nav-link link-body-emphasis">
                                     Plan to Achieve
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#poster-session" class="nav-link link-body-emphasis">
+                                    Poster Session
                                 </a>
                             </li>
                             <li>
@@ -218,39 +223,81 @@
             <hr class="my-2">
             <h3 class="pt-2 fw-light" id="plan-to-achieve"> Plan to Achieve </h3>
             <p class="fw-light">
-                For the heuristic algorithm, we aim to speedup the sorting
-                part by 3x considering the possibility of false sharing,
-                load imbalance and communication overhead. For the
-                backtracking algorithm, we aim to speedup by 6x because the
-                tasks are independent, thus creating more space for
-                parallelism. However, it is restricted by the scheduling and
-                synchronization overhead. We plan to exploit different
-                scheduling algorithms in openMP, including static, dynamic
-                and guided. We try to find the best one based on the
-                performance experiments.
+                For the heuristic algorithm, we aim to speedup the sorting part
+                 by 2x considering the possibility of false sharing, load imbalance
+                  and communication overhead. For the backtracking algorithm, we aim 
+                  to speedup by 3x because the tasks are independent, thus creating 
+                  more space for parallelism. However, it is restricted by the
+                   scheduling overhead. We plan to exploit different scheduling 
+                   algorithms in openMP, including static, dynamic and guided. We 
+                   try to find the best one based on the the tradeoff between 
+                   workload balance and synchronization overhead.
+            </p>
+            <h3 class="pt-2 fw-light" id="poster-session"> Poster Session </h3>
+            <p class="fw-light">
+                For the poster session, we plan to demo with an four-color map
+                 animation and present it with interaction. We will present users
+                  with a white board and ask them to draw a map. Then, we will color
+                   the map with our algorithm and show it to users. We will run both
+                    original sequential algorithm and our optimized algorithm to 
+                    collect runtime statistics. Finally, we will show users with 
+                    graphs displaying the speedup we achieve.
             </p>
             <h3 class="pt-2 fw-light" id="hope-to-achieve"> Hope to Achieve </h3>
             <p class="fw-light">
-                TODO
+                We hope to achieve higher speedup (3x for heuristic algorithm 
+                and 5x for backtracking algorithm) if we are ahead of schedule.
+                 Besides, we hope to seek for space in accelerating the coloring 
+                 phase of the heuristic algorithm. Since the iterations in this 
+                 phase are dependent are each other, this poses a great challenge for us.
             </p>
-
             <h1 class="display-6 pt-4" id="platform"> Platform </h1>
-            <hr class="my-2">
-            <p>
+            <p class="fw-light">
                 We will use Pittsburgh Supercomputer Cluster (PSC) for
                 evaluation because it provides large number of CPUs, which
                 helps us achieve high parallelism. We decide to use OpenMP
                 because it support shared address space and enable us to
                 test different scheduling algorithms easily. We plan to
-                write code in C++ because it has more compatability with
+                write code in C++ because it has more compatibility with
                 openMP.
             </p>
 
             <h1 class="display-6 pt-4" id="schedule"> Schedule </h1>
-            <hr class="my-2">
-            <div>
-                TODO
-            </div>
+            
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col" >Week</th>
+                    <th scope="col">Plan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="width:30%"  class="fw-light">Week 1 (3/27 - 4/2)</td>
+                    <td style="width:70%"  class="fw-light">Research on the topic and write proposal.</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-light">Week 2 (4/3 - 4/9)</td>
+                    <td class="fw-light">Implement a sequential version and successfully run on PSC. Design how to speedup the sorting phase in heuristic algorithm.</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-light">Week 3 (4/10 - 4/16)</td>
+                    <td class="fw-light">Implement the parallelized version of sorting in heuristic algorithm and optimize it with different workload mapping algorithms.</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-light">Week 4 (4/17 - 4/23)</td>
+                    <td class="fw-light">Implement the parallelized version of the backtracking algorithm. Write milestone report.</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-light">Week 5 (4/24 - 4/30)</td>
+                    <td class="fw-light">Optimize the parallelized backtracking implementation with different scheduling algorithms. Generate test cases to evaluate the one with best tradeoff.</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-light">Week 6 (5/1 - 5/5)</td>
+                    <td class="fw-light">Write final report and prepare for the poster session.</td>
+                  </tr>
+                </tbody>
+              </table>
         </main>
     </main>
 
