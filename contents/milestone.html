@@ -29,7 +29,201 @@
     </nav>
 
     <main class="row container">
-        <h1 class="display-1 pt-4"> NOT IMPLEMENTED YET </h1>
+        <!-- side bar -->
+        <div class="col-3 p-3" style="background-color: rgb(224, 229, 223);">
+            <div class="position-fixed">
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="#work-completed" class="nav-link link-body-emphasis" aria-current="page">
+                            Work Completed
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#problems-met" class="nav-link link-body-emphasis">
+                            Problems Met
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="#test-case-generating" class="nav-link link-body-emphasis">
+                                    Test Case Generating
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#front-end-setting" class="nav-link link-body-emphasis">
+                                    Front End Setting
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#deliverables-on-poster-session" class="nav-link link-body-emphasis">
+                            Deliverables on Poster Session
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#updated-goals" class="nav-link link-body-emphasis">
+                            Updated Goals
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#issues-concerned" class="nav-link link-body-emphasis">
+                            Issues Concerned
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+            </div>
+        </div>
+
+        <!-- main contents -->
+        <main class="col m-4">
+            <h1 class="display-1"> Milestone Report </h1>
+
+            <h1 class="display-6 pt-4" id="work-completed"> Work Completed </h1>
+            <hr class="my-2">
+            <div>
+                <ol>
+                    <li>
+                        <p class="fw-light">
+                            Implement the sequential version of four-color map solver using C++.
+                        </p>
+                    </li>
+                    <li>
+                        <p class="fw-light">
+                            Generate a bunch of testcases which take the sequential algorithm approximately 10 seconds
+                            to solve.
+                        </p>
+                    </li>
+                    <li>
+                        <p class="fw-light">
+                            Build a front-end web page using P5.js and a backend server on GHC using C. The front-end
+                            web page can run on any personal laptop, and is able to allow users draw any customized
+                            maps. It then encode the map information and send that to the backend server, who will
+                            leverage the parallel program to solve the map and send the solution back to the frontend
+                            client.
+                        </p>
+                    </li>
+                </ol>
+            </div>
+
+            <h1 class="display-6 pt-4" id="problems-met"> Problems Met </h1>
+            <hr class="my-2">
+            <h3 class="pt-2 fw-light" id="test-case-generating"> Test Case Generating </h3>
+            <div>
+                <p class="fw-light">
+                    It is hard to find a complex testcase that runs in reasonable time (round 10s) and is suitable for
+                    parallelizing. We've tried generating test cases by drawing complex maps. However, the maps we can
+                    draw are still too naive and can mostly be colored in at most 2 colors. In this case, even using
+                    brute force, it takes less than a second to color a map with 10000 nodes.
+                </p>
+                <p class="fw-light">
+                    Therefore, we decide to write code to randomly generate nodes and edges. We need to make sure the
+                    edges cannot cross each other so that they can be transformed to maps. To generate a complex test
+                    case, we also need to ensure there is a balanced usage of 4 colors so that brute force needs to
+                    traverse more recursions, thus requiring more time. However, we also need to control the number of
+                    nodes so that the total time is controllable as the number of recursions grows exponentially with
+                    the number of nodes.
+                </p>
+                <p class="fw-light">
+                    After many trials, we find the suitable number of nodes is between 40 - 100. Since we cannot know
+                    the total runtime beforehand, we can only make random trials by tuning the configurations (node
+                    number, edge number). To expedite it, we write a bash to automatically generate test cases, run them
+                    and save those whose runtime is around 10 seconds.
+                </p>
+            </div>
+            <h3 class="pt-2 fw-light" id="front-end-setting"> Front End Setting </h3>
+            <div>
+                <p class="fw-light">
+                    At first, we plan to build the front end based on the exsiting github repo as given in the proposal.
+                    That repo uses processing.js to write both the front end and the algorithm parts. However, we need
+                    to separate them as we need to parallelize the algorithm part on GHC or PSC. To realize it, we need
+                    to have network transfer or file I/O so that the front end and the back end can communicate each
+                    other. Unfortunately, we find that processing.js can support neither of them. We have no choice but
+                    to rewrite the front end part using p5.js and implement the algorithm part using C++.
+                </p>
+            </div>
+
+            <h1 class="display-6 pt-4" id="deliverables-on-poster-session"> Deliverables on Poster Session </h1>
+            <hr class="my-2">
+            <div>
+                <p class="fw-light">
+                    We plan to bring a fully interactive web application to the poster session, and encourage visitors
+                    to draw their own maps for our program to solve. We may allow the user to specify whether or not
+                    they want to enable parallelization on backend server. Considering the fact that the advantage of
+                    parallel program will not be obvious unless the map becomes really large and complicated, we will
+                    also offer some complicated map options that we prepared in advance, and the users can simply click
+                    those options on the screen for a quick demo of how parallel program can accelerate the solving
+                    speed.
+                </p>
+                <p class="fw-light">
+                    As for the contents on the poster, we plan to introduce the four-color problem, explain the
+                    sequential algorithm and then elaborate on how we parallelize the program as well as the
+                    considerations we took into account throughout our way to the final version of the program.
+                </p>
+            </div>
+
+            <h1 class="display-6 pt-4" id="updated-goals"> Updated Goals </h1>
+            <hr class="my-2">
+            <div>
+                <ol>
+                    <li>
+                        <p class="fw-light">
+                            We decide not to parallelize the sorting phase in heuristic algorithm. The reason is that
+                            even for the map with more than 10000 nodes, the runtime of heuristic algorithm is less than
+                            1 second. Besides, it's unrealistic to have a map with 10000 nodes. Therefore, we don't find
+                            much space in the heuristic algorithm for parallelization.
+                        </p>
+                    </li>
+                    <li>
+                        <p class="fw-light">
+                            We will focus on the backtracking algorithm. When the map is complex enough, the runtime of
+                            backtracking algorithm grows exponentially with the number of nodes. In this case,
+                            parallelization can greatly help speed up the whole process. Since the recursions are
+                            independent of each other, we won't meet many obstacles in implementing parallelization. We
+                            still need to explore more to find the reasonable speedup. We will try different scheduling
+                            algorithms and memory allocation to find the optimal one. At this moment, we hope to achieve
+                            3x speedup.
+                        </p>
+                    </li>
+                    <li>
+                        <p class="fw-light">
+                            Previously we let the frontend to convert a pixel-based image to an abstract topological
+                            graph composed of nodes (representing countries) and edges (representing adjacency
+                            relationship between two countries). We now decided to delegate this task to backend server
+                            as well, because
+                        </p>
+                        <ul>
+                            <li>
+                                <p class="fw-light">
+                                    This process is computation-intensive, thus very slow on frontend. As a result, this
+                                    map-to-graph conversion could become the bottleneck to our interactive web
+                                    application.
+                                </p>
+                            </li>
+                            <li>
+                                <p class="fw-light">
+                                    This task involves processing and analyzing thousands of hundres of pixels, which is
+                                    a very suitable task for parallel program. Compared to boring bruteforce in map
+                                    solving stage, this task gives us more space and interesting directions to speedup
+                                    the application.
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <h1 class="display-6 pt-4" id="issues-concerned"> Issues Concerned </h1>
+            <hr class="my-2">
+            <div>
+                <p class="fw-light">
+                    For the backtracking algorithm, in each recursion, we traverse four colors in a loop to find a
+                    feasible one, which is the only part we find there is room for parallelization. We plan to use the
+                    openMP framework as it uses shared address space and is easy to try on. Except for it, we feel lost
+                    about what else we can parallelize.
+                </p>
+            </div>
+        </main>
     </main>
 
     <script src="../js/bootstrap.bundle.min.js"></script>
