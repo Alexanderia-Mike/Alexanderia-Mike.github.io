@@ -1,8 +1,8 @@
 import React from 'react';
 
-/**
- * Define the type of the props field for a React component
- */
+import Header from './components/header/header';
+import Profile from './components/profile/profile';
+
 interface Props {
 }
 
@@ -16,7 +16,10 @@ class App extends React.Component<Props> {
 
     render(): React.ReactNode {
         return (
-            <div></div>
+            <div>
+                <Header></Header>
+                <Profile></Profile>
+            </div>
         );
     }
 }
