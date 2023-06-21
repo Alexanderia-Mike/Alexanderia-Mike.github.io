@@ -8,7 +8,7 @@ interface Props {
 class Footer extends React.Component<Props> {
     render(): React.ReactNode {
         return (
-            <div className="container">
+            <div className="container-xxl">
                 <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
                     <div className="col-md-4 d-flex align-items-center">
                     <a href="index.html" className="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">

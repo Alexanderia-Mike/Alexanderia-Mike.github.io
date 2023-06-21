@@ -24,12 +24,12 @@ class ProfileItem extends React.Component<ItemProps> {
 class Profile extends React.Component<Props> {
     render(): React.ReactNode  {
         return (
-            <div className="container-fluid col-10 mb-5" style={{backgroundColor: "#BEBDB8"}}>
-                <div className="d-flex flex-column flex-lg-row gap-5 align-items-start align-items-lg-center link-body-emphasis text-decoration-none p-5">
-                    <div className='col-4'>
+            <div className="container-xxl col-10 mb-5" style={{backgroundColor: "#BEBDB8"}}>
+                <div className="d-flex flex-column flex-xl-row gap-5 align-items-center link-body-emphasis text-decoration-none p-5">
+                    <div className='col-6 col-xl-4'>
                         <img src={"images/profile-picture.jpg"} width={'100%'}/>
                     </div>
-                    <div className="col-8 px-5">
+                    <div className="col-xl-8 px-5">
                         <div className='d-flex flex-row gap-3'>
                             <h2 className="mb-0">Hi! Welcome to my website! </h2>
                             <EmojiLaughing size={30}/>
