@@ -8,7 +8,7 @@ interface Props {
 class SelfIntro extends React.Component<Props> {
     render(): React.ReactNode  {
         return (
-            <div className="container-fluid p-0 d-flex" style={{backgroundColor: "#8C7757", marginTop: 80}}>
+            <div className="container-fluid p-0 d-flex" id='selfIntro' style={{backgroundColor: "#8C7757", marginTop: 80}}>
                 <div className='col-7 self-intro-text fs-6' style={{padding: 50, paddingLeft: 80, paddingRight: 80}}>
                     Hi, I'm Chenfei Lou. You can also call me Mike. <br/>
                     I obtained my becholar's degree in Electrical and Computer Engineering from Shanghai jiao Tong 

@@ -5,3 +5,8 @@
 .nav-link {
     color: #474747;
 }
+
+.nav-pills .nav-link:hover {
+    background-color: #58595350;
+    color: #474747;
+}
