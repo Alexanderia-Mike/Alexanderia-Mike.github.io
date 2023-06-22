@@ -21,9 +21,14 @@ class NavItem extends React.Component<NavItemProps> {
         if (this.props.active) {
             className += "active";
         }
+        let link: string;
+        if (this.props.text == 'Home')
+            link = 'index.html';
+        else
+        link = '#' + this.props.text;
         return (
             <li className="nav-item">
-                <a href="#selfIntro" onClick={this.props.clickHandler} className={className} aria-current="page">
+                <a href={link} onClick={this.props.clickHandler} className={className} aria-current="page">
                     {this.props.text}
                 </a>
             </li>
@@ -68,7 +73,6 @@ class Header extends React.Component<Props, State> {
                 <header className="d-flex flex-wrap flex-wrap justify-content-center py-3 mb-4">
                     <a href="index.html" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
                         <img className="bi me-2" height="60" src={'images/logo.png'}/>
-                        {/* <span className="fs-4">Preface</span> */}
                     </a>
 
                     <ul className="nav nav-pills">
