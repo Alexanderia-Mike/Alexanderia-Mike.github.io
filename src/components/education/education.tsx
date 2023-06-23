@@ -28,8 +28,9 @@ interface Props {
 class EducationHeader extends React.Component {
     render(): React.ReactNode {
         return (
-            <div className="container flex-column align-items-center mb-5">
-                <center className="display-4">Education</center>
+            <div className="container flex-row align-items-center mb-5">
+                {/* <center className="display-1" style={{color: "#C9BFB7"}}>EDUCATION</center> */}
+                <center><img src={"images/education-header.png"}/></center>
             </div>
         );
     }
@@ -39,7 +40,7 @@ class Education extends React.Component<Props> {
     render(): React.ReactNode {
         return (
             <div id="Education" style={{paddingTop: 60, paddingBottom: 60, backgroundColor: "#EAEBE5"}}>
-                {/* <EducationHeader></EducationHeader> */}
+                <EducationHeader></EducationHeader>
                 <div className="container-xxl d-flex flex-column flex-lg-row align-items-top education-container">
                     <div className="col-lg-6 d-flex flex-column align-items-center py-5 border-control">
                         <Book size={100} className="mb-3"></Book>
