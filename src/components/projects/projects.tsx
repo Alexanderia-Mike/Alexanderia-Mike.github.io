@@ -14,7 +14,7 @@ class Projects extends React.Component<Props> {
                 <SectionHeader
                     imageUrl="images/projects-header.png"
                 ></SectionHeader>
-                {/* header color: 8C7757 */}
+                {/* header color: 999999 */}
                 <div className="pt-4 d-flex flex-column align-items-center">
                     <ProjectItem
                         time="May 2023"

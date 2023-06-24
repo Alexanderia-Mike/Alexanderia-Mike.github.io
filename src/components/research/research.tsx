@@ -12,7 +12,7 @@ class Research extends React.Component<Props> {
                 <SectionHeader
                     imageUrl="images/research-header.png"
                 ></SectionHeader>
-                {/* 8C7757 */}
+                {/* 999999 */}
                 <div className="pt-4">
                     // TODO
                 </div>
