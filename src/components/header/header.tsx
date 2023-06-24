@@ -67,7 +67,7 @@ class Header extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        let navItemList: string[] = [Header.defaultNavItemName, 'Education', 'Projects', 'Experiences', 'Researches', 'Publications'];
+        let navItemList: string[] = [Header.defaultNavItemName, 'Education', 'Projects', 'Experiences', 'Researches', 'Contact'];
         return (
             <div className="container-xxl col-10 mb-5" style={{backgroundColor: "#D7D6D100"}}>
                 <header className="d-flex flex-wrap flex-wrap justify-content-center py-3 mb-4">

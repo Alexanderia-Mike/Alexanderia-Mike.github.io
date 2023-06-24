@@ -6,6 +6,9 @@ import SelfIntro from './components/self-intro/self-intro';
 import Footer from './components/footer/footer';
 import Education from './components/education/education';
 import Projects from './components/projects/projects';
+import Experiences from './components/experiences/experiences';
+import Research from './components/research/research';
+import Contact from './components/contact/contact';
 
 interface Props {
 }
@@ -26,6 +29,9 @@ class App extends React.Component<Props> {
                 <SelfIntro></SelfIntro>
                 <Education></Education>
                 <Projects></Projects>
+                <Experiences></Experiences>
+                <Research></Research>
+                <Contact></Contact>
                 <Footer></Footer>
             </div>
         );
