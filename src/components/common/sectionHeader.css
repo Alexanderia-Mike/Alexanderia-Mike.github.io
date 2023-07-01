@@ -2,4 +2,7 @@
     .container.flex-row > center > img {
         height: 70px;
     }
+    .container.flex-row > div > img {
+        height: 70px;
+    }
 }

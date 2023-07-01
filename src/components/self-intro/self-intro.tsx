@@ -23,7 +23,7 @@ class SelfIntro extends React.Component<Props> {
                         I love travelling because it helps me to embrace different cultures and traditions. Sometimes it's 
                         so astonishing and fascinating to see that lives are so radically different in different places, but 
                         after digging in to explore the historical and cultural reasons behind, those specific life styles 
-                        that look weird first suddenly become so logical and wise. That's why I believe ravelling is one of 
+                        that look weird first suddenly become so logical and wise. That's why I believe travelling is one of 
                         the most intelligent teacher. <br/>
                     </div>
                     <div className='col-xl-5'>
