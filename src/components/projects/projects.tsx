@@ -41,7 +41,7 @@ class Projects extends React.Component<Props> {
                     ></ProjectItem>
                     <ProjectItem
                         time="April 2023"
-                        projectName="Apache Spark Interative Machine Learning Training"
+                        projectName="Apache Spark Iterative Machine Learning Training"
                         location="CMU, Pittsburgh, PA"
                         description={[
                             'Developed a distributed logistic regression algorithm (Python) in Apache Spark that leverages sparse linear algebra and join-basedcommunication between distributed dataset.',

@@ -42,7 +42,7 @@ class Education extends React.Component<Props> {
                         schoolName="Carnegie Mellon University"
                         relavantCourses={[
                             'Principles of Software Construction -- Objects, Design, and Concurrency',
-                            'Foundations of ComputerSystems',
+                            'Foundations of Computer Systems',
                             'Distributed Systems',
                             'Advanced Cloud Computing',
                             'Parallel Computer Architecture and Programming'
