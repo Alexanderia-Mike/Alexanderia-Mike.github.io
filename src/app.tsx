@@ -9,6 +9,7 @@ import Projects from './components/projects/projects';
 import Experiences from './components/experiences/experiences';
 import Research from './components/research/research';
 import Contact from './components/contact/contact';
+import PhoneticIcon from './components/phonetic/phoneticIcon';
 
 interface Props {
 }
@@ -33,6 +34,7 @@ class App extends React.Component<Props> {
                 <Research></Research>
                 <Contact></Contact>
                 <Footer></Footer>
+                <PhoneticIcon></PhoneticIcon>
             </div>
         );
     }
