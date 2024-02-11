@@ -17,6 +17,17 @@ class Projects extends React.Component<Props> {
                 {/* header color: 999999 */}
                 <div className="pt-4 d-flex flex-column align-items-center">
                     <ProjectItem
+                        time="Feb 2024"
+                        projectName="Mini Pytorch"
+                        location="CMU, Pittsburgh, PA"
+                        description={[
+                            'Implemented a mini-version of PyTorch, with all essential features including tensor, model, loss, optimizers, and most importantly, the feature of automatic gradient propagation, which is the essential soul of PyTorch library.'
+                        ]}
+                        iconColor='#7FBEAB'
+                        link='https://github.com/Alexanderia-Mike/mini-pytorch'
+                        linkText="go to project repository"
+                    ></ProjectItem>
+                    <ProjectItem
                         time="May 2023"
                         projectName="Parallel Four-color Map Solver"
                         location="CMU, Pittsburgh, PA"
