@@ -1,6 +1,9 @@
 import React from "react";
 
 interface Props {
+    note_lower: number;
+    note_upper: number;
+    notes: string[];
 };
 
 class AudioVisualizer extends React.Component<Props> {

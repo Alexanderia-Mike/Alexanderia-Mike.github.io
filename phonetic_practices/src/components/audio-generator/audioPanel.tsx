@@ -2,6 +2,7 @@ import React from "react";
 
 import AudioGenerator from "./audioGenerator";
 import NoteDisplay from "./noteDisplay";
+import { getNoteStr } from "./utils";
 
 interface Props {
 };
@@ -27,10 +28,10 @@ class AudioPanel extends React.Component<Props, States> {
             })
         }
 
-        const notes_updator = (notes: string[]) => {
+        const notes_updator = (notes: number[]) => {
             this.setState({
                 ...this.state,
-                notes: notes
+                notes: notes.map( num => getNoteStr(num) )
             })
         }
 
