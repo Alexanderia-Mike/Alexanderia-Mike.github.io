@@ -10,7 +10,7 @@ interface States {
 }
 
 class AudioPanel extends React.Component<Props, States> {
-    MAX_NOTE_COUNT: number = 5;
+    NOTE_PERIOD: number = 1;
 
     constructor(props: Props) {
         super(props);
@@ -24,10 +24,10 @@ class AudioPanel extends React.Component<Props, States> {
             })
         }
 
-        // TODO: how to share state between components
         return (
             <AudioGenerator
                 note_count={this.state.note_count}
+                note_period={this.NOTE_PERIOD}
                 note_count_updator={note_count_updator}
             ></AudioGenerator>
         );

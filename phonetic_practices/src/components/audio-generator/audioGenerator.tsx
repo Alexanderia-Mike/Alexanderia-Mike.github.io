@@ -5,11 +5,13 @@ import Button from "../utilities/button";
 
 interface Props {
     note_count: number;
+    note_period: number;
     note_count_updator: CallableFunction;
 };
 
 class AudioGenerator extends React.Component<Props> {
     MAX_NOTE_COUNT: number = 10;
+    NOTE_TAIL: number = 0.3;
 
     constructor(props: Props) {
         super(props);
@@ -53,8 +55,8 @@ class AudioGenerator extends React.Component<Props> {
             for (let i = 0; i < new_note_count; ++i) {
                 let note = getRandomInt(36, 61)
                 let note_str = getNoteStr(note)
-                console.log(`note is ${note_str}`)
-                synth.triggerAttackRelease(note_str, "2n", start_time)
+                synth.triggerAttackRelease(note_str, 
+                    this.props.note_period - this.NOTE_TAIL, start_time)
                 start_time += 1
             }
         }
