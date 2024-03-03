@@ -15,7 +15,11 @@ class App extends React.Component<Props> {
     componentDidMount(): void {}
 
     render(): React.ReactNode {
-        return <AudioPanel></AudioPanel>;
+        return (
+            <div className='container'>
+                <AudioPanel></AudioPanel>
+            </div>
+        );
     }
 }
 

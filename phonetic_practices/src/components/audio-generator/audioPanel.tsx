@@ -1,12 +1,14 @@
 import React from "react";
 
 import AudioGenerator from "./audioGenerator";
+import NoteDisplay from "./noteDisplay";
 
 interface Props {
 };
 
 interface States {
     note_count: number;
+    notes?: string[];
 }
 
 class AudioPanel extends React.Component<Props, States> {
@@ -20,17 +22,30 @@ class AudioPanel extends React.Component<Props, States> {
     render(): React.ReactNode {
         const note_count_updator = (note_count: number) => {
             this.setState({
+                ...this.state,
                 note_count: note_count
             })
         }
 
-        return (
+        const notes_updator = (notes: string[]) => {
+            this.setState({
+                ...this.state,
+                notes: notes
+            })
+        }
+
+        return [
             <AudioGenerator
                 note_count={this.state.note_count}
                 note_period={this.NOTE_PERIOD}
                 note_count_updator={note_count_updator}
-            ></AudioGenerator>
-        );
+                notes_updator={notes_updator}
+            ></AudioGenerator>,
+            <NoteDisplay
+                notes={this.state.notes}
+            >
+            </NoteDisplay>
+        ];
     }
 }
 
