@@ -6,7 +6,13 @@
     min-height: 20px;
 }
 
-.note-stack.active {
-    border-color: red!important;
-    border-width: 2px!important;
+.note-bar {
+    height: 1px;
+    background-color: var(--bs-gray-400);
+}
+
+.note-bar.active {
+    height: 10px;
+    border-radius: 5px;
+    background-color: var(--bs-red);
 }

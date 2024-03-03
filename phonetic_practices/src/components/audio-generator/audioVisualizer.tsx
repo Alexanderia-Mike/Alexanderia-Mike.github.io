@@ -24,14 +24,19 @@ class NoteVisualizer extends React.Component<NoteVisualizerProps> {
             const is_active = note == this.props.note ? "active" : "";
             note_stacks.push(
                 <div 
-                    className={`border-bottom note-stack ${is_active}`} 
-                    key={this.props.id}
-                ></div>
+                    className="row align-items-center note-stack m-0"
+                    key={note}
+                >
+                    <div className={`note-bar ${is_active}`}></div>
+                </div>
             )
         }
 
         return (
-            <div className="col note-stack-container p-0">
+            <div 
+                className="col note-stack-container p-0"
+                key={this.props.id}
+            >
                 {note_stacks}
             </div>
         )
