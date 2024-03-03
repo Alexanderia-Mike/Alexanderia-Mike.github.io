@@ -1,0 +1,12 @@
+.note-stack-container {
+    min-height: 100px;
+}
+
+.note-stack {
+    min-height: 20px;
+}
+
+.note-stack.active {
+    border-color: red!important;
+    border-width: 2px!important;
+}

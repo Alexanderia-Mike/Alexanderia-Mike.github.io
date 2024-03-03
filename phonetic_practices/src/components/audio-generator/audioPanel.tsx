@@ -3,13 +3,16 @@ import React from "react";
 import AudioGenerator from "./audioGenerator";
 import NoteDisplay from "./noteDisplay";
 import { getNoteStr } from "./utils";
+import AudioVisualizer from "./audioVisualizer";
 
 interface Props {
 };
 
 interface States {
     note_count: number;
-    notes?: string[];
+    notes?: number[];
+    note_lower?: number;
+    note_upper?: number;
 }
 
 class AudioPanel extends React.Component<Props, States> {
@@ -31,9 +34,13 @@ class AudioPanel extends React.Component<Props, States> {
         const notes_updator = (notes: number[]) => {
             this.setState({
                 ...this.state,
-                notes: notes.map( num => getNoteStr(num) )
+                notes: notes,
+                note_lower: Math.min(...notes),
+                note_upper: Math.max(...notes)
             })
         }
+
+        const notes_str = this.state.notes?.map( num => getNoteStr(num) );
 
         return [
             <AudioGenerator
@@ -43,9 +50,14 @@ class AudioPanel extends React.Component<Props, States> {
                 notes_updator={notes_updator}
             ></AudioGenerator>,
             <NoteDisplay
-                notes={this.state.notes}
+                notes={notes_str}
             >
-            </NoteDisplay>
+            </NoteDisplay>,
+            <AudioVisualizer
+                note_lower={this.state.note_lower}
+                note_upper={this.state.note_upper}
+                notes={this.state.notes}
+            ></AudioVisualizer>
         ];
     }
 }

@@ -59,7 +59,7 @@ class AudioGenerator extends React.Component<Props> {
 
         const note_count_value = this.props.note_count ? this.props.note_count : "";
         return (
-            <div className="row justify-content-center mt-5">
+            <div className="row justify-content-center my-5">
                 <label className="row justify-content-center mb-3">
                     <div className="col-9 col-md-7 col-lg-5 fs-4">
                         The number of notes (max {this.MAX_NOTE_COUNT}): 

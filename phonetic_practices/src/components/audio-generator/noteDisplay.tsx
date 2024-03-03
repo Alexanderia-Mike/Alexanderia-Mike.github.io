@@ -33,7 +33,7 @@ class NoteDisplay extends React.Component<NoteDisplayProps> {
             [];
 
         return (
-            <div className="row justify-content-center mt-4">
+            <div className="row justify-content-center my-4">
                 <div className="col-12 col-md-10 col-lg-7">
                     <div className="row justify-content-center">
                         { note_elements }
