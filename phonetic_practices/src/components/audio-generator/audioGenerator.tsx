@@ -2,7 +2,7 @@ import React, { ChangeEvent } from "react";
 import * as Tone from 'tone'
 
 import Button from "../utilities/button";
-import { getNoteStr } from "./utils";
+import { noteNumToStr } from "./utils";
 
 interface Props {
     note_period: number;
@@ -45,7 +45,7 @@ class AudioGenerator extends React.Component<Props, States> {
 
             
             for (let note of notes) {
-                let note_str = getNoteStr(note);
+                let note_str = noteNumToStr(note);
                 synth.triggerAttackRelease(note_str, 
                     this.props.note_period - this.NOTE_TAIL, start_time);
                 start_time += 1;

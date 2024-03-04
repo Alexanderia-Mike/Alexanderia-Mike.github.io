@@ -1,6 +1,6 @@
 import React from "react";
 import "./audioVisualizer.css";
-import { getNoteStr } from "./utils";
+import { noteNumToStr } from "./utils";
 
 interface NoteLegendProps {
     note_lower: number;
@@ -37,7 +37,7 @@ class NoteLegend extends React.Component<NoteLegendProps> {
                                fs-6 fw-lighter text-body-secondary"
                     key={note}
                 >
-                    {getNoteStr(note)}
+                    {noteNumToStr(note)}
                 </div>
             );
         }
