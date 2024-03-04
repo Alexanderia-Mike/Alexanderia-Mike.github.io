@@ -6,12 +6,16 @@ interface NoteVisualizerProps {
     note_lower: number;
     note_upper: number;
     note: number;
+    note_period: number;
+    note_active: boolean;
 };
 
 interface AudioVisualizerProps {
     note_lower?: number;
     note_upper?: number;
     notes?: number[];
+    note_period: number;
+    notes_active?: boolean[];
 };
 
 class NoteVisualizer extends React.Component<NoteVisualizerProps> {
@@ -21,13 +25,23 @@ class NoteVisualizer extends React.Component<NoteVisualizerProps> {
             note >= this.props.note_lower - 1; 
             --note)
         {
-            const is_active = note == this.props.note ? "active" : "";
+            const is_target = note == this.props.note ? "target" : "";
+            const active_bar = note == this.props.note ? 
+                <div
+                    className={
+                        "position-absolute p-0 note-bar hidden_target" + 
+                        (this.props.note_active ? " active" : "")
+                    }
+                    style={ {transitionDuration: `${this.props.note_period}s`} }
+                ></div> : 
+                undefined;
             note_stacks.push(
                 <div 
-                    className="row align-items-center note-stack m-0"
+                    className="position-relative row align-items-center note-stack m-0"
                     key={note}
                 >
-                    <div className={`note-bar ${is_active}`}></div>
+                    <div className={`p-0 note-bar ${is_target}`}></div>
+                    {active_bar}
                 </div>
             )
         }
@@ -48,9 +62,11 @@ class AudioVisualizer extends React.Component<AudioVisualizerProps> {
         const note_visualizers = this.props.notes?.map(
             (note, idx) => {
                 if (this.props.note_lower == undefined || 
-                    this.props.note_upper == undefined) 
+                    this.props.note_upper == undefined ||
+                    this.props.notes_active == undefined ||
+                    this.props.notes_active.length != this.props.notes?.length) 
                 {
-                    console.error("note_lower or note_upper is not defined!");
+                    console.error("note visualizer: props invalid!");
                     return <></>;
                 }
                 return (
@@ -59,6 +75,8 @@ class AudioVisualizer extends React.Component<AudioVisualizerProps> {
                         note_lower={this.props.note_lower}
                         note_upper={this.props.note_upper}
                         note = {note}
+                        note_period={this.props.note_period}
+                        note_active={this.props.notes_active[idx]}
                     ></NoteVisualizer>
                 );
             }

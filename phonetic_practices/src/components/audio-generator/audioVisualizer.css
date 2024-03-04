@@ -11,8 +11,24 @@
     background-color: var(--bs-gray-400);
 }
 
-.note-bar.active {
+.note-bar.target,
+.note-bar.hidden_target {
     height: 10px;
     border-radius: 5px;
+}
+
+.note-bar.target {
+    background-color: var(--bs-gray-400);
+}
+
+.note-bar.hidden_target {
+    width: 0;
     background-color: var(--bs-red);
+    transition: none;
+}
+
+.note-bar.hidden_target.active {
+    width: 100%;
+    transition-property: all;
+    transition-timing-function: linear;
 }

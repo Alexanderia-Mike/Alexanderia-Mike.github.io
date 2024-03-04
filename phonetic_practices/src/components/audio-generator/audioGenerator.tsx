@@ -5,13 +5,16 @@ import Button from "../utilities/button";
 import { getNoteStr } from "./utils";
 
 interface Props {
-    note_count: number;
     note_period: number;
-    note_count_updator: CallableFunction;
     notes_updator: CallableFunction;
+    visualizer_updator: CallableFunction;
 };
 
-class AudioGenerator extends React.Component<Props> {
+interface States {
+    note_count: number;
+}
+
+class AudioGenerator extends React.Component<Props, States> {
     MAX_NOTE_COUNT: number = 10;
     NOTE_TAIL: number = 0.3;
 
@@ -32,14 +35,15 @@ class AudioGenerator extends React.Component<Props> {
             await Tone.start();
             const now = Tone.now();
             const synth = new Tone.Synth().toDestination();
-            
             let start_time = now;
             let notes: number[] = [];
             for (let i = 0; i < new_note_count; ++i) {
                 let note = getRandomInt(36, 61);
                 notes.push(note);
             }
-            this.props.notes_updator(notes);
+            this.props.notes_updator(notes, this.props.visualizer_updator);
+
+            
             for (let note of notes) {
                 let note_str = getNoteStr(note);
                 synth.triggerAttackRelease(note_str, 
@@ -53,11 +57,11 @@ class AudioGenerator extends React.Component<Props> {
         const updateNoteCount = (e: ChangeEvent<HTMLInputElement>) => {
             const note_count = Number(e.target.value);
             const new_note_count = Math.min(note_count, this.MAX_NOTE_COUNT);
-            this.props.note_count_updator(new_note_count);
+            this.setState({ note_count: new_note_count });
         }
         const button_id = "audio_button";
 
-        const note_count_value = this.props.note_count ? this.props.note_count : "";
+        const note_count_value = this.state.note_count == 0 ? "" : this.state.note_count;
         return (
             <div className="row justify-content-center my-5">
                 <label className="row justify-content-center mb-3">
@@ -74,7 +78,7 @@ class AudioGenerator extends React.Component<Props> {
                     inline={true}
                     id={button_id}
                     name="Generate Audio"
-                    clickHandler={this.audioGeneratorFactory(this.props.note_count)}
+                    clickHandler={this.audioGeneratorFactory(this.state.note_count)}
                     className="col-12 col-md-10 col-lg-7 fs-4"
                 ></Button>
             </div>

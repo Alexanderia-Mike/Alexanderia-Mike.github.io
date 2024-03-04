@@ -16,3 +16,7 @@ export function getNoteStr(note: number) {
     else note_level += "B"
     return note_level + base
 }
+
+export function delay(time_ms: number) {
+    return new Promise( re => setTimeout(re, time_ms) );
+}
