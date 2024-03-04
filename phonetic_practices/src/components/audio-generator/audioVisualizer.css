@@ -3,7 +3,7 @@
 }
 
 .note-stack {
-    min-height: 20px;
+    height: 20px;
 }
 
 .note-bar {
@@ -31,4 +31,20 @@
     width: 100%;
     transition-property: all;
     transition-timing-function: linear;
+}
+
+.note-legend {
+    height: 20px;
+}
+
+@media screen and (min-width: 576px) {
+    .note-legend-container {
+        right: 6vw;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .note-legend-container {
+        display: none;
+    }
 }

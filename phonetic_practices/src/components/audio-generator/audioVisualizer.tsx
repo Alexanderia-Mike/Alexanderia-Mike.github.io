@@ -1,5 +1,11 @@
 import React from "react";
 import "./audioVisualizer.css";
+import { getNoteStr } from "./utils";
+
+interface NoteLegendProps {
+    note_lower: number;
+    note_upper: number;
+};
 
 interface NoteVisualizerProps {
     id: number;
@@ -17,6 +23,32 @@ interface AudioVisualizerProps {
     note_period: number;
     notes_active?: boolean[];
 };
+
+class NoteLegend extends React.Component<NoteLegendProps> {
+    render(): React.ReactNode {
+        let note_legends = [];
+        for (let note = this.props.note_upper + 1;
+            note >= this.props.note_lower - 1; 
+            --note)
+        {
+            note_legends.push(
+                <div
+                    className="row align-items-center note-legend m-0 
+                               fs-6 fw-lighter text-body-secondary"
+                    key={note}
+                >
+                    {getNoteStr(note)}
+                </div>
+            );
+        }
+
+        return (
+            <div className="position-absolute note-legend-container">
+                {note_legends}
+            </div>
+        );
+    }
+}
 
 class NoteVisualizer extends React.Component<NoteVisualizerProps> {
     render(): React.ReactNode {
@@ -82,10 +114,20 @@ class AudioVisualizer extends React.Component<AudioVisualizerProps> {
             }
         );
 
+        const note_legends = 
+            (this.props.note_lower != undefined && 
+                this.props.note_upper != undefined) ?
+            <NoteLegend
+                note_lower={this.props.note_lower}
+                note_upper={this.props.note_upper}
+            ></NoteLegend> :
+            <></>;
+
         return (
             <div className="row justify-content-center mb-4">
                 <div className="col-12 col-md-10 col-lg-7">
-                    <div className="row justify-content-center">
+                    <div className="position-relative row justify-content-center">
+                        {note_legends}
                         {note_visualizers}
                     </div>
                 </div>
