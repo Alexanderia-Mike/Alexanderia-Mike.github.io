@@ -15,7 +15,7 @@ interface States {
 }
 
 class AudioGenerator extends React.Component<Props, States> {
-    MAX_NOTE_COUNT: number = 7;
+    MAX_NOTE_COUNT: number = 5;
     NOTE_TAIL: number = 0.3;
 
     constructor(props: Props) {

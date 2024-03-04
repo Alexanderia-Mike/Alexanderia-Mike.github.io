@@ -12,9 +12,11 @@ interface NoteDisplayProps {
 class NoteElement extends React.Component<NoteElementProps> {
     render(): React.ReactNode {
         return (
-            <div className="col fs-1 text-center" key={this.props.id}>
-                { this.props.note_str }
-            </div>
+            <input
+                className="col fs-2 text-center mx-2 form-control"
+                key={this.props.id}
+                value={this.props.note_str}
+            />
         );
     }
 }
@@ -35,7 +37,7 @@ class NoteDisplay extends React.Component<NoteDisplayProps> {
         return (
             <div className="row justify-content-center my-4">
                 <div className="col-12 col-md-10 col-lg-7">
-                    <div className="row justify-content-center">
+                    <div className="row justify-content-evenly">
                         { note_elements }
                     </div>
                 </div>
