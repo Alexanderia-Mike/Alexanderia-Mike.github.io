@@ -1,0 +1,47 @@
+@media screen and (max-width: 399px) {
+    .play_button_icon {
+        width: 20vw;
+        height: 20vw;
+    }
+}
+
+@media screen and (min-width: 400px) {
+    .play_button_icon {
+        width: 15vw;
+        height: 15vw;
+    }
+}
+
+@media screen and (min-width: 620px) {
+    .play_button_icon {
+        width: 30px;
+        height: 30px;
+    }
+    .play_button_container {
+        position: absolute;
+        right: -45px;
+        top: 0;
+        display: block;
+    }
+    .play_button {
+        display: inline-block;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .play_button_container {
+        right: 5px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .play_button_container {
+        right: 15%;
+    }
+}
+
+.play_button {
+    --bs-btn-color: #6C757D!important;
+    --bs-btn-hover-color: hsl(208, 7%, 66%)!important;
+    --bs-btn-active-color: hsl(208, 7%, 66%)!important;
+}

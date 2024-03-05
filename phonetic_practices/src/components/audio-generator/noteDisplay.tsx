@@ -2,6 +2,7 @@ import React, { ChangeEvent, ChangeEventHandler } from "react";
 import { noteStrToNum } from "./utils";
 import Dropdown from "../utilities/dropdown";
 import NOTES from "../utilities/note_string";
+import "../utilities/utils.css";
 
 interface NoteElementProps {
     id: number;
@@ -21,7 +22,7 @@ class NoteElement extends React.Component<NoteElementProps> {
                 options={NOTES}
                 key={this.props.id}
                 default_option={this.props.note_str}
-                className="col fs-4 text-center mx-2"
+                className="col my-fontsize text-center mx-0 mx-sm-2"
                 onChange={this.props.note_updator}
             ></Dropdown>
         );

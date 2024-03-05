@@ -1,6 +1,7 @@
 import React from "react";
 import "./audioVisualizer.css";
 import { noteNumToStr } from "./utils";
+import "../utilities/utils.css";
 
 interface NoteLegendProps {
     note_lower: number;

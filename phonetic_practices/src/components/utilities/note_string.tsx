@@ -6,7 +6,7 @@ const MAJOR_COUNT = 6;
 let NOTES: string[] = [];
 for (let major = 1; major <= MAJOR_COUNT; ++major) {
     for (let base of NOTE_BASES) {
-        NOTES.push(base + major);
+        NOTES.unshift(base + major);
     }
 }
 
