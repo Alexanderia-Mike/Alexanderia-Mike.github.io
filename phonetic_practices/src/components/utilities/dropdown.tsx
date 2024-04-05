@@ -15,6 +15,7 @@ class Dropdown extends React.Component<Props> {
                     <option 
                         key={idx}
                         value={option}
+                        selected={option == this.props.default_option}
                     >
                         {option}
                     </option>
@@ -28,7 +29,6 @@ class Dropdown extends React.Component<Props> {
                 className={"form-select " + extra_classes} 
                 id="floatingSelect" 
                 aria-label="Floating label select"
-                defaultValue={this.props.default_option}
                 onChange={this.props.onChange}
             >
                 {options}

@@ -45,6 +45,7 @@ class NoteDisplay extends React.Component<NoteDisplayProps> {
         const renderNote = (note_str: string, idx: number) => {
             return <NoteElement
                 id={idx}
+                key={idx}
                 note_str={note_str}
                 note_updator={this.changeEventHandlerFactory(idx)}
             ></NoteElement>
