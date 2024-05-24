@@ -51,17 +51,19 @@ class Header extends React.Component<Props> {
 
     render(): React.ReactNode {
         return (
-            <div className="container-xxl sticky-top col-12 mb-5" style={{backgroundColor: "#F1F1F1"}}>
-                <header className="d-flex flex-wrap flex-wrap justify-content-center py-3 mb-4">
-                    <a href="index.html" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                        <img className="bi me-2" height="60" src={'images/logo.png'}/>
-                    </a>
+            <div className='w-100 sticky-top' style={{backgroundColor: "#F1F1F1"}}>
+                <div className="container-xxl col-12 mb-5">
+                    <header className="d-flex flex-wrap flex-wrap justify-content-center py-3 mb-4">
+                        <a href="index.html" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                            <img className="bi me-2" height="60" src={'images/logo.png'}/>
+                        </a>
 
-                    <ul className="nav nav-pills">
-                        {this.props.nav_items.map((itemName, i) => 
-                            this.createNavItem(itemName, this.props.in_views[i], () => {}))}
-                    </ul>
-                </header>
+                        <ul className="nav nav-pills">
+                            {this.props.nav_items.map((itemName, i) => 
+                                this.createNavItem(itemName, this.props.in_views[i], () => {}))}
+                        </ul>
+                    </header>
+                </div>
             </div>
         );
     }
