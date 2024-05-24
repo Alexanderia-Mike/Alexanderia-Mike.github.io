@@ -8,8 +8,8 @@ interface Props {
 class SelfIntro extends React.Component<Props> {
     render(): React.ReactNode  {
         return (
-            <div className="container-fluid p-0" id='selfIntro' style={{backgroundColor: "#797979", marginTop: 80}}>
-                <div className='container-xxl d-flex flex-column flex-xl-row p-0'>
+            <div className="container-fluid p-0" id='selfIntro' style={{marginTop: 80}}>
+                <div className='container-xxl d-flex flex-column flex-xl-row p-0 align-items-center justify-content-center'>
                     <div className='col-xl-7 self-intro-text fs-6' style={{paddingLeft: 30, paddingRight: 80, paddingTop: 25, paddingBottom: 25}}>
                         Hi, I'm Chenfei Lou. You can also call me Mike. <br/>
                         I obtained my becholar's degree in Electrical and Computer Engineering from Shanghai Jiao Tong 
@@ -26,8 +26,9 @@ class SelfIntro extends React.Component<Props> {
                         that look weird first suddenly become so logical and wise. That's why I believe travelling is one of 
                         the most intelligent teacher. <br/>
                     </div>
-                    <div className='col-xl-5'>
-                        <img src={'images/selfie.jpg'} width={'100%'}/>
+                    <div className='col-xl-5 position-relative' id='self-intro-image'>
+                        <div className='position-absolute w-100 h-100' id='background-blur'></div>
+                        <img src={'images/profile-9.JPG'} width={'100%'}/>
                     </div>
                 </div>
             </div>

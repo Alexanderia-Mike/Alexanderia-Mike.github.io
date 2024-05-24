@@ -2,3 +2,12 @@
     color: white;
 }
 
+#selfIntro {
+    --BACKGROUND_COLOR: #797979;
+    /* --BACKGROUND_COLOR: #416CB7; */
+    background-color: var(--BACKGROUND_COLOR);
+}
+
+#background-blur {
+    box-shadow: 0 0 25px 25px var(--BACKGROUND_COLOR) inset;
+}

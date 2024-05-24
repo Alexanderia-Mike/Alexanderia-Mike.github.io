@@ -27,7 +27,7 @@ class Profile extends React.Component<Props> {
             <div className="container-xxl col-10 mb-5 shadow-lg" style={{backgroundColor: "#D2D3D500"}}>
                 <div className="d-flex flex-column flex-xl-row gap-5 align-items-center link-body-emphasis text-decoration-none p-5">
                     <div className='col-10 col-md-6 col-xl-4'>
-                        <img src={"images/profile-picture.jpg"} width={'100%'}/>
+                        <img src={"images/profile-6.JPG"} width={'100%'}/>
                     </div>
                     <div className="col-xl-8 px-5">
                         <div className='d-flex flex-row gap-3'>
