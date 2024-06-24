@@ -17,7 +17,7 @@ class PhoneticIcon extends React.Component<Props> {
             >
                 <MusicNoteBeamed size={50} color="black"/>
             </a>,
-            <div key={1} id="p5_canvas_container" className="position-fixed bottom-0 end-0 me-3 mb-3"></div>,
+            <div key={1} id="p5_canvas_container" className="position-fixed bottom-0 end-0"></div>,
         ]
     }
 }
