@@ -8,15 +8,17 @@ interface Props {
 
 class PhoneticIcon extends React.Component<Props> {
     render(): React.ReactNode {
-        return (
+        return [
             <a className="position-fixed bottom-0 end-0 me-5 mb-5 p-3 
-                rounded-circle bg-white shadow-lg"
-                id="music_icon"
-                href="./phonetic_practices/index.html"
+            rounded-circle bg-white shadow-lg"
+            id="music_icon"
+            href="./phonetic_practices/index.html"
+            key={2}
             >
                 <MusicNoteBeamed size={50} color="black"/>
-            </a>
-        )
+            </a>,
+            <div key={1} id="p5_canvas_container" className="position-fixed bottom-0 end-0 me-3 mb-3"></div>,
+        ]
     }
 }
 

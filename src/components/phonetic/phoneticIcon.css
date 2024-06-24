@@ -1,3 +1,13 @@
+a#music_icon {
+    z-index: 10;
+}
+
 a#music_icon:hover {
     background-color: rgb(235, 235, 235)!important;
+}
+
+#p5_canvas_container {
+    width: 146px;
+    height: 146px;
+    z-index: 1;
 }
