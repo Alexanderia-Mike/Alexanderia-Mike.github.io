@@ -12,7 +12,8 @@ class PhoneticIcon extends React.Component<Props> {
             <a className="position-fixed bottom-0 end-0 me-5 mb-5 p-3 
             rounded-circle bg-white shadow-lg"
             id="music_icon"
-            href="./phonetic_practices/index.html"
+            // href="./phonetic_practices/index.html"
+            href="./wuxianpu/index.html"
             key={2}
             >
                 <MusicNoteBeamed size={50} color="black"/>
