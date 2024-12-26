@@ -8,13 +8,16 @@ const bassImage = document.getElementById("diyin-image");
 const score = document.getElementById("score-counting");
 const correctCount = document.getElementById("correct");
 const totalCount = document.getElementById("total");
+const sliderLabel = document.getElementById("slider-label");
 const BASS_HEIGHT = 200
 
 score.style.display = "none";
 bassImage.style.transform = `translateY(${BASS_HEIGHT}px)`;
+bassImage.style.opacity = "0.375";
 
 let currentNote = null;
 let clef = "treble"; // Default clef is "treble"
+sliderLabel.innerHTML = "高音谱号";
 const NOTE_X = 450;
 let correct = total = 0;
 
@@ -73,8 +76,8 @@ const notes = {
 };
 
 // Draw the staff lines
-function drawStaffSingle(baseHeight, coniderNote) {
-    ctx.strokeStyle = "#000";
+function drawStaffSingle(baseHeight, considerNote) {
+    ctx.strokeStyle = considerNote ? "#000" : "#aaa";
     ctx.lineWidth = 2;
 
     const drawStaffHelper = (height, begin, end) => {
@@ -89,7 +92,7 @@ function drawStaffSingle(baseHeight, coniderNote) {
         drawStaffHelper(i, 50, 750);
     }
 
-    if (coniderNote && currentNote != null) {
+    if (considerNote && currentNote != null) {
         // additional staff below
         for (let i = 190; i <= currentNote.y; i += 20) {
             drawStaffHelper(i, NOTE_X - 25, NOTE_X + 25);
@@ -101,6 +104,8 @@ function drawStaffSingle(baseHeight, coniderNote) {
             drawStaffHelper(i, NOTE_X - 25, NOTE_X + 25);
         }
     }
+
+    ctx.strokeStyle = "#000";
 }
 
 function drawStaff() {
@@ -150,6 +155,14 @@ document.getElementById("submitButton").addEventListener("click", () => {
 clefSwitch.addEventListener("change", () => {
     currentNote = null;
     clef = clefSwitch.checked ? "bass" : "treble";
+    sliderLabel.innerHTML = clefSwitch.checked ? "低音谱号" : "高音谱号";
+    if (clefSwitch.checked) {
+        bassImage.style.opacity = "1";
+        trebleImage.style.opacity = "0.375";
+    } else {
+        bassImage.style.opacity = "0.375";
+        trebleImage.style.opacity = "1";
+    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawStaff();
 });
