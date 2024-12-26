@@ -9,6 +9,8 @@ const score = document.getElementById("score-counting");
 const correctCount = document.getElementById("correct");
 const totalCount = document.getElementById("total");
 const sliderLabel = document.getElementById("slider-label");
+const clefToggle = document.getElementById("clef-toggle");
+const randomSwitch = document.getElementById("randomSwitch");
 const BASS_HEIGHT = 200
 
 score.style.display = "none";
@@ -17,6 +19,7 @@ bassImage.style.opacity = "0.375";
 
 let currentNote = null;
 let clef = "treble"; // Default clef is "treble"
+let random = false;
 sliderLabel.innerHTML = "高音谱号";
 const NOTE_X = 450;
 let correct = total = 0;
@@ -126,15 +129,6 @@ function drawNote(baseHeight) {
     ctx.stroke();
 }
 
-// Handle the "Generate Exercise" button
-document.getElementById("generateButton").addEventListener("click", () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawNote(clef == "treble" ? 0 : BASS_HEIGHT);
-    drawStaff();
-    feedback.textContent = "";
-    noteInput.value = "";
-});
-
 // Handle the "Submit Answer" button
 document.getElementById("submitButton").addEventListener("click", () => {
     const userAnswer = noteInput.value.trim();
@@ -152,7 +146,8 @@ document.getElementById("submitButton").addEventListener("click", () => {
     totalCount.innerHTML = ` ${total} `;
 });
 
-clefSwitch.addEventListener("change", () => {
+const clefChangeFunc = () => {
+    console.log("inside clef change func");
     currentNote = null;
     clef = clefSwitch.checked ? "bass" : "treble";
     sliderLabel.innerHTML = clefSwitch.checked ? "低音谱号" : "高音谱号";
@@ -165,6 +160,30 @@ clefSwitch.addEventListener("change", () => {
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawStaff();
+}
+clefSwitch.addEventListener("change", clefChangeFunc);
+
+// Handle the "Generate Exercise" button
+document.getElementById("generateButton").addEventListener("click", () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (random && Math.random() < 0.5) {
+        console.log("calling clef change func");
+        clefSwitch.checked = !clefSwitch.checked;
+        clefChangeFunc();
+    }
+    drawNote(clef == "treble" ? 0 : BASS_HEIGHT);
+    drawStaff();
+    feedback.textContent = "";
+    noteInput.value = "";
+});
+
+randomSwitch.addEventListener("change", () => {
+    random = !random;
+    if (random) {
+        clefToggle.style.display = "none";
+    } else {
+        clefToggle.style.display = "";
+    }
 });
 
 document.getElementById("clearCount").onclick = () => {
