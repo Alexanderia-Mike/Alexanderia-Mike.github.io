@@ -8,8 +8,10 @@ const bassImage = document.getElementById("diyin-image");
 const score = document.getElementById("score-counting");
 const correctCount = document.getElementById("correct");
 const totalCount = document.getElementById("total");
+const BASS_HEIGHT = 200
 
 score.style.display = "none";
+bassImage.style.transform = `translateY(${BASS_HEIGHT}px)`;
 
 let currentNote = null;
 let clef = "treble"; // Default clef is "treble"
@@ -71,14 +73,14 @@ const notes = {
 };
 
 // Draw the staff lines
-function drawStaff() {
+function drawStaffSingle(baseHeight, coniderNote) {
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 2;
 
     const drawStaffHelper = (height, begin, end) => {
         ctx.beginPath();
-        ctx.moveTo(begin, height);
-        ctx.lineTo(end, height);
+        ctx.moveTo(begin, height + baseHeight);
+        ctx.lineTo(end, height + baseHeight);
         ctx.stroke();
     }
 
@@ -87,7 +89,7 @@ function drawStaff() {
         drawStaffHelper(i, 50, 750);
     }
 
-    if (currentNote != null) {
+    if (coniderNote && currentNote != null) {
         // additional staff below
         for (let i = 190; i <= currentNote.y; i += 20) {
             drawStaffHelper(i, NOTE_X - 25, NOTE_X + 25);
@@ -99,25 +101,21 @@ function drawStaff() {
             drawStaffHelper(i, NOTE_X - 25, NOTE_X + 25);
         }
     }
+}
 
-    // clef symbol
-    if (clef == "treble") {
-        trebleImage.hidden = false;
-        bassImage.hidden = true;
-    } else {
-        trebleImage.hidden = true;
-        bassImage.hidden = false;
-    }
+function drawStaff() {
+    drawStaffSingle(0, clef == "treble");
+    drawStaffSingle(BASS_HEIGHT, clef == "bass");
 }
 
 // Draw a note on the staff
-function drawNote() {
+function drawNote(baseHeight) {
     currentNote = notes[clef][Math.floor(Math.random() * notes[clef].length)];
     if (currentNote.y > 180 || currentNote.y < 80) {
 
     }
     ctx.beginPath();
-    ctx.arc(NOTE_X, currentNote.y, 7, 0, 2 * Math.PI);
+    ctx.arc(NOTE_X, currentNote.y + baseHeight, 7, 0, 2 * Math.PI);
     ctx.fillStyle = "#000";
     ctx.fill();
     ctx.stroke();
@@ -126,7 +124,7 @@ function drawNote() {
 // Handle the "Generate Exercise" button
 document.getElementById("generateButton").addEventListener("click", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawNote();
+    drawNote(clef == "treble" ? 0 : BASS_HEIGHT);
     drawStaff();
     feedback.textContent = "";
     noteInput.value = "";
@@ -150,6 +148,7 @@ document.getElementById("submitButton").addEventListener("click", () => {
 });
 
 clefSwitch.addEventListener("change", () => {
+    currentNote = null;
     clef = clefSwitch.checked ? "bass" : "treble";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawStaff();
