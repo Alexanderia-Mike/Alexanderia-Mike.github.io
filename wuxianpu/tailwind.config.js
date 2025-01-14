@@ -8,6 +8,12 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.hidden': { display: "none !important" },
+      });
+    },
+  ],
 }
 

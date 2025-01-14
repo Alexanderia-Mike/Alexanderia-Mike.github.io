@@ -1,0 +1,52 @@
+export const notes = {
+    "treble": [
+        { name: "e3", y: 30 },
+        { name: "d3", y: 40 },
+        { name: "c3", y: 50 },
+        { name: "b2", y: 60 },
+        { name: "a2", y: 70 },
+        // below need additional staff
+        { name: "g2", y: 80 },
+        { name: "f2", y: 90 },
+        { name: "e2", y: 100 },
+        { name: "d2", y: 110 },
+        { name: "c2", y: 120 },
+        { name: "b1", y: 130 },
+        { name: "a1", y: 140 },
+        { name: "g1", y: 150 },
+        { name: "f1", y: 160 },
+        { name: "e1", y: 170 },
+        { name: "d1", y: 180 },
+        // above need additional staff
+        { name: "c1", y: 190 },
+        { name: "b", y: 200 },
+        { name: "a", y: 210 },
+        { name: "g", y: 220 },
+        { name: "f", y: 230 },
+    ],
+    "bass": [
+        { name: "g1", y: 30 },
+        { name: "f1", y: 40 },
+        { name: "e1", y: 50 },
+        { name: "d1", y: 60 },
+        { name: "c1", y: 70 },
+        // below need additional staff
+        { name: "b", y: 80 },
+        { name: "a", y: 90 },
+        { name: "g", y: 100 },
+        { name: "f", y: 110 },
+        { name: "e", y: 120 },
+        { name: "d", y: 130 },
+        { name: "c", y: 140 },
+        { name: "B", y: 150 },
+        { name: "A", y: 160 },
+        { name: "G", y: 170 },
+        { name: "F", y: 180 },
+        // above need additional staff
+        { name: "E", y: 190 },
+        { name: "D", y: 200 },
+        { name: "C", y: 210 },
+        { name: "B1", y: 220 },
+        { name: "A1", y: 230 },
+    ]
+};
