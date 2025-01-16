@@ -1,52 +1,62 @@
+export class Note {
+    constructor(name: String, y: number) {
+        this.name = name
+        this.y = y
+    }
+
+    name: String
+    y: number
+}
+
 export const notes = {
-    "treble": [
-        { name: "e3", y: 30 },
-        { name: "d3", y: 40 },
-        { name: "c3", y: 50 },
-        { name: "b2", y: 60 },
-        { name: "a2", y: 70 },
+    treble: [
+        new Note('e3', 30),
+        new Note('d3', 40),
+        new Note('c3', 50),
+        new Note('b2', 60),
+        new Note('a2', 70),
         // below need additional staff
-        { name: "g2", y: 80 },
-        { name: "f2", y: 90 },
-        { name: "e2", y: 100 },
-        { name: "d2", y: 110 },
-        { name: "c2", y: 120 },
-        { name: "b1", y: 130 },
-        { name: "a1", y: 140 },
-        { name: "g1", y: 150 },
-        { name: "f1", y: 160 },
-        { name: "e1", y: 170 },
-        { name: "d1", y: 180 },
+        new Note('g2', 80),
+        new Note('f2', 90),
+        new Note('e2', 100),
+        new Note('d2', 110),
+        new Note('c2', 120),
+        new Note('b1', 130),
+        new Note('a1', 140),
+        new Note('g1', 150),
+        new Note('f1', 160),
+        new Note('e1', 170),
+        new Note('d1', 180),
         // above need additional staff
-        { name: "c1", y: 190 },
-        { name: "b", y: 200 },
-        { name: "a", y: 210 },
-        { name: "g", y: 220 },
-        { name: "f", y: 230 },
+        new Note('c1', 190),
+        new Note('b', 200),
+        new Note('a', 210),
+        new Note('g', 220),
+        new Note('f', 230),
     ],
-    "bass": [
-        { name: "g1", y: 30 },
-        { name: "f1", y: 40 },
-        { name: "e1", y: 50 },
-        { name: "d1", y: 60 },
-        { name: "c1", y: 70 },
+    bass: [
+        new Note('g1', 30),
+        new Note('f1', 40),
+        new Note('e1', 50),
+        new Note('d1', 60),
+        new Note('c1', 70),
         // below need additional staff
-        { name: "b", y: 80 },
-        { name: "a", y: 90 },
-        { name: "g", y: 100 },
-        { name: "f", y: 110 },
-        { name: "e", y: 120 },
-        { name: "d", y: 130 },
-        { name: "c", y: 140 },
-        { name: "B", y: 150 },
-        { name: "A", y: 160 },
-        { name: "G", y: 170 },
-        { name: "F", y: 180 },
+        new Note('b', 80),
+        new Note('a', 90),
+        new Note('g', 100),
+        new Note('f', 110),
+        new Note('e', 120),
+        new Note('d', 130),
+        new Note('c', 140),
+        new Note('B', 150),
+        new Note('A', 160),
+        new Note('G', 170),
+        new Note('F', 180),
         // above need additional staff
-        { name: "E", y: 190 },
-        { name: "D", y: 200 },
-        { name: "C", y: 210 },
-        { name: "B1", y: 220 },
-        { name: "A1", y: 230 },
-    ]
-};
+        new Note('E', 190),
+        new Note('D', 200),
+        new Note('C', 210),
+        new Note('B1', 220),
+        new Note('A1', 230),
+    ],
+}
