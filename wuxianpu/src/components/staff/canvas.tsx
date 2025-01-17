@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import { NoteName } from '../../common/common'
 
 const BASS_HEIGHT = 140
-const TREBLE_HEIGHT = -20
+const TREBLE_HEIGHT = -19
 
 function drawStaffSingle(
     ctx: CanvasRenderingContext2D,
@@ -83,7 +83,7 @@ export default function Canvas({
                 note && drawNote(ctx, note, clef, canvas.width)
             }
         }
-    }, [clef, note])
+    }, [clef, noteName])
 
     return (
         <div className='relative'>
@@ -104,7 +104,7 @@ export default function Canvas({
                 style={{transform: `translateY(${BASS_HEIGHT}px)`}}
             />
             <canvas
-                className="border border-border-color bg-white w-full h-[380px]"
+                className="border border-border-color bg-white w-full h-[385px]"
                 ref={canvasRef}
             ></canvas>
         </div>

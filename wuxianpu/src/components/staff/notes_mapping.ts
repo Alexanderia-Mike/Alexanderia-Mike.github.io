@@ -63,3 +63,8 @@ export const notes: Record<Clef, Map<NoteName, Note>> = {
         [NoteName.A1, new Note(NoteName.A1, 230)],
     ]),
 }
+
+export const noteNames: Record<Clef, NoteName[]> = {
+    [Clef.TREBLE]: notes[Clef.TREBLE].keys().toArray(),
+    [Clef.BASS]: notes[Clef.BASS].keys().toArray()
+}

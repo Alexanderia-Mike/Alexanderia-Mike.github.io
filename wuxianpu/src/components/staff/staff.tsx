@@ -18,7 +18,7 @@ export default function Staff({
     return (
         <div className="my-[20px] mx-auto p-[20px] max-w-[800px] bg-white border-solid border border-border-color rounded shadow-sm relative">
             <Canvas noteName={currentNoteName} clef={clef} />
-            <Control updateNoteName={updateCurrentNoteName} updateClef={updateClef}/>
+            <Control clef={clef} updateNoteName={updateCurrentNoteName} updateClef={updateClef}/>
             <p className="mt-[20px] text-lg text-slate-600"></p>
         </div>
     )
