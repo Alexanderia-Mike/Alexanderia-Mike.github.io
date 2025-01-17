@@ -14,7 +14,7 @@ export default function Control({
         <>
             <div className="flex my-5 justify-center items-center">
                 <div className="flex flex-grow justify-center items-center">
-                    <span>correct / total: </span>{' '}
+                    <span>正确 / 共计: </span>{' '}
                     <span className="w-20"></span>
                     <span id="correct"></span> <span id="division">/</span>{' '}
                     <span id="total"></span>

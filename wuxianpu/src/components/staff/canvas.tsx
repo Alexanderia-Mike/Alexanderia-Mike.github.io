@@ -89,7 +89,7 @@ export default function Canvas({
         <div className='relative'>
             <img
                 className={clsx(
-                    'absolute w-[100px] top-[47px] left-[110px]',
+                    'absolute w-[100px] top-[47px] left-[80px]',
                     clef == Clef.BASS && 'opacity-10'
                 )}
                 src="gaoyin.png"
@@ -97,7 +97,7 @@ export default function Canvas({
             />
             <img
                 className={clsx(
-                    'absolute w-[75px] top-[86px] left-[125px]  translate-y-1',
+                    'absolute w-[75px] top-[86px] left-[95px]  translate-y-1',
                     clef == Clef.TREBLE && 'opacity-30'
                 )}
                 src="diyin.svg"
