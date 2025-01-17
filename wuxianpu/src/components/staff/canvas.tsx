@@ -39,6 +39,20 @@ function drawStaffSingle(
     ctx.strokeStyle = '#000'
 }
 
+function drawNote(
+    ctx: CanvasRenderingContext2D,
+    note: Note,
+    clef: Clef,
+    canvasWidth: number
+) {
+    const baseHeight = clef == Clef.TREBLE ? 0 : BASS_HEIGHT
+    ctx.beginPath()
+    ctx.arc(canvasWidth / 2, note.y + baseHeight, 7, 0, 2 * Math.PI)
+    ctx.fillStyle = '#000'
+    ctx.fill()
+    ctx.stroke()
+}
+
 export default function Canvas({
     clef,
     note,
@@ -63,6 +77,7 @@ export default function Canvas({
                     clef == Clef.BASS,
                     note
                 )
+                note && drawNote(ctx, note, clef, canvas.width)
             }
         }
     }, [clef, note])

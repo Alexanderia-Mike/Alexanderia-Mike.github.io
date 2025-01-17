@@ -4,6 +4,7 @@ import Button from '../../common/button/button'
 import Canvas from './canvas'
 import { Clef } from './clef'
 import { NoteName } from '../../common/common'
+import { Note } from './notes_mapping'
 
 export default function Staff({
     currentNote,
@@ -36,7 +37,7 @@ export default function Staff({
                     commonText="随机高低音谱"
                 />
             </div>
-            <Canvas note={null} clef={Clef.TREBLE} />
+            <Canvas note={new Note(NoteName.A1, 30)} clef={Clef.TREBLE} />
             <div className="mt-[20px]">
                 <Button
                     label={'生成练习题'}
