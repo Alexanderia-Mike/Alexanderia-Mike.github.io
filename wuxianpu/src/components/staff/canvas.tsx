@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { Clef } from './clef'
-import { Note } from './notes_mapping'
+import { Note, notes } from './notes_mapping'
 import clsx from 'clsx'
+import { NoteName } from '../../common/common'
 
-const BASS_HEIGHT = 200
+const BASS_HEIGHT = 140
+const TREBLE_HEIGHT = -20
 
 function drawStaffSingle(
     ctx: CanvasRenderingContext2D,
     baseHeight: number,
     canvasWidth: number,
     considerNote: Boolean,
-    note: Note | null
+    note: Note | undefined
 ) {
     ctx.strokeStyle = considerNote ? '#000' : '#aaa'
     ctx.lineWidth = 2
@@ -45,7 +47,7 @@ function drawNote(
     clef: Clef,
     canvasWidth: number
 ) {
-    const baseHeight = clef == Clef.TREBLE ? 0 : BASS_HEIGHT
+    const baseHeight = clef == Clef.TREBLE ? TREBLE_HEIGHT : BASS_HEIGHT
     ctx.beginPath()
     ctx.arc(canvasWidth / 2, note.y + baseHeight, 7, 0, 2 * Math.PI)
     ctx.fillStyle = '#000'
@@ -55,12 +57,13 @@ function drawNote(
 
 export default function Canvas({
     clef,
-    note,
+    noteName,
 }: {
     clef: Clef
-    note: Note | null
+    noteName: NoteName | undefined
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const note = noteName && notes[clef].get(noteName)
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -69,7 +72,7 @@ export default function Canvas({
             canvas.height = canvas.clientHeight
             const ctx = canvas.getContext('2d')
             if (ctx) {
-                drawStaffSingle(ctx, 0, canvas.width, clef == Clef.TREBLE, note)
+                drawStaffSingle(ctx, TREBLE_HEIGHT, canvas.width, clef == Clef.TREBLE, note)
                 drawStaffSingle(
                     ctx,
                     BASS_HEIGHT,
@@ -83,25 +86,27 @@ export default function Canvas({
     }, [clef, note])
 
     return (
-        <>
+        <div className='relative'>
             <img
                 className={clsx(
-                    'absolute w-[100px] top-[187px] left-[110px]',
+                    'absolute w-[100px] top-[47px] left-[110px]',
                     clef == Clef.BASS && 'opacity-10'
                 )}
                 src="gaoyin.png"
+                style={{transform: `translateY(${TREBLE_HEIGHT}px)`}}
             />
             <img
                 className={clsx(
-                    'absolute w-[75px] top-[225px] left-[125px] translate-y-[200px]',
+                    'absolute w-[75px] top-[86px] left-[125px]  translate-y-1',
                     clef == Clef.TREBLE && 'opacity-30'
                 )}
                 src="diyin.svg"
+                style={{transform: `translateY(${BASS_HEIGHT}px)`}}
             />
             <canvas
-                className="border border-border-color bg-white w-full h-[470px]"
+                className="border border-border-color bg-white w-full h-[380px]"
                 ref={canvasRef}
             ></canvas>
-        </>
+        </div>
     )
 }

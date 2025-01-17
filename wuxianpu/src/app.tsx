@@ -3,11 +3,16 @@ import Staff from './components/staff/staff'
 import { NoteName } from './common/common'
 
 export default function App() {
-    const [currentNote, updateCurrentNote] = useState<NoteName | null>(null)
+    const [currentNote, updateCurrentNote] = useState<NoteName | undefined>(
+        undefined
+    )
     return (
-        <Staff
-            currentNote={currentNote}
-            updateCurrentNote={updateCurrentNote}
-        />
+        <>
+            <h1 className="text-[#333] text-3xl mt-5">五线谱练习工具</h1>
+            <Staff
+                currentNoteName={currentNote}
+                updateCurrentNoteName={updateCurrentNote}
+            />
+        </>
     )
 }
