@@ -3,13 +3,14 @@ import Toggle from '../../common/toggle/toggle'
 import Button from '../../common/button/button'
 import Canvas from './canvas'
 import { Clef } from './clef'
+import { NoteName } from '../../common/common'
 
 export default function Staff({
     currentNote,
     updateCurrentNote,
 }: {
-    currentNote: number
-    updateCurrentNote: React.Dispatch<React.SetStateAction<number>>
+    currentNote: NoteName | null
+    updateCurrentNote: React.Dispatch<React.SetStateAction<NoteName | null>>
 }) {
     return (
         <div className="my-[20px] mx-auto p-[20px] max-w-[800px] bg-white border-solid border border-border-color rounded shadow-sm relative">
