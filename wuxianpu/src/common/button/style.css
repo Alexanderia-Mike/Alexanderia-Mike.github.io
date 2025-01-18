@@ -1,11 +1,5 @@
 button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
     background-color: #46a823a2;
-    color: white;
     transition: background-color 0.3s ease;
 }
 

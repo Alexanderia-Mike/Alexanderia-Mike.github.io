@@ -28,7 +28,6 @@ export default function Control({
     const [randomClef, setRandomClef] = useState<boolean>(false)
     const [correct, setCorrect] = useState<number>(0)
     const [total, setTotal] = useState<number>(0)
-    const inputRef = useRef<HTMLInputElement | null>(null)
 
     const resetButtonOnClick = () => {
         updateNoteName(undefined)
@@ -46,56 +45,45 @@ export default function Control({
         let newClef = null
         if (randomClef) {
             newClef = generateRandomClef()
-            updateClef(newClef) 
+            updateClef(newClef)
         }
         updateNoteName(generateRandomNoteName(newClef || clef))
-    }
-
-    const submitButtonOnClick = () => {
-        if (inputRef.current) {
-            console.log(`value is ${inputRef.current.value}`)
-            // TODO
-        }
     }
 
     return (
         <>
             <div className="flex my-5 justify-center items-center">
-                <div className="flex flex-grow justify-center items-center">
-                    <div className={clsx(total || 'hidden')}>
-                        <span>正确 / 共计: </span>{' '}
-                        <span className="ml-10">
-                            {correct} / {total}
-                        </span>
-                    </div>
-                    <Button label={'重置'} onClick={resetButtonOnClick} />
-                </div>
                 <Toggle
                     onText="高音谱号"
                     offText="低音谱号"
                     onChange={clefToggleOnChange}
-                    hide = {randomClef}
+                    hide={randomClef}
                 />
                 <Toggle
                     onChange={randomClefToggleOnChange}
                     commonText="随机高低音谱"
                 />
             </div>
-            <div className="mt-[40px]">
-                <Button
-                    label={'生成练习题'}
-                    onClick={generateButtonOnClick}
-                />
-                <input
-                    type="text"
-                    id="noteInput"
-                    ref={inputRef}
-                    placeholder="输入音名 (如 C, D, E)"
-                />
-                <Button
-                    label={'提交答案'}
-                    onClick={submitButtonOnClick}
-                />
+            <div className="flex justify-center items-center mt-[40px]">
+                <div className="flex flex-grow justify-center items-center">
+                    <Button
+                        label={'生成练习题'}
+                        onClick={generateButtonOnClick}
+                    />
+                </div>
+                <div className={clsx(total || 'hidden', "flex flex-grow justify-center items-center")}>
+                    {/* <div className={clsx(total || 'hidden')}> */}
+                        <span>正确 / 共计: </span>{' '}
+                        <span className="ml-10">
+                            {correct} / {total}
+                        </span>
+                    {/* </div> */}
+                    <Button
+                        label={'重置'}
+                        onClick={resetButtonOnClick}
+                        // hide={!total}
+                    />
+                </div>
             </div>
         </>
     )
