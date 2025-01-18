@@ -8,12 +8,14 @@ import {
 } from 'react-router-dom'
 import { TextSubmitter } from './text-submitter/text-submitter'
 import clsx from 'clsx'
+import { NoteName } from '../../common/common'
 
-const navigationPagesMapping: Map<string, JSX.Element> = new Map([
-    ['text-submitter', <TextSubmitter />],
-    ['virtual-piano', <div>virtual piano (TODO)</div>],
-    ['bluetooth-piano', <div>bluetooth piano (TODO)</div>],
-])
+const navigationPagesMapping: Map<string, (_: NoteName | undefined) => JSX.Element> =
+    new Map([
+        ['text-submitter', (n) => <TextSubmitter currentNoteName={n} />],
+        ['virtual-piano', (n) => <div>virtual piano (TODO)</div>],
+        ['bluetooth-piano', (n) => <div>bluetooth piano (TODO)</div>],
+    ])
 
 function getNavigationLinks() {
     return navigationPagesMapping
@@ -43,16 +45,26 @@ function getNavigationLinks() {
         .toArray()
 }
 
-function getNavigationRoutes() {
+function getNavigationRoutes(currentNoteName: NoteName | undefined) {
     return navigationPagesMapping
         .entries()
-        .map(([link, elmt], idx) => {
-            return <Route path={'/' + link} element={elmt} key={idx} />
+        .map(([link, elmtGenerator], idx) => {
+            return (
+                <Route
+                    path={'/' + link}
+                    element={elmtGenerator(currentNoteName)}
+                    key={idx}
+                />
+            )
         })
         .toArray()
 }
 
-export default function Submitter() {
+export default function Submitter({
+    currentNoteName,
+}: {
+    currentNoteName: NoteName | undefined
+}) {
     const defaultSubmitter = (
         <div className="text-lg text-orange-400 text-center mt-10">
             Please select a submitter from the navigation bar above!
@@ -64,7 +76,7 @@ export default function Submitter() {
                 <nav className="mt-3 mb-10">{getNavigationLinks()}</nav>
                 <Routes>
                     <Route path="/" element={defaultSubmitter} />
-                    {getNavigationRoutes()}
+                    {getNavigationRoutes(currentNoteName)}
                 </Routes>
             </div>
         </Router>
