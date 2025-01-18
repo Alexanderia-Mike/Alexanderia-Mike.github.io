@@ -30,7 +30,7 @@ export default function Toggle({
         />
     )
     return (
-        <label className={clsx('toggle', hide && 'hidden')}>
+        <label className={clsx('toggle mx-5 flex my-3', hide && 'hidden')}>
             {inputElmt}
             <span className="slider"></span>
             <span className="label" id="slider-label">

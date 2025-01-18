@@ -51,8 +51,17 @@ export default function Control({
     }
 
     return (
-        <>
-            <div className="flex my-5 justify-center items-center">
+        <div className={clsx(
+            "flex flex-row",
+            "lg:flex-col"
+        )}>
+            <div
+                className={clsx(
+                    'flex my-5 justify-center',
+                    'flex-row items-center',
+                    'lg:flex-col lg:items-start'
+                )}
+            >
                 <Toggle
                     onText="高音谱号"
                     offText="低音谱号"
@@ -64,19 +73,24 @@ export default function Control({
                     commonText="随机高低音谱"
                 />
             </div>
-            <div className="flex justify-center items-center mt-[40px]">
+            <div className="flex justify-center items-center">
                 <div className="flex flex-grow justify-center items-center">
                     <Button
                         label={'生成练习题'}
                         onClick={generateButtonOnClick}
                     />
                 </div>
-                <div className={clsx(total || 'hidden', "flex flex-grow justify-center items-center")}>
+                <div
+                    className={clsx(
+                        total || 'hidden',
+                        'flex flex-grow justify-center items-center'
+                    )}
+                >
                     {/* <div className={clsx(total || 'hidden')}> */}
-                        <span>正确 / 共计: </span>{' '}
-                        <span className="ml-10">
-                            {correct} / {total}
-                        </span>
+                    <span>正确 / 共计: </span>{' '}
+                    <span className="ml-10">
+                        {correct} / {total}
+                    </span>
                     {/* </div> */}
                     <Button
                         label={'重置'}
@@ -85,6 +99,6 @@ export default function Control({
                     />
                 </div>
             </div>
-        </>
+        </div>
     )
 }
