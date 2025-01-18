@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Button from '../../../common/button/button'
 import { NoteName } from '../../../common/common'
+import { SubmitterInterface } from '../submitter-interface'
 
 function generateNoteName(input: string): NoteName | undefined {
     return NoteName[input as keyof typeof NoteName]
@@ -8,9 +9,9 @@ function generateNoteName(input: string): NoteName | undefined {
 
 export function TextSubmitter({
     currentNoteName,
-}: {
-    currentNoteName: NoteName | undefined
-}) {
+    incrementCorrect,
+    incrementTotal,
+}: SubmitterInterface) {
     const inputRef = useRef<HTMLInputElement | null>(null)
 
     const submitButtonOnClick = () => {
@@ -27,6 +28,12 @@ export function TextSubmitter({
                 : `错误❌！答案是${currentNoteName}`
             if (spanRef.current) {
                 spanRef.current.innerText = displayContent
+            }
+            if (currentNoteName) {
+                incrementTotal()
+                if (noteName == currentNoteName) {
+                    incrementCorrect()
+                }
             }
         }
     }
@@ -53,7 +60,10 @@ export function TextSubmitter({
                 className="rounded-full mx-4 my-2 px-3 py-2 text-md border border-solid border-slate-400 min-w-10"
             />
             <Button label={'提交答案'} onClick={submitButtonOnClick} />
-            <span className="block mt-3 text-center" ref={spanRef}></span>
+            <span
+                className="block mt-3 text-center text-orange-400"
+                ref={spanRef}
+            ></span>
         </>
     )
 }

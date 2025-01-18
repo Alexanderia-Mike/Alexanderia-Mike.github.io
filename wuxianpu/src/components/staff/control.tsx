@@ -26,14 +26,6 @@ export default function Control({
     updateClef: React.Dispatch<React.SetStateAction<Clef>>
 }) {
     const [randomClef, setRandomClef] = useState<boolean>(false)
-    const [correct, setCorrect] = useState<number>(0)
-    const [total, setTotal] = useState<number>(0)
-
-    const resetButtonOnClick = () => {
-        updateNoteName(undefined)
-        setCorrect(0)
-        setTotal(0)
-    }
 
     const clefToggleOnChange = () => {
         if (!randomClef) updateClef(clef == Clef.BASS ? Clef.TREBLE : Clef.BASS)
@@ -78,24 +70,6 @@ export default function Control({
                     <Button
                         label={'生成练习题'}
                         onClick={generateButtonOnClick}
-                    />
-                </div>
-                <div
-                    className={clsx(
-                        total || 'hidden',
-                        'flex flex-grow justify-center items-center'
-                    )}
-                >
-                    {/* <div className={clsx(total || 'hidden')}> */}
-                    <span>正确 / 共计: </span>{' '}
-                    <span className="ml-10">
-                        {correct} / {total}
-                    </span>
-                    {/* </div> */}
-                    <Button
-                        label={'重置'}
-                        onClick={resetButtonOnClick}
-                        // hide={!total}
                     />
                 </div>
             </div>

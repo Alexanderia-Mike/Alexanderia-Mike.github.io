@@ -1,31 +1,38 @@
-import { JSX } from 'react'
-import {
-    Link,
-    NavLink,
-    Route,
-    BrowserRouter as Router,
-    Routes,
-} from 'react-router-dom'
+import { JSX, useState } from 'react'
+import { NavLink, Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { TextSubmitter } from './text-submitter/text-submitter'
 import clsx from 'clsx'
 import { NoteName } from '../../common/common'
+import ScoreBoard from './score-board'
 
-const navigationPagesMapping: Map<string, (_: NoteName | undefined) => JSX.Element> =
-    new Map([
-        ['text-submitter', (n) => <TextSubmitter currentNoteName={n} />],
-        ['virtual-piano', (n) => <div>virtual piano (TODO)</div>],
-        ['bluetooth-piano', (n) => <div>bluetooth piano (TODO)</div>],
+export default function Submitter({
+    currentNoteName,
+}: {
+    currentNoteName: NoteName | undefined
+}) {
+    const [correct, setCorrect] = useState<number>(0)
+    const [total, setTotal] = useState<number>(0)
+
+    const navigationPagesMapping: Map<string, [JSX.Element, string]> = new Map([
+        [
+            'text-submitter',
+            [
+                <TextSubmitter
+                    currentNoteName={currentNoteName}
+                    incrementCorrect={() => setCorrect(correct + 1)}
+                    incrementTotal={() => setTotal(total + 1)}
+                />,
+                '手动输入',
+            ],
+        ],
+        ['virtual-piano', [<div>virtual piano (TODO)</div>, '虚拟钢琴']],
+        ['bluetooth-piano', [<div>bluetooth piano (TODO)</div>, '蓝牙钢琴']],
     ])
 
-function getNavigationLinks() {
-    return navigationPagesMapping
-        .keys()
-        .map((link, idx) => {
-            const text = link
-                .split('-')
-                .map((s) => s.toUpperCase())
-                .join(' ')
-            return (
+    function getNavigationLinks() {
+        return navigationPagesMapping
+            .entries()
+            .map(([link, [_, text]], idx) => (
                 <NavLink
                     className={({ isActive }) =>
                         clsx(
@@ -40,43 +47,38 @@ function getNavigationLinks() {
                 >
                     {text}
                 </NavLink>
-            )
-        })
-        .toArray()
-}
+            ))
+            .toArray()
+    }
 
-function getNavigationRoutes(currentNoteName: NoteName | undefined) {
-    return navigationPagesMapping
-        .entries()
-        .map(([link, elmtGenerator], idx) => {
-            return (
-                <Route
-                    path={'/' + link}
-                    element={elmtGenerator(currentNoteName)}
-                    key={idx}
-                />
-            )
-        })
-        .toArray()
-}
+    function getNavigationRoutes() {
+        return navigationPagesMapping
+            .entries()
+            .map(([link, [elmt, _]], idx) => {
+                return <Route path={'/' + link} element={elmt} key={idx} />
+            })
+            .toArray()
+    }
 
-export default function Submitter({
-    currentNoteName,
-}: {
-    currentNoteName: NoteName | undefined
-}) {
     const defaultSubmitter = (
         <div className="text-lg text-orange-400 text-center mt-10">
-            Please select a submitter from the navigation bar above!
+            请先从上方的菜单栏中选择您的答题方式!
         </div>
     )
+
     return (
         <Router>
+            <ScoreBoard
+                correct={correct}
+                setCorrect={setCorrect}
+                total={total}
+                setTotal={setTotal}
+            />
             <div className="mt-5">
                 <nav className="mt-3 mb-10">{getNavigationLinks()}</nav>
                 <Routes>
                     <Route path="/" element={defaultSubmitter} />
-                    {getNavigationRoutes(currentNoteName)}
+                    {getNavigationRoutes()}
                 </Routes>
             </div>
         </Router>
