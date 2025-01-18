@@ -53,13 +53,13 @@ export default function Control({
     return (
         <div className={clsx(
             "flex flex-row",
-            "lg:flex-col"
+            "md:flex-col"
         )}>
             <div
                 className={clsx(
                     'flex my-5 justify-center',
                     'flex-row items-center',
-                    'lg:flex-col lg:items-start'
+                    'md:flex-col md:items-start'
                 )}
             >
                 <Toggle

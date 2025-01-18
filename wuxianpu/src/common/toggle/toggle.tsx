@@ -30,10 +30,10 @@ export default function Toggle({
         />
     )
     return (
-        <label className={clsx('toggle mx-5 flex my-3', hide && 'hidden')}>
+        <label className={clsx('toggle mx-5 flex flex-grow flex-shrink-0 my-3', hide && 'hidden')}>
             {inputElmt}
             <span className="slider"></span>
-            <span className="label" id="slider-label">
+            <span className="label whitespace-nowrap" id="slider-label">
                 {commonText || (checked ? onText || '' : offText || '')}
             </span>
         </label>

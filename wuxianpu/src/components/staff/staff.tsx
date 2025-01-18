@@ -23,7 +23,7 @@ export default function Staff({
             className={clsx(
                 'flex justify-center items-center my-[20px] mx-auto max-w-[1200px] p-[20px] bg-white border-solid border border-border-color rounded shadow-sm relative',
                 'flex-col', // on small devices
-                'lg:flex-row'
+                'md:flex-row'
             )}
         >
             <Canvas noteName={currentNoteName} clef={clef} />
