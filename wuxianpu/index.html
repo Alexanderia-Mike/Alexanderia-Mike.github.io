@@ -4,38 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>五线谱练习</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="src/style.css">
 </head>
-<body>
-    <div class="container">
-        <h1>五线谱练习工具</h1>
-        <div class="bar">
-            <div id="score-counting">
-                <span>correct / total: </span> <span style="width: 20px;"></span>
-                <span id="correct"></span> <span id="division">/</span> <span id="total"></span>
-                <button id="clearCount">重置</button>
-            </div>
-            <label class="toggle" id="clef-toggle">
-                <input type="checkbox" hidden id="clefSwitch">
-                <span class="slider"></span>
-                <span class="label" id="slider-label"></span>
-            </label>
-            <label class="toggle">
-                <input type="checkbox" hidden id="randomSwitch">
-                <span class="slider"></span>
-                <span class="label">随机高低音谱</span>
-            </label>
-        </div>
-        <img id="gaoyin-image" src="gaoyin.png"/>
-        <img id="diyin-image" src="diyin.svg"/>
-        <canvas id="staffCanvas" width="800" height="470"></canvas>
-        <div class="controls">
-            <button id="generateButton">生成练习题</button>
-            <input type="text" id="noteInput" placeholder="输入音名 (如 C, D, E)">
-            <button id="submitButton">提交答案</button>
-        </div>
-        <p id="feedback"></p>
-    </div>
-    <script src="script.js"></script>
+<body class="bg-[#f7f7f7] text-center font-sans m-0 p-0">
+    <div id="root"></div>
+    <script src="dist/bundle.js"></script>
 </body>
 </html>
