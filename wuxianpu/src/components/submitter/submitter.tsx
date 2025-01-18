@@ -36,10 +36,10 @@ export default function Submitter({
                 <NavLink
                     className={({ isActive }) =>
                         clsx(
-                            'mx-5 my-2 px-3 py-2 rounded-full hover:bg-white active:bg-slate-500',
+                            'mx-5 my-2 px-3 py-2 rounded-full hover:bg-white active:bg-slate-600 active:text-white',
                             isActive
                                 ? 'bg-slate-200 border border-gray-400'
-                                : 'bg-slate-300'
+                                : 'bg-slate-400'
                         )
                     }
                     key={idx}
@@ -61,7 +61,7 @@ export default function Submitter({
     }
 
     const defaultSubmitter = (
-        <div className="text-lg text-orange-400 text-center mt-10">
+        <div className="text-lg text-green-500 text-center mt-10">
             请先从上方的菜单栏中选择您的答题方式!
         </div>
     )

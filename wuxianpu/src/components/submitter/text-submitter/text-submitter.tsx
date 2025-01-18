@@ -61,7 +61,7 @@ export function TextSubmitter({
             />
             <Button label={'提交答案'} onClick={submitButtonOnClick} />
             <span
-                className="block mt-3 text-center text-orange-400"
+                className="block mt-3 text-center text-green-500"
                 ref={spanRef}
             ></span>
         </>
