@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import Button from '../../common/button/button'
+import Button from '../../../common/button/button'
 
 export function TextSubmitter() {
     const inputRef = useRef<HTMLInputElement | null>(null)

@@ -14,6 +14,7 @@ export default function App() {
                 currentNoteName={currentNote}
                 updateCurrentNoteName={updateCurrentNote}
             />
+            <hr className='my-5'/>
             <Submitter/>
         </>
     )
