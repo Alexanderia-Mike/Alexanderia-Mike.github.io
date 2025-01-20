@@ -15,20 +15,33 @@ export default function Submitter({
     const [correct, setCorrect] = useState<number>(0)
     const [total, setTotal] = useState<number>(0)
 
+    const incrementCorrect = () => setCorrect(correct + 1)
+    const incrementTotal = () => setTotal(total + 1)
+
     const navigationPagesMapping: Map<string, [JSX.Element, string]> = new Map([
         [
             'text-submitter',
             [
                 <TextSubmitter
                     currentNoteName={currentNoteName}
-                    incrementCorrect={() => setCorrect(correct + 1)}
-                    incrementTotal={() => setTotal(total + 1)}
+                    incrementCorrect={incrementCorrect}
+                    incrementTotal={incrementTotal}
                 />,
                 '手动输入',
             ],
         ],
         ['virtual-piano', [<VirtualPiano />, '虚拟钢琴']],
-        ['bluetooth-piano', [<BluetoothPiano />, '蓝牙钢琴']],
+        [
+            'bluetooth-piano',
+            [
+                <BluetoothPiano
+                    currentNoteName={currentNoteName}
+                    incrementCorrect={incrementCorrect}
+                    incrementTotal={incrementTotal}
+                />,
+                '蓝牙钢琴',
+            ],
+        ],
     ])
 
     function getNavigationLinks() {

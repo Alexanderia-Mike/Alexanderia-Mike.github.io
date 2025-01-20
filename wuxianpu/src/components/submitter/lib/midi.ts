@@ -1,7 +1,11 @@
+let midiAccess: MIDIAccess | null = null
+
 export async function getMidi(): Promise<MIDIAccess> {
     try {
-        const midiAccess = await navigator.requestMIDIAccess()
-        console.log('successfully get midiAccess')
+        if (!midiAccess) {
+            midiAccess = await navigator.requestMIDIAccess()
+            console.log('successfully get midiAccess')
+        }
         return midiAccess
     } catch (e) {
         const error = e as Error
@@ -15,7 +19,6 @@ export function handleMidiMessages(
     midiAccess: MIDIAccess,
     messageHandler: (this: MIDIInput, _2: MIDIMessageEvent) => any
 ) {
-    console.log(`input number: ${midiAccess.inputs.size}`)
     for (const input of midiAccess.inputs.values()) {
         input.onmidimessage = messageHandler
     }

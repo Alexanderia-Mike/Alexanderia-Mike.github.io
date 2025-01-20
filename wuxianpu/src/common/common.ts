@@ -37,3 +37,7 @@ export enum NoteName {
     B1 = 35,
     A1 = 33,
 }
+
+export function generateNoteName(noteString: string): NoteName | undefined {
+    return NoteName[noteString as keyof typeof NoteName]
+}
