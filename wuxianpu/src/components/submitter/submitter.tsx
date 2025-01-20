@@ -1,9 +1,11 @@
 import { JSX, useState } from 'react'
 import { NavLink, Route, HashRouter as Router, Routes } from 'react-router-dom'
-import { TextSubmitter } from './text-submitter/text-submitter'
+import { TextSubmitter } from './text-submitter'
 import clsx from 'clsx'
 import { NoteName } from '../../common/common'
 import ScoreBoard from './score-board'
+import VirtualPiano from './virtual-piano'
+import BluetoothPiano from './bluetooth-piano'
 
 export default function Submitter({
     currentNoteName,
@@ -25,8 +27,8 @@ export default function Submitter({
                 '手动输入',
             ],
         ],
-        ['virtual-piano', [<div>virtual piano (TODO)</div>, '虚拟钢琴']],
-        ['bluetooth-piano', [<div>bluetooth piano (TODO)</div>, '蓝牙钢琴']],
+        ['virtual-piano', [<VirtualPiano />, '虚拟钢琴']],
+        ['bluetooth-piano', [<BluetoothPiano />, '蓝牙钢琴']],
     ])
 
     function getNavigationLinks() {
@@ -74,10 +76,11 @@ export default function Submitter({
                 total={total}
                 setTotal={setTotal}
             />
+            <hr className="mb-5 mt-10" />
             <div className="mt-5">
-                <nav className="mt-3 mb-10">{getNavigationLinks()}</nav>
+                <nav className="mt-3 mb-10 py-3">{getNavigationLinks()}</nav>
                 <Routes>
-                    <Route path="/" element={defaultSubmitter} />
+                    <Route path="*" element={defaultSubmitter} />
                     {getNavigationRoutes()}
                 </Routes>
             </div>

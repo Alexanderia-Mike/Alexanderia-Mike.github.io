@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import Button from '../../../common/button/button'
-import { NoteName } from '../../../common/common'
-import { SubmitterInterface } from '../submitter-interface'
+import Button from '../../common/button/button'
+import { NoteName } from '../../common/common'
+import { SubmitterInterface } from './submitter-interface'
 
 function generateNoteName(input: string): NoteName | undefined {
     return NoteName[input as keyof typeof NoteName]
