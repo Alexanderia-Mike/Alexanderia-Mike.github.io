@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react'
 import { getMidi, handleMidiMessages, midiToHelmholtz } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
-import { generateNoteName, NoteName } from '../../common/common'
+import { generateNoteName, WhiteKeyNoteName } from '../../common/common'
+import ReadonlyPiano from './lib/readonly-piano'
 
 let lastTimestamp = 0
 
-interface BluetoothPianoProps extends SubmitterInterface {}
+interface MIDIPianoProps extends SubmitterInterface {}
 
-export default function BluetoothPiano({
+export default function MIDIPiano({
     currentNoteName,
     incrementCorrect,
     incrementTotal,
-}: BluetoothPianoProps) {
+}: MIDIPianoProps) {
     const [errMessage, setErrMessage] = useState('')
     const [deviceMessage, setDeviceMessage] = useState('')
     const [feedback, setFeedback] = useState('')
-    const [inputNoteName, setInputNoteName] = useState<NoteName | undefined>(
+    const [inputNoteName, setInputNoteName] = useState<WhiteKeyNoteName | undefined>(
         undefined
     )
 
@@ -24,10 +25,10 @@ export default function BluetoothPiano({
             try {
                 const midiAccess = await getMidi()
                 if (midiAccess.inputs.size == 0) {
-                    throw Error('no midi device connected!')
+                    throw Error('没有检测到 MIDI 设备!')
                 }
                 setDeviceMessage(
-                    `currently connected devices: [${midiAccess.inputs
+                    `当前连接到设备: [${midiAccess.inputs
                         .values()
                         .map((i) => i.name)
                         .toArray()}]`
@@ -43,6 +44,7 @@ export default function BluetoothPiano({
                             return
                         }
                         lastTimestamp = timestamp
+                        console.log(`${midiToHelmholtz(keyNote)} = ${keyNote}`)
                         const noteName = generateNoteName(
                             midiToHelmholtz(keyNote)
                         )
@@ -60,8 +62,8 @@ export default function BluetoothPiano({
         const displayContent = !currentNoteName
             ? '请先生成练习题！'
             : inputNoteName == currentNoteName
-            ? `正确✅！答案是${NoteName[inputNoteName]}`
-            : `错误❌！答案是${NoteName[currentNoteName]}`
+            ? `正确✅！答案是${WhiteKeyNoteName[inputNoteName]}`
+            : `错误❌！答案是${WhiteKeyNoteName[currentNoteName]}`
         setFeedback(displayContent)
         if (currentNoteName) {
             incrementTotal()
@@ -73,9 +75,11 @@ export default function BluetoothPiano({
 
     return (
         <div>
-            <span className="text-center block">{errMessage}</span>
+            <span className="text-center text-red-500 block">{errMessage}</span>
             <span className="text-center block">{deviceMessage}</span>
             <span className='text-center block'>{feedback}</span>
+            <div className='h-5'></div>
+            <ReadonlyPiano />
         </div>
     )
 }

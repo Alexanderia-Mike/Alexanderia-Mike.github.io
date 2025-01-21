@@ -1,7 +1,7 @@
-import { NoteName } from '../../common/common'
+import { WhiteKeyNoteName } from '../../common/common'
 
 export interface SubmitterInterface {
-    currentNoteName: NoteName | undefined
+    currentNoteName: WhiteKeyNoteName | undefined
     incrementCorrect: () => void
     incrementTotal: () => void
 }

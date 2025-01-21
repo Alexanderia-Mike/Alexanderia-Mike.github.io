@@ -9,7 +9,7 @@ export async function getMidi(): Promise<MIDIAccess> {
         return midiAccess
     } catch (e) {
         const error = e as Error
-        const errMessage = `error! ${error.message}`
+        const errMessage = `错误! ${error.message}`
         console.log(errMessage)
         throw Error(errMessage)
     }

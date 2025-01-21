@@ -1,70 +1,70 @@
-import { NoteName } from '../../common/common'
+import { WhiteKeyNoteName } from '../../common/common'
 import { Clef } from './clef'
 
 export class Note {
-    constructor(name: NoteName, y: number) {
+    constructor(name: WhiteKeyNoteName, y: number) {
         this.name = name
         this.y = y
     }
 
-    name: NoteName
+    name: WhiteKeyNoteName
     y: number
 }
 
-export const notes: Record<Clef, Map<NoteName, Note>> = {
+export const notes: Record<Clef, Map<WhiteKeyNoteName, Note>> = {
     [Clef.TREBLE]: new Map([
-        [NoteName.e3, new Note(NoteName.e3, 30)],
-        [NoteName.d3, new Note(NoteName.d3, 40)],
-        [NoteName.c3, new Note(NoteName.c3, 50)],
-        [NoteName.b2, new Note(NoteName.b2, 60)],
-        [NoteName.a2, new Note(NoteName.a2, 70)],
+        [WhiteKeyNoteName.e3, new Note(WhiteKeyNoteName.e3, 30)],
+        [WhiteKeyNoteName.d3, new Note(WhiteKeyNoteName.d3, 40)],
+        [WhiteKeyNoteName.c3, new Note(WhiteKeyNoteName.c3, 50)],
+        [WhiteKeyNoteName.b2, new Note(WhiteKeyNoteName.b2, 60)],
+        [WhiteKeyNoteName.a2, new Note(WhiteKeyNoteName.a2, 70)],
         // below need additional staff
-        [NoteName.g2, new Note(NoteName.g2, 80)],
-        [NoteName.f2, new Note(NoteName.f2, 90)],
-        [NoteName.e2, new Note(NoteName.e2, 100)],
-        [NoteName.d2, new Note(NoteName.d2, 110)],
-        [NoteName.c2, new Note(NoteName.c2, 120)],
-        [NoteName.b1, new Note(NoteName.b1, 130)],
-        [NoteName.a1, new Note(NoteName.a1, 140)],
-        [NoteName.g1, new Note(NoteName.g1, 150)],
-        [NoteName.f1, new Note(NoteName.f1, 160)],
-        [NoteName.e1, new Note(NoteName.e1, 170)],
-        [NoteName.d1, new Note(NoteName.d1, 180)],
+        [WhiteKeyNoteName.g2, new Note(WhiteKeyNoteName.g2, 80)],
+        [WhiteKeyNoteName.f2, new Note(WhiteKeyNoteName.f2, 90)],
+        [WhiteKeyNoteName.e2, new Note(WhiteKeyNoteName.e2, 100)],
+        [WhiteKeyNoteName.d2, new Note(WhiteKeyNoteName.d2, 110)],
+        [WhiteKeyNoteName.c2, new Note(WhiteKeyNoteName.c2, 120)],
+        [WhiteKeyNoteName.b1, new Note(WhiteKeyNoteName.b1, 130)],
+        [WhiteKeyNoteName.a1, new Note(WhiteKeyNoteName.a1, 140)],
+        [WhiteKeyNoteName.g1, new Note(WhiteKeyNoteName.g1, 150)],
+        [WhiteKeyNoteName.f1, new Note(WhiteKeyNoteName.f1, 160)],
+        [WhiteKeyNoteName.e1, new Note(WhiteKeyNoteName.e1, 170)],
+        [WhiteKeyNoteName.d1, new Note(WhiteKeyNoteName.d1, 180)],
         // above need additional staff
-        [NoteName.c1, new Note(NoteName.c1, 190)],
-        [NoteName.b, new Note(NoteName.b, 200)],
-        [NoteName.a, new Note(NoteName.a, 210)],
-        [NoteName.g, new Note(NoteName.g, 220)],
-        [NoteName.f, new Note(NoteName.f, 230)],
+        [WhiteKeyNoteName.c1, new Note(WhiteKeyNoteName.c1, 190)],
+        [WhiteKeyNoteName.b, new Note(WhiteKeyNoteName.b, 200)],
+        [WhiteKeyNoteName.a, new Note(WhiteKeyNoteName.a, 210)],
+        [WhiteKeyNoteName.g, new Note(WhiteKeyNoteName.g, 220)],
+        [WhiteKeyNoteName.f, new Note(WhiteKeyNoteName.f, 230)],
     ]),
     [Clef.BASS]: new Map([
-        [NoteName.g1, new Note(NoteName.g1, 30)],
-        [NoteName.f1, new Note(NoteName.f1, 40)],
-        [NoteName.e1, new Note(NoteName.e1, 50)],
-        [NoteName.d1, new Note(NoteName.d1, 60)],
-        [NoteName.c1, new Note(NoteName.c1, 70)],
+        [WhiteKeyNoteName.g1, new Note(WhiteKeyNoteName.g1, 30)],
+        [WhiteKeyNoteName.f1, new Note(WhiteKeyNoteName.f1, 40)],
+        [WhiteKeyNoteName.e1, new Note(WhiteKeyNoteName.e1, 50)],
+        [WhiteKeyNoteName.d1, new Note(WhiteKeyNoteName.d1, 60)],
+        [WhiteKeyNoteName.c1, new Note(WhiteKeyNoteName.c1, 70)],
         // below need additional staff
-        [NoteName.b, new Note(NoteName.b, 80)],
-        [NoteName.a, new Note(NoteName.a, 90)],
-        [NoteName.g, new Note(NoteName.g, 100)],
-        [NoteName.f, new Note(NoteName.f, 110)],
-        [NoteName.e, new Note(NoteName.e, 120)],
-        [NoteName.d, new Note(NoteName.d, 130)],
-        [NoteName.c, new Note(NoteName.c, 140)],
-        [NoteName.B, new Note(NoteName.B, 150)],
-        [NoteName.A, new Note(NoteName.A, 160)],
-        [NoteName.G, new Note(NoteName.G, 170)],
-        [NoteName.F, new Note(NoteName.F, 180)],
+        [WhiteKeyNoteName.b, new Note(WhiteKeyNoteName.b, 80)],
+        [WhiteKeyNoteName.a, new Note(WhiteKeyNoteName.a, 90)],
+        [WhiteKeyNoteName.g, new Note(WhiteKeyNoteName.g, 100)],
+        [WhiteKeyNoteName.f, new Note(WhiteKeyNoteName.f, 110)],
+        [WhiteKeyNoteName.e, new Note(WhiteKeyNoteName.e, 120)],
+        [WhiteKeyNoteName.d, new Note(WhiteKeyNoteName.d, 130)],
+        [WhiteKeyNoteName.c, new Note(WhiteKeyNoteName.c, 140)],
+        [WhiteKeyNoteName.B, new Note(WhiteKeyNoteName.B, 150)],
+        [WhiteKeyNoteName.A, new Note(WhiteKeyNoteName.A, 160)],
+        [WhiteKeyNoteName.G, new Note(WhiteKeyNoteName.G, 170)],
+        [WhiteKeyNoteName.F, new Note(WhiteKeyNoteName.F, 180)],
         // above need additional staff
-        [NoteName.E, new Note(NoteName.E, 190)],
-        [NoteName.D, new Note(NoteName.D, 200)],
-        [NoteName.C, new Note(NoteName.C, 210)],
-        [NoteName.B1, new Note(NoteName.B1, 220)],
-        [NoteName.A1, new Note(NoteName.A1, 230)],
+        [WhiteKeyNoteName.E, new Note(WhiteKeyNoteName.E, 190)],
+        [WhiteKeyNoteName.D, new Note(WhiteKeyNoteName.D, 200)],
+        [WhiteKeyNoteName.C, new Note(WhiteKeyNoteName.C, 210)],
+        [WhiteKeyNoteName.B1, new Note(WhiteKeyNoteName.B1, 220)],
+        [WhiteKeyNoteName.A1, new Note(WhiteKeyNoteName.A1, 230)],
     ]),
 }
 
-export const noteNames: Record<Clef, NoteName[]> = {
+export const noteNames: Record<Clef, WhiteKeyNoteName[]> = {
     [Clef.TREBLE]: notes[Clef.TREBLE].keys().toArray(),
     [Clef.BASS]: notes[Clef.BASS].keys().toArray()
 }

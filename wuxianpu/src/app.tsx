@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import Staff from './components/staff/staff'
-import { NoteName } from './common/common'
+import { WhiteKeyNoteName } from './common/common'
 import Submitter from './components/submitter/submitter'
 
 export default function App() {
-    const [currentNote, updateCurrentNote] = useState<NoteName | undefined>(
+    // migrate WhiteKeyNoteName to NoteName to allow sharp and flat
+    const [currentNote, updateCurrentNote] = useState<WhiteKeyNoteName | undefined>(
         undefined
     )
 

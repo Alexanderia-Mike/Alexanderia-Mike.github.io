@@ -3,7 +3,7 @@ import Toggle from '../../common/toggle/toggle'
 import Button from '../../common/button/button'
 import Canvas from './canvas'
 import { Clef } from './clef'
-import { NoteName } from '../../common/common'
+import { WhiteKeyNoteName } from '../../common/common'
 import Control from './control'
 import clsx from 'clsx'
 
@@ -11,9 +11,9 @@ export default function Staff({
     currentNoteName,
     updateCurrentNoteName: updateCurrentNoteName,
 }: {
-    currentNoteName: NoteName | undefined
+    currentNoteName: WhiteKeyNoteName | undefined
     updateCurrentNoteName: React.Dispatch<
-        React.SetStateAction<NoteName | undefined>
+        React.SetStateAction<WhiteKeyNoteName | undefined>
     >
 }) {
     const [clef, updateClef] = useState<Clef>(Clef.TREBLE)

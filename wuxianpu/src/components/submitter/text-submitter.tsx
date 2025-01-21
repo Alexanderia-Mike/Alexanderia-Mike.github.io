@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Button from '../../common/button/button'
-import { generateNoteName, NoteName } from '../../common/common'
+import { generateNoteName, WhiteKeyNoteName } from '../../common/common'
 import { SubmitterInterface } from './submitter-interface'
 
 export function TextSubmitter({
@@ -12,7 +12,6 @@ export function TextSubmitter({
 
     const submitButtonOnClick = () => {
         if (inputRef.current) {
-            console.log(`value is ${inputRef.current.value}`)
             const noteName = generateNoteName(inputRef.current.value)
             if (noteName) {
                 setInputNoteName(noteName)
@@ -35,7 +34,7 @@ export function TextSubmitter({
     }
 
     const spanRef = useRef<HTMLSpanElement | null>(null)
-    const [inputNoteName, setInputNoteName] = useState<NoteName | undefined>(
+    const [inputNoteName, setInputNoteName] = useState<WhiteKeyNoteName | undefined>(
         undefined
     )
 

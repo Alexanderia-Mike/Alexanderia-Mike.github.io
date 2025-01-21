@@ -2,15 +2,15 @@ import { JSX, useState } from 'react'
 import { NavLink, Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { TextSubmitter } from './text-submitter'
 import clsx from 'clsx'
-import { NoteName } from '../../common/common'
+import { WhiteKeyNoteName } from '../../common/common'
 import ScoreBoard from './score-board'
 import VirtualPiano from './virtual-piano'
-import BluetoothPiano from './bluetooth-piano'
+import MIDIPiano from './midi-piano'
 
 export default function Submitter({
     currentNoteName,
 }: {
-    currentNoteName: NoteName | undefined
+    currentNoteName: WhiteKeyNoteName | undefined
 }) {
     const [correct, setCorrect] = useState<number>(0)
     const [total, setTotal] = useState<number>(0)
@@ -34,12 +34,12 @@ export default function Submitter({
         [
             'bluetooth-piano',
             [
-                <BluetoothPiano
+                <MIDIPiano
                     currentNoteName={currentNoteName}
                     incrementCorrect={incrementCorrect}
                     incrementTotal={incrementTotal}
                 />,
-                '蓝牙钢琴',
+                'MIDI钢琴',
             ],
         ],
     ])
