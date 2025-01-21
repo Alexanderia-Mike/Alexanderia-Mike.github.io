@@ -66,24 +66,53 @@ export enum UpDownSymbol {
 }
 
 export class NoteName {
-    whiteKeyNote: WhiteKeyNoteName;
-    upDownSymbol: UpDownSymbol;
-    constructor(whiteKeyNote: WhiteKeyNoteName, upDownSymbol: UpDownSymbol = UpDownSymbol.NONE) {
+    whiteKeyNote: WhiteKeyNoteName
+    upDownSymbol: UpDownSymbol
+    constructor(
+        whiteKeyNote: WhiteKeyNoteName,
+        upDownSymbol: UpDownSymbol = UpDownSymbol.NONE
+    ) {
         this.whiteKeyNote = whiteKeyNote
         this.upDownSymbol = upDownSymbol
     }
     toString(): String {
         const whiteKeyName = WhiteKeyNoteName[this.whiteKeyNote]
-        switch(this.upDownSymbol) {
-            case UpDownSymbol.NONE: return whiteKeyName
-            case UpDownSymbol.SHARP: return "#" + whiteKeyName
-            case UpDownSymbol.FLAT: return "b" + whiteKeyName
-            case UpDownSymbol.DOUBLE_SHARP: return "x" + whiteKeyName
-            case UpDownSymbol.DOUBLE_FLAT: return "bb" + whiteKeyName
+        switch (this.upDownSymbol) {
+            case UpDownSymbol.NONE:
+                return whiteKeyName
+            case UpDownSymbol.SHARP:
+                return '#' + whiteKeyName
+            case UpDownSymbol.FLAT:
+                return 'b' + whiteKeyName
+            case UpDownSymbol.DOUBLE_SHARP:
+                return 'x' + whiteKeyName
+            case UpDownSymbol.DOUBLE_FLAT:
+                return 'bb' + whiteKeyName
         }
+    }
+    toValue(): number {
+        let delta = 0
+        switch (this.upDownSymbol) {
+            case UpDownSymbol.SHARP:
+                delta = 1
+                break
+            case UpDownSymbol.FLAT:
+                delta = -1
+                break
+            case UpDownSymbol.DOUBLE_SHARP:
+                delta = 2
+                break
+            case UpDownSymbol.DOUBLE_FLAT:
+                delta = -2
+                break
+                defaut:;
+        }
+        return this.whiteKeyNote + delta
     }
 }
 
-export function generateNoteName(noteString: string): WhiteKeyNoteName | undefined {
+export function generateNoteName(
+    noteString: string
+): WhiteKeyNoteName | undefined {
     return WhiteKeyNoteName[noteString as keyof typeof WhiteKeyNoteName]
 }
