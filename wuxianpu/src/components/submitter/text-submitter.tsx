@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Button from '../../common/button/button'
-import { generateNoteName, WhiteKeyNoteName } from '../../common/common'
+import { NoteName, parseNoteName, parseWhiteKeyNoteName, WhiteKeyNoteName } from '../../common/common'
 import { SubmitterInterface } from './submitter-interface'
 
 export function TextSubmitter({
@@ -12,13 +12,14 @@ export function TextSubmitter({
 
     const submitButtonOnClick = () => {
         if (inputRef.current) {
-            const noteName = generateNoteName(inputRef.current.value)
+            const noteName = parseNoteName(inputRef.current.value)
             if (noteName) {
                 setInputNoteName(noteName)
             }
+            console.log(`input note is ${noteName}, correct note is ${currentNoteName}`)
             const displayContent = !currentNoteName
                 ? '请先生成练习题！'
-                : noteName == currentNoteName
+                : noteName?.equals(currentNoteName)
                 ? `正确✅！答案是${noteName}`
                 : `错误❌！答案是${currentNoteName}`
             if (spanRef.current) {
@@ -26,7 +27,7 @@ export function TextSubmitter({
             }
             if (currentNoteName) {
                 incrementTotal()
-                if (noteName == currentNoteName) {
+                if (noteName?.equals(currentNoteName)) {
                     incrementCorrect()
                 }
             }
@@ -34,7 +35,7 @@ export function TextSubmitter({
     }
 
     const spanRef = useRef<HTMLSpanElement | null>(null)
-    const [inputNoteName, setInputNoteName] = useState<WhiteKeyNoteName | undefined>(
+    const [inputNoteName, setInputNoteName] = useState<NoteName | undefined>(
         undefined
     )
 

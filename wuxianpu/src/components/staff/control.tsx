@@ -1,12 +1,12 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import Button from '../../common/button/button'
-import { WhiteKeyNoteName } from '../../common/common'
+import { NoteName } from '../../common/common'
 import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
 import { noteNames } from './notes_mapping'
 import clsx from 'clsx'
 
-function generateRandomNoteName(clef: Clef): WhiteKeyNoteName {
+function generateRandomNoteName(clef: Clef): NoteName {
     const candidates = noteNames[clef]
     const index = Math.floor(Math.random() * candidates.length)
     return candidates[index]
@@ -22,7 +22,7 @@ export default function Control({
     updateClef,
 }: {
     clef: Clef
-    updateNoteName: React.Dispatch<React.SetStateAction<WhiteKeyNoteName | undefined>>
+    updateNoteName: React.Dispatch<React.SetStateAction<NoteName | undefined>>
     updateClef: React.Dispatch<React.SetStateAction<Clef>>
 }) {
     const [randomClef, setRandomClef] = useState<boolean>(false)

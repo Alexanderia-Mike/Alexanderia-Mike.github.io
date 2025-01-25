@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { getMidi, handleMidiMessages, midiToHelmholtz } from './lib/midi'
+import { getMidi, handleMidiMessages, midiToHelmholtz, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
-import { generateNoteName, WhiteKeyNoteName } from '../../common/common'
+import { parseWhiteKeyNoteName, NoteName, WhiteKeyNoteName } from '../../common/common'
 import ReadonlyPiano from './lib/readonly-piano'
 
 let lastTimestamp = 0
@@ -16,7 +16,7 @@ export default function MIDIPiano({
     const [errMessage, setErrMessage] = useState('')
     const [deviceMessage, setDeviceMessage] = useState('')
     const [feedback, setFeedback] = useState('')
-    const [inputNoteName, setInputNoteName] = useState<WhiteKeyNoteName | undefined>(
+    const [inputNoteName, setInputNoteName] = useState<NoteName | undefined>(
         undefined
     )
 
@@ -45,9 +45,7 @@ export default function MIDIPiano({
                         }
                         lastTimestamp = timestamp
                         console.log(`${midiToHelmholtz(keyNote)} = ${keyNote}`)
-                        const noteName = generateNoteName(
-                            midiToHelmholtz(keyNote)
-                        )
+                        const noteName = midiToNoteName(keyNote)
                         setInputNoteName(noteName)
                     }
                 })
@@ -62,8 +60,8 @@ export default function MIDIPiano({
         const displayContent = !currentNoteName
             ? '请先生成练习题！'
             : inputNoteName == currentNoteName
-            ? `正确✅！答案是${WhiteKeyNoteName[inputNoteName]}`
-            : `错误❌！答案是${WhiteKeyNoteName[currentNoteName]}`
+            ? `正确✅！答案是${inputNoteName.toString()}`
+            : `错误❌！答案是${currentNoteName.toString()}`
         setFeedback(displayContent)
         if (currentNoteName) {
             incrementTotal()
@@ -79,7 +77,7 @@ export default function MIDIPiano({
             <span className="text-center block">{deviceMessage}</span>
             <span className='text-center block'>{feedback}</span>
             <div className='h-5'></div>
-            <ReadonlyPiano />
+            <ReadonlyPiano correctKeys={currentNoteName ? [currentNoteName] : []} />
         </div>
     )
 }

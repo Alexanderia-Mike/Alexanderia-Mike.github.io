@@ -60,9 +60,17 @@ export enum WhiteKeyNoteName {
 export enum UpDownSymbol {
     NONE = 0,
     SHARP = 1,
-    FLAT = 2,
-    DOUBLE_SHARP = 3,
-    DOUBLE_FLAT = 4,
+    FLAT = -1,
+    DOUBLE_SHARP = 2,
+    DOUBLE_FLAT = -2,
+}
+
+const upDownSymbolToString: Record<UpDownSymbol, string> = {
+    [UpDownSymbol.NONE]: '',
+    [UpDownSymbol.SHARP]: '#',
+    [UpDownSymbol.FLAT]: 'b',
+    [UpDownSymbol.DOUBLE_SHARP]: 'x',
+    [UpDownSymbol.DOUBLE_FLAT]: 'v', // use v to denote double-flat
 }
 
 export class NoteName {
@@ -77,18 +85,7 @@ export class NoteName {
     }
     toString(): String {
         const whiteKeyName = WhiteKeyNoteName[this.whiteKeyNote]
-        switch (this.upDownSymbol) {
-            case UpDownSymbol.NONE:
-                return whiteKeyName
-            case UpDownSymbol.SHARP:
-                return '#' + whiteKeyName
-            case UpDownSymbol.FLAT:
-                return 'b' + whiteKeyName
-            case UpDownSymbol.DOUBLE_SHARP:
-                return 'x' + whiteKeyName
-            case UpDownSymbol.DOUBLE_FLAT:
-                return 'bb' + whiteKeyName
-        }
+        return upDownSymbolToString[this.upDownSymbol] + whiteKeyName
     }
     toValue(): number {
         let delta = 0
@@ -109,10 +106,33 @@ export class NoteName {
         }
         return this.whiteKeyNote + delta
     }
+    equals(other: NoteName): boolean {
+        return this.upDownSymbol == other.upDownSymbol && this.whiteKeyNote == other.whiteKeyNote
+    }
 }
 
-export function generateNoteName(
+export function parseWhiteKeyNoteName(
     noteString: string
 ): WhiteKeyNoteName | undefined {
     return WhiteKeyNoteName[noteString as keyof typeof WhiteKeyNoteName]
+}
+
+export function parseNoteName(noteString: string): NoteName | undefined {
+    const prefix = noteString[0]
+    const upDown = Object.entries(upDownSymbolToString).find(
+        (pair) => pair[1] == prefix
+    )
+    if (upDown) {
+        const whiteKeyName = parseWhiteKeyNoteName(noteString.slice(1))
+        return (
+            whiteKeyName &&
+            new NoteName(
+                whiteKeyName,
+                UpDownSymbol[prefix as keyof typeof UpDownSymbol]
+            )
+        )
+    } else {
+        const whiteKeyName = parseWhiteKeyNoteName(noteString)
+        return whiteKeyName && new NoteName(whiteKeyName, UpDownSymbol.NONE)
+    }
 }

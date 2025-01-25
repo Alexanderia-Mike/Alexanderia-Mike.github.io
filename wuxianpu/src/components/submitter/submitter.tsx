@@ -2,7 +2,7 @@ import { JSX, useState } from 'react'
 import { NavLink, Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { TextSubmitter } from './text-submitter'
 import clsx from 'clsx'
-import { WhiteKeyNoteName } from '../../common/common'
+import { NoteName } from '../../common/common'
 import ScoreBoard from './score-board'
 import VirtualPiano from './virtual-piano'
 import MIDIPiano from './midi-piano'
@@ -10,7 +10,7 @@ import MIDIPiano from './midi-piano'
 export default function Submitter({
     currentNoteName,
 }: {
-    currentNoteName: WhiteKeyNoteName | undefined
+    currentNoteName: NoteName | undefined
 }) {
     const [correct, setCorrect] = useState<number>(0)
     const [total, setTotal] = useState<number>(0)
