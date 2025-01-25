@@ -5,7 +5,6 @@ const keys = Object.entries(WhiteKeyNoteName)
     .filter(([_, v]) => typeof v == 'number')
     .map(([_, v]) => v as WhiteKeyNoteName)
     .sort((a, b) => a - b)
-console.log(keys)
 
 export default function ReadonlyPiano({
     correctKeys = [],
@@ -22,22 +21,20 @@ export default function ReadonlyPiano({
     const colorKeyStyle = (
         key: WhiteKeyNoteName,
         isPreviousBlack: boolean = false
-    ): string => {
-        const isCorrect =
-            correctKeys
-                .map((k) => k.toValue())
-                .includes(key + (isPreviousBlack ? -1 : 0)) && 'bg-green'
-        const isPressed =
-            pressedKeys
-                .map((k) => k.toValue())
-                .includes(key + (isPreviousBlack ? -1 : 0)) && 'bg-green'
+    ): React.CSSProperties => {
+        const isCorrect = correctKeys
+            .map((k) => k.toValue())
+            .includes(key + (isPreviousBlack ? -1 : 0))
+        const isPressed = pressedKeys
+            .map((k) => k.toValue())
+            .includes(key + (isPreviousBlack ? -1 : 0))
         return isCorrect && isPressed
-            ? 'bg-green'
+            ? { backgroundColor: '#7CFC00' }
             : isCorrect
-            ? 'bg-yellow'
+            ? { backgroundColor: 'yellow' }
             : isPressed
-            ? 'bg-red'
-            : ''
+            ? { backgroundColor: 'red' }
+            : {}
     }
 
     const followingBlackKey = (key: WhiteKeyNoteName, i: number) =>
@@ -51,26 +48,19 @@ export default function ReadonlyPiano({
                 followingBlackKey(key, i) ? (
                     <div
                         key={i}
-                        className={clsx(
-                            'relative',
-                            getCommonKeyStyle(i),
-                            colorKeyStyle(key)
-                        )}
+                        className={clsx('relative', getCommonKeyStyle(i))}
+                        style={colorKeyStyle(key)}
                     >
                         <div
-                            className={clsx(
-                                'w-2/3 h-2/3 bg-black absolute -translate-x-1/2 z-10',
-                                colorKeyStyle(key, true)
-                            )}
+                            className="w-2/3 h-2/3 bg-black absolute -translate-x-1/2 z-10"
+                            style={colorKeyStyle(key, true)}
                         ></div>
                     </div>
                 ) : (
                     <div
                         key={i}
-                        className={clsx(
-                            getCommonKeyStyle(i),
-                            colorKeyStyle(key)
-                        )}
+                        className={clsx(getCommonKeyStyle(i))}
+                        style={colorKeyStyle(key)}
                     ></div>
                 )
             )}

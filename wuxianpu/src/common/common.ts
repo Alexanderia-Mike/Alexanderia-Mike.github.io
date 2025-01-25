@@ -88,23 +88,7 @@ export class NoteName {
         return upDownSymbolToString[this.upDownSymbol] + whiteKeyName
     }
     toValue(): number {
-        let delta = 0
-        switch (this.upDownSymbol) {
-            case UpDownSymbol.SHARP:
-                delta = 1
-                break
-            case UpDownSymbol.FLAT:
-                delta = -1
-                break
-            case UpDownSymbol.DOUBLE_SHARP:
-                delta = 2
-                break
-            case UpDownSymbol.DOUBLE_FLAT:
-                delta = -2
-                break
-                defaut:;
-        }
-        return this.whiteKeyNote + delta
+        return this.whiteKeyNote + this.upDownSymbol;
     }
     equals(other: NoteName): boolean {
         return this.upDownSymbol == other.upDownSymbol && this.whiteKeyNote == other.whiteKeyNote
