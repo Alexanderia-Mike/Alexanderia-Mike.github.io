@@ -1,96 +1,97 @@
-import { useEffect, useState } from 'react'
-import {
-    getMidi,
-    handleMidiMessages,
-    midiToHelmholtz,
-    midiToNoteName,
-} from './lib/midi'
+import { useContext, useEffect, useState } from 'react'
+import { getMidi, handleMidiMessages, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
-import {
-    parseWhiteKeyNoteName,
-    NoteName,
-    WhiteKeyNoteName,
-} from '../../common/common'
 import ReadonlyPiano from './lib/readonly-piano'
+import { NoteContext } from '../../common/context'
+import { checkAnswer } from './lib/check-answer'
+import Button from '../../common/button/button'
+import clsx from 'clsx'
 
 let lastTimestamp = 0
 
 interface MIDIPianoProps extends SubmitterInterface {}
 
 export default function MIDIPiano({
-    currentNoteName,
     incrementCorrect,
     incrementTotal,
 }: MIDIPianoProps) {
-    const [errMessage, setErrMessage] = useState('')
     const [deviceMessage, setDeviceMessage] = useState('')
+    const [deviceHealthy, setDeviceHealthy] = useState(true)
     const [feedback, setFeedback] = useState('')
-    const [inputNoteName, setInputNoteName] = useState<NoteName | undefined>(
-        undefined
-    )
+    const { currentNote, inputNote, setInputNote } = useContext(NoteContext)
+
+    const deviceError = (message: string) => {
+        setDeviceHealthy(false)
+        setDeviceMessage(message)
+    }
+
+    const deviceSuccess = (message: string) => {
+        setDeviceHealthy(true)
+        setDeviceMessage(message)
+    }
+
+    const setupMidi = async function () {
+        try {
+            const midiAccess = await getMidi()
+            if (midiAccess.inputs.size == 0) {
+                throw Error('没有检测到 MIDI 设备!')
+            }
+            deviceSuccess(`当前连接到设备: [${midiAccess.inputs
+                    .values()
+                    .map((i) => i.name)
+                    .toArray()}]`)
+            handleMidiMessages(midiAccess, (message) => {
+                if (message.data) {
+                    const [eventType, keyNote, _] = message.data
+                    if (eventType != 144) {
+                        return
+                    }
+                    const timestamp = message.timeStamp
+                    if (timestamp == lastTimestamp) {
+                        return
+                    }
+                    lastTimestamp = timestamp
+                    const noteName = midiToNoteName(keyNote)
+                    setInputNote(noteName)
+                }
+            })
+        } catch (e) {
+            deviceError((e as Error).message)
+        }
+    }
 
     useEffect(() => {
-        ;(async function () {
-            try {
-                const midiAccess = await getMidi()
-                if (midiAccess.inputs.size == 0) {
-                    throw Error('没有检测到 MIDI 设备!')
-                }
-                setDeviceMessage(
-                    `当前连接到设备: [${midiAccess.inputs
-                        .values()
-                        .map((i) => i.name)
-                        .toArray()}]`
-                )
-                handleMidiMessages(midiAccess, (message) => {
-                    if (message.data) {
-                        const [eventType, keyNote, _] = message.data
-                        if (eventType != 144) {
-                            return
-                        }
-                        const timestamp = message.timeStamp
-                        if (timestamp == lastTimestamp) {
-                            return
-                        }
-                        lastTimestamp = timestamp
-                        const noteName = midiToNoteName(keyNote)
-                        setInputNoteName(noteName)
-                    }
-                })
-            } catch (e) {
-                setErrMessage((e as Error).message)
-            }
-        })()
+        setupMidi()
     })
 
     useEffect(() => {
-        // TODO: change it to use piano interface
-        console.log(
-            `input note is ${inputNoteName}, correct note is ${currentNoteName}`
+        const [_, displayContent] = checkAnswer(
+            inputNote,
+            currentNote,
+            incrementTotal,
+            incrementCorrect
         )
-        const displayContent = !currentNoteName
-            ? '请先生成练习题！'
-            : inputNoteName?.equals(currentNoteName)
-            ? `正确✅！答案是${inputNoteName.toString()}`
-            : `错误❌！答案是${currentNoteName.toString()}`
         setFeedback(displayContent)
-        if (currentNoteName) {
-            incrementTotal()
-            if (inputNoteName?.equals(currentNoteName)) {
-                incrementCorrect()
-            }
-        }
-    }, [inputNoteName, currentNoteName])
+    }, [inputNote, currentNote])
 
     return (
         <div>
-            <span className="text-center text-red-500 block">{errMessage}</span>
-            <span className="text-center block">{deviceMessage}</span>
+            <div className="flex flex-row justify-center items-center">
+                <span className={clsx("text-center flex", deviceHealthy ? "text-green-400" : "text-red-500")}>
+                    {deviceMessage}
+                </span>
+                <Button
+                    label={'重新连接'}
+                    onClick={setupMidi}
+                    hide={deviceHealthy}
+                />
+            </div>
             <span className="text-center block">{feedback}</span>
             <div className="h-5"></div>
             <ReadonlyPiano
-                correctKeys={currentNoteName ? [currentNoteName] : []}
-                pressedKeys={inputNoteName ? [inputNoteName] : []}
+                correctKeys={currentNote ? [currentNote] : []}
+                pressedKeys={inputNote ? [inputNote] : []}
+                showColor={inputNote != undefined}
             />
         </div>
     )

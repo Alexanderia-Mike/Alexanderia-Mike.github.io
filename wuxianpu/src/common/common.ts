@@ -101,7 +101,7 @@ export function parseWhiteKeyNoteName(
     return WhiteKeyNoteName[noteString as keyof typeof WhiteKeyNoteName]
 }
 
-export function parseNoteName(noteString: string): NoteName | undefined {
+export function parseNoteName(noteString: string): OptionalNote {
     const prefix = noteString[0]
     const upDown = Object.entries(upDownSymbolToString).find(
         (pair) => pair[1] == prefix
@@ -120,3 +120,5 @@ export function parseNoteName(noteString: string): NoteName | undefined {
         return whiteKeyName && new NoteName(whiteKeyName, UpDownSymbol.NONE)
     }
 }
+
+export type OptionalNote = NoteName | undefined

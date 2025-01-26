@@ -9,9 +9,11 @@ const keys = Object.entries(WhiteKeyNoteName)
 export default function ReadonlyPiano({
     correctKeys = [],
     pressedKeys = [],
+    showColor = false,
 }: {
     correctKeys?: NoteName[]
     pressedKeys?: NoteName[]
+    showColor?: boolean
 }) {
     const getCommonKeyStyle = (i: number) => [
         'flex flex-grow max-w-5 border-r border-y h-full border-black',
@@ -22,6 +24,9 @@ export default function ReadonlyPiano({
         key: WhiteKeyNoteName,
         isPreviousBlack: boolean = false
     ): React.CSSProperties => {
+        if (!showColor) {
+            return {}
+        }
         const isCorrect = correctKeys
             .map((k) => k.toValue())
             .includes(key + (isPreviousBlack ? -1 : 0))

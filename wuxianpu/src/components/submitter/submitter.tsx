@@ -1,29 +1,26 @@
-import { JSX, useState } from 'react'
+import { JSX, useContext, useState } from 'react'
 import { NavLink, Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { TextSubmitter } from './text-submitter'
 import clsx from 'clsx'
-import { NoteName } from '../../common/common'
 import ScoreBoard from './score-board'
 import VirtualPiano from './virtual-piano'
 import MIDIPiano from './midi-piano'
+import { NoteContext } from '../../common/context'
 
-export default function Submitter({
-    currentNoteName,
-}: {
-    currentNoteName: NoteName | undefined
-}) {
+export default function Submitter() {
     const [correct, setCorrect] = useState<number>(0)
     const [total, setTotal] = useState<number>(0)
 
     const incrementCorrect = () => setCorrect(correct + 1)
     const incrementTotal = () => setTotal(total + 1)
 
+    const {setInputNote} = useContext(NoteContext)
+
     const navigationPagesMapping: Map<string, [JSX.Element, string]> = new Map([
         [
             'text-submitter',
             [
                 <TextSubmitter
-                    currentNoteName={currentNoteName}
                     incrementCorrect={incrementCorrect}
                     incrementTotal={incrementTotal}
                 />,
@@ -35,7 +32,6 @@ export default function Submitter({
             'bluetooth-piano',
             [
                 <MIDIPiano
-                    currentNoteName={currentNoteName}
                     incrementCorrect={incrementCorrect}
                     incrementTotal={incrementTotal}
                 />,
@@ -59,6 +55,7 @@ export default function Submitter({
                     }
                     key={idx}
                     to={'/' + link}
+                    onClick={() => setInputNote(undefined)}
                 >
                     {text}
                 </NavLink>

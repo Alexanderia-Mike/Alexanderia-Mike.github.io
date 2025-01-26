@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Button from '../../common/button/button'
-import { NoteName } from '../../common/common'
+import { NoteName, OptionalNote } from '../../common/common'
 import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
 import { noteNames } from './notes_mapping'
@@ -20,10 +20,12 @@ export default function Control({
     clef,
     updateNoteName,
     updateClef,
+    clearInputNote,
 }: {
     clef: Clef
-    updateNoteName: React.Dispatch<React.SetStateAction<NoteName | undefined>>
+    updateNoteName: React.Dispatch<React.SetStateAction<OptionalNote>>
     updateClef: React.Dispatch<React.SetStateAction<Clef>>
+    clearInputNote: () => void
 }) {
     const [randomClef, setRandomClef] = useState<boolean>(false)
 
@@ -40,13 +42,11 @@ export default function Control({
             updateClef(newClef)
         }
         updateNoteName(generateRandomNoteName(newClef || clef))
+        clearInputNote()
     }
 
     return (
-        <div className={clsx(
-            "flex flex-row",
-            "md:flex-col"
-        )}>
+        <div className={clsx('flex flex-row', 'md:flex-col')}>
             <div
                 className={clsx(
                     'flex my-5 justify-center',

@@ -1,50 +1,36 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import Button from '../../common/button/button'
-import { NoteName, parseNoteName, parseWhiteKeyNoteName, WhiteKeyNoteName } from '../../common/common'
+import { parseNoteName } from '../../common/common'
 import { SubmitterInterface } from './submitter-interface'
+import { NoteContext } from '../../common/context'
+import { checkAnswer } from './lib/check-answer'
 
 export function TextSubmitter({
-    currentNoteName,
     incrementCorrect,
     incrementTotal,
 }: SubmitterInterface) {
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const { currentNote, setInputNote } = useContext(NoteContext)
 
     const submitButtonOnClick = () => {
         if (inputRef.current) {
             const noteName = parseNoteName(inputRef.current.value)
             if (noteName) {
-                setInputNoteName(noteName)
+                setInputNote(noteName)
             }
-            console.log(`input note is ${noteName}, correct note is ${currentNoteName}`)
-            const displayContent = !currentNoteName
-                ? '请先生成练习题！'
-                : noteName?.equals(currentNoteName)
-                ? `正确✅！答案是${noteName}`
-                : `错误❌！答案是${currentNoteName}`
+            const [_, displayContent] = checkAnswer(
+                noteName,
+                currentNote,
+                incrementTotal,
+                incrementCorrect
+            )
             if (spanRef.current) {
                 spanRef.current.innerText = displayContent
-            }
-            if (currentNoteName) {
-                incrementTotal()
-                if (noteName?.equals(currentNoteName)) {
-                    incrementCorrect()
-                }
             }
         }
     }
 
     const spanRef = useRef<HTMLSpanElement | null>(null)
-    const [inputNoteName, setInputNoteName] = useState<NoteName | undefined>(
-        undefined
-    )
-
-    useEffect(() => {
-        setInputNoteName(undefined)
-        if (spanRef.current) {
-            spanRef.current.innerText = ''
-        }
-    }, [currentNoteName])
 
     return (
         <>

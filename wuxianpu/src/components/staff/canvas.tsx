@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Clef } from './clef'
 import { Note, notes } from './notes_mapping'
 import clsx from 'clsx'
-import { NoteName, WhiteKeyNoteName } from '../../common/common'
+import { OptionalNote } from '../../common/common'
 
 const BASS_HEIGHT = 140
 const TREBLE_HEIGHT = -19
@@ -60,7 +60,7 @@ export default function Canvas({
     noteName,
 }: {
     clef: Clef
-    noteName: NoteName | undefined
+    noteName: OptionalNote
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const note = noteName && notes[clef].get(noteName)

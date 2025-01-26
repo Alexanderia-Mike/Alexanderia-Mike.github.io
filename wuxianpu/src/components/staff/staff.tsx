@@ -1,20 +1,14 @@
-import React, { useState } from 'react'
+import { useContext, useState } from 'react'
 import Canvas from './canvas'
 import { Clef } from './clef'
-import { NoteName } from '../../common/common'
 import Control from './control'
 import clsx from 'clsx'
+import { NoteContext } from '../../common/context'
 
-export default function Staff({
-    currentNoteName,
-    updateCurrentNoteName: updateCurrentNoteName,
-}: {
-    currentNoteName: NoteName | undefined
-    updateCurrentNoteName: React.Dispatch<
-        React.SetStateAction<NoteName | undefined>
-    >
-}) {
+export default function Staff() {
     const [clef, updateClef] = useState<Clef>(Clef.TREBLE)
+    const { currentNote, updateCurrentNote, setInputNote } =
+        useContext(NoteContext)
 
     return (
         <div
@@ -24,11 +18,12 @@ export default function Staff({
                 'md:flex-row'
             )}
         >
-            <Canvas noteName={currentNoteName} clef={clef} />
+            <Canvas noteName={currentNote} clef={clef} />
             <Control
                 clef={clef}
-                updateNoteName={updateCurrentNoteName}
+                updateNoteName={updateCurrentNote}
                 updateClef={updateClef}
+                clearInputNote={() => setInputNote(undefined)}
             />
             <p className="mt-[20px] text-lg text-slate-600"></p>
         </div>
