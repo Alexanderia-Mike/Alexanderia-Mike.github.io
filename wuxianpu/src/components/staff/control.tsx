@@ -52,12 +52,14 @@ export default function Control({
     }
 
     useEffect(() => {
-        setScanAnimate(true)
-        const timeout = setTimeout(() => {
-            generateButtonOnClick()
-            setScanAnimate(false)
-        }, 1000)
-        return () => clearTimeout(timeout)
+        if (autoGenerate) {
+            setScanAnimate(true)
+            const timeout = setTimeout(() => {
+                generateButtonOnClick()
+                setScanAnimate(false)
+            }, 1000)
+            return () => clearTimeout(timeout)
+        }
     }, [newNoteTrigger])
 
     return (
@@ -91,7 +93,7 @@ export default function Control({
                         onClick={generateButtonOnClick}
                         classNames="relative overflow-hidden"
                     >
-                        {scanAnimate && (
+                        {autoGenerate && scanAnimate && (
                             <span className="absolute inset-0 bg-[#46a823] w-full h-full left-[-100%] animate-scan"></span>
                         )}
                     </Button>
