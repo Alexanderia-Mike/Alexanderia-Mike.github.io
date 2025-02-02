@@ -14,3 +14,13 @@ export const NoteContext = createContext<NoteContextInterface>({
     inputNote: undefined,
     setInputNote: () => null,
 })
+
+interface ControlContextInterface {
+    newNoteTrigger: boolean
+    triggerNewNote: () => void
+}
+
+export const ControlContext = createContext<ControlContextInterface>({
+    newNoteTrigger: false,
+    triggerNewNote: () => null,
+})

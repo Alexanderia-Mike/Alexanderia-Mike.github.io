@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { getMidi, handleMidiMessages, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
 import ReadonlyPiano from './lib/readonly-piano'
-import { NoteContext } from '../../common/context'
+import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswer } from './lib/check-answer'
 import Button from '../../common/button/button'
 import clsx from 'clsx'
@@ -19,6 +19,7 @@ export default function MIDIPiano({
     const [deviceHealthy, setDeviceHealthy] = useState(true)
     const [feedback, setFeedback] = useState('')
     const { currentNote, inputNote, setInputNote } = useContext(NoteContext)
+    const { triggerNewNote } = useContext(ControlContext)
 
     const deviceError = (message: string) => {
         setDeviceHealthy(false)
@@ -69,7 +70,8 @@ export default function MIDIPiano({
             inputNote,
             currentNote,
             incrementTotal,
-            incrementCorrect
+            incrementCorrect,
+            triggerNewNote
         )
         setFeedback(displayContent)
     }, [inputNote])

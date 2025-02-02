@@ -4,7 +4,8 @@ export function checkAnswer(
     inputNote: OptionalNote,
     currentNote: OptionalNote,
     incrementTotal: () => void,
-    incrementCorrect: () => void
+    incrementCorrect: () => void,
+    triggerNewNote: () => void
 ): [boolean, string] {
     console.log(`input note is ${inputNote}, correct note is ${currentNote}`)
 
@@ -22,6 +23,7 @@ export function checkAnswer(
         incrementTotal()
         if (isCorrect) {
             incrementCorrect()
+            triggerNewNote()
         }
     }
 

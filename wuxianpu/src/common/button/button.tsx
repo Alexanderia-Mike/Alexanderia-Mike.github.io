@@ -1,25 +1,33 @@
 import { MouseEventHandler } from 'react'
 import './style.css'
-import { Hiddable } from '../common'
+import { ExtraClassNames, Hiddable, WithChildren } from '../common'
 import clsx from 'clsx'
 
-interface ButtonProps extends Hiddable {
+interface ButtonProps extends Hiddable, ExtraClassNames, WithChildren {
     label: String
     onClick: MouseEventHandler<HTMLButtonElement>
 }
 
-export default function Button({ label, onClick, hide }: ButtonProps) {
+export default function Button({
+    label,
+    onClick,
+    hide,
+    classNames,
+    children,
+}: ButtonProps) {
     // TODO: migrate css to classnames
     // TODO: add a parameter for extra class names
     return (
         <button
             className={clsx(
-                'rounded-full mx-4 my-auto px-3 py-2 text-md border-none text-white cursor-pointer',
-                hide && 'hidden'
+                'rounded-full mx-4 my-auto px-3 py-2 border-none cursor-pointer',
+                hide && 'hidden',
+                classNames
             )}
             onClick={onClick}
         >
-            {label}
+            {children}
+            <span className="text-md text-white z-10 relative">{label}</span>
         </button>
     )
 }

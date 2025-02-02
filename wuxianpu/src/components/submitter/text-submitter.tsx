@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 import Button from '../../common/button/button'
 import { parseNoteName } from '../../common/common'
 import { SubmitterInterface } from './submitter-interface'
-import { NoteContext } from '../../common/context'
+import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswer } from './lib/check-answer'
 
 export function TextSubmitter({
@@ -11,6 +11,7 @@ export function TextSubmitter({
 }: SubmitterInterface) {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const { currentNote, setInputNote } = useContext(NoteContext)
+    const { triggerNewNote } = useContext(ControlContext)
 
     const submitButtonOnClick = () => {
         if (inputRef.current) {
@@ -22,7 +23,8 @@ export function TextSubmitter({
                 noteName,
                 currentNote,
                 incrementTotal,
-                incrementCorrect
+                incrementCorrect,
+                triggerNewNote
             )
             if (spanRef.current) {
                 spanRef.current.innerText = displayContent

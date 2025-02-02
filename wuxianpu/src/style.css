@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes scanEffect {
+    from {
+        left: -100%;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@layer utilities {
+    .animate-scan {
+        background-size: 200%;
+        animation: scanEffect 1s linear forwards;
+    }
+}

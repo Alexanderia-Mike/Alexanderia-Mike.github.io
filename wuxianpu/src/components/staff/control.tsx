@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Button from '../../common/button/button'
 import { NoteName, OptionalNote } from '../../common/common'
 import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
 import { noteNames } from './notes_mapping'
 import clsx from 'clsx'
+import { ControlContext } from '../../common/context'
 
 function generateRandomNoteName(clef: Clef): NoteName {
     const candidates = noteNames[clef]
@@ -28,12 +29,17 @@ export default function Control({
     clearInputNote: () => void
 }) {
     const [randomClef, setRandomClef] = useState<boolean>(false)
+    const [autoGenerate, setAutoGenerate] = useState<boolean>(false)
+    const [scanAnimate, setScanAnimate] = useState<boolean>(false)
+
+    const { newNoteTrigger } = useContext(ControlContext)
 
     const clefToggleOnChange = () => {
         if (!randomClef) updateClef(clef == Clef.BASS ? Clef.TREBLE : Clef.BASS)
     }
 
     const randomClefToggleOnChange = () => setRandomClef(!randomClef)
+    const autoGenerateToggleOnChange = () => setAutoGenerate(!autoGenerate)
 
     const generateButtonOnClick = () => {
         let newClef = null
@@ -44,6 +50,15 @@ export default function Control({
         updateNoteName(generateRandomNoteName(newClef || clef))
         clearInputNote()
     }
+
+    useEffect(() => {
+        setScanAnimate(true)
+        const timeout = setTimeout(() => {
+            generateButtonOnClick()
+            setScanAnimate(false)
+        }, 1000)
+        return () => clearTimeout(timeout)
+    }, [newNoteTrigger])
 
     return (
         <div className={clsx('flex flex-row', 'md:flex-col')}>
@@ -64,13 +79,22 @@ export default function Control({
                     onChange={randomClefToggleOnChange}
                     commonText="随机高低音谱"
                 />
+                <Toggle
+                    onChange={autoGenerateToggleOnChange}
+                    commonText="自动出题"
+                />
             </div>
             <div className="flex justify-center items-center">
                 <div className="flex flex-grow justify-center items-center">
                     <Button
                         label={'生成练习题'}
                         onClick={generateButtonOnClick}
-                    />
+                        classNames="relative overflow-hidden"
+                    >
+                        {scanAnimate && (
+                            <span className="absolute inset-0 bg-[#46a823] w-full h-full left-[-100%] animate-scan"></span>
+                        )}
+                    </Button>
                 </div>
             </div>
         </div>
