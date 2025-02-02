@@ -72,7 +72,7 @@ export default function MIDIPiano({
             incrementCorrect
         )
         setFeedback(displayContent)
-    }, [inputNote, currentNote])
+    }, [inputNote])
 
     return (
         <div>

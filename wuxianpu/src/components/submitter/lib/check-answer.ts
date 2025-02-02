@@ -18,7 +18,7 @@ export function checkAnswer(
     const isCorrect =
         (inputNote && currentNote && inputNote.equals(currentNote)) || false
 
-    if (currentNote) {
+    if (currentNote && inputNote) {
         incrementTotal()
         if (isCorrect) {
             incrementCorrect()
