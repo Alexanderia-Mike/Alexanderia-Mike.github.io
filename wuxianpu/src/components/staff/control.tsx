@@ -6,6 +6,7 @@ import { Clef } from './clef'
 import { noteNames } from './notes_mapping'
 import clsx from 'clsx'
 import { ControlContext } from '../../common/context'
+import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
 
 function generateRandomNoteName(clef: Clef): NoteName {
     const candidates = noteNames[clef]
@@ -84,6 +85,14 @@ export default function Control({
                 <Toggle
                     onChange={autoGenerateToggleOnChange}
                     commonText="自动出题"
+                />
+                <DropdownMenu
+                    elements={[
+                        {label: "aha", value: 1},
+                        {label: "ihi", value: 2},
+                    ]}
+                    onSelect={value => console.log(value)}
+                    label='升降号'
                 />
             </div>
             <div className="flex justify-center items-center">
