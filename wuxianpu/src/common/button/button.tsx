@@ -27,7 +27,7 @@ export default function Button({
             onClick={onClick}
         >
             {children}
-            <span className="text-md text-white z-10 relative">{label}</span>
+            <span className="text-md text-white z-10 relative whitespace-nowrap">{label}</span>
         </button>
     )
 }

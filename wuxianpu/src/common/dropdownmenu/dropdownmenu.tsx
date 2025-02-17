@@ -86,7 +86,7 @@ export function DropdownMenu<T>({
             ref={menuBody}
             className="mx-5 my-3 flex justify-center items-center"
         >
-            {label && <div className="mr-2">{label}</div>}
+            {label && <div className="mr-2 whitespace-nowrap">{label}</div>}
             <div
                 className={clsx(
                     'relative flex flex-grow flex-shrink-0',

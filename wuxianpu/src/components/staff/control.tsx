@@ -38,7 +38,6 @@ export default function Control({
     const clefToggleOnChange = () => {
         if (!randomClef) updateClef(clef == Clef.BASS ? Clef.TREBLE : Clef.BASS)
     }
-
     const randomClefToggleOnChange = () => setRandomClef(!randomClef)
     const autoGenerateToggleOnChange = () => setAutoGenerate(!autoGenerate)
 
@@ -64,12 +63,11 @@ export default function Control({
     }, [newNoteTrigger])
 
     return (
-        <div className={clsx('flex flex-row', 'md:flex-col')}>
+        <div className={clsx('flex flex-col')}>
             <div
                 className={clsx(
-                    'flex my-5 justify-center',
-                    'flex-row items-center',
-                    'md:flex-col md:items-start'
+                    'flex my-5 flex-row items-center flex-wrap',
+                    'md:flex-col md:items-start md:justify-center'
                 )}
             >
                 <Toggle
@@ -88,8 +86,10 @@ export default function Control({
                 />
                 <DropdownMenu
                     elements={[
-                        {label: "aha", value: 1},
-                        {label: "ihi", value: 2},
+                        {label: "无升降音", value: 1},
+                        {label: "仅升音", value: 2},
+                        {label: "仅降音", value: 3},
+                        {label: "随机升降音", value: 4},
                     ]}
                     onSelect={value => console.log(value)}
                     label='升降号'
