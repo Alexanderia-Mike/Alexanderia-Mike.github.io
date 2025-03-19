@@ -48,7 +48,7 @@ export function DropdownMenu<T>({
 
     const dropdownButton = (
         <div
-            className="px-3 py-2 bg-slate-300 rounded-full min-w-24 text-center w-full cursor-pointer"
+            className="px-3 py-2 bg-slate-300 rounded-full min-w-24 text-center w-full max-w-52 cursor-pointer"
             onClick={() => updateExpand(!expand)}
         >
             {selectedElmt
@@ -74,7 +74,9 @@ export function DropdownMenu<T>({
                     {elmt.render ? (
                         elmt.render()
                     ) : (
-                        <div className="text-center my-3 whitespace-nowrap cursor-pointer">{elmt.label}</div>
+                        <div className="text-center my-3 whitespace-nowrap cursor-pointer">
+                            {elmt.label}
+                        </div>
                     )}
                 </div>
             ))}
@@ -85,17 +87,12 @@ export function DropdownMenu<T>({
         <div
             ref={menuBody}
             className={clsx(
-                'mx-5 my-3 flex justify-center items-center',
+                'mx-5 my-3 flex flex-grow flex-shrink-0 justify-center items-center',
                 classNames
             )}
         >
             {label && <div className="mr-2 whitespace-nowrap">{label}</div>}
-            <div
-                className={clsx(
-                    'relative flex flex-grow flex-shrink-0',
-                    hide && 'hidden',
-                )}
-            >
+            <div className={clsx('relative flex', hide && 'hidden')}>
                 {dropdownButton}
                 {expand && dropdownElements}
             </div>
