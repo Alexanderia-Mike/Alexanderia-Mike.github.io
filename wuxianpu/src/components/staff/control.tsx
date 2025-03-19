@@ -13,6 +13,7 @@ function generateRandomNoteName(
     clef: Clef,
     shengjiang: ShengJiangOption
 ): NoteName {
+    // after adding 调号, will need to add Natural symbol to it
     const candidates = whiteKeyNoteNames[clef]
     const whiteKey = randomSelect(candidates)
     switch (shengjiang) {
@@ -152,7 +153,9 @@ export default function Control({
                     ]}
                     onSelect={(value) => setShengjiang(value)}
                     label="升降号"
+                    classNames='w-40'
                 />
+
             </div>
             <div className="flex justify-center items-center">
                 <div className="flex flex-grow justify-center items-center">

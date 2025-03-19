@@ -94,7 +94,7 @@ export class NoteName {
         this.upDownSymbol = upDownSymbol
     }
     toString(): String {
-        // TODO should we consider adding 调号?
+        // TODO: should we consider adding 调号?
         const whiteKeyName = WhiteKeyNoteName[this.whiteKeyNote]
         return upDownSymbolToString[this.upDownSymbol] + whiteKeyName
     }
