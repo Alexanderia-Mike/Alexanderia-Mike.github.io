@@ -73,12 +73,10 @@ export function noteNameToNote(
 }
 
 export const whiteKeyNoteNames: Record<Clef, NoteName[]> = {
-    [Clef.TREBLE]: whiteKeyToHeightMapping[Clef.TREBLE]
-        .keys()
-        .map((wk) => new NoteName(wk))
-        .toArray(),
-    [Clef.BASS]: whiteKeyToHeightMapping[Clef.BASS]
-        .keys()
-        .map((wk) => new NoteName(wk))
-        .toArray(),
+    [Clef.TREBLE]: Array.from(whiteKeyToHeightMapping[Clef.TREBLE]
+        .keys())
+        .map((wk) => new NoteName(wk)),
+    [Clef.BASS]: Array.from(whiteKeyToHeightMapping[Clef.BASS]
+        .keys())
+        .map((wk) => new NoteName(wk)),
 }
