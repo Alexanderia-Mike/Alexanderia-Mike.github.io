@@ -48,7 +48,7 @@ export function DropdownMenu<T>({
 
     const dropdownButton = (
         <div
-            className="px-3 py-2 bg-slate-300 rounded-full min-w-24 text-center w-full max-w-52 cursor-pointer"
+            className="px-3 py-2 bg-slate-300 rounded-full min-w-24 text-center w-full max-w-52 cursor-pointer whitespace-nowrap"
             onClick={() => updateExpand(!expand)}
         >
             {selectedElmt

@@ -2,7 +2,6 @@ import {
     parseWhiteKeyNoteName,
     NoteName,
     UpDownSymbol,
-    WhiteKeyNoteName,
 } from '../../../common/common'
 
 let midiAccess: MIDIAccess | null = null
@@ -16,8 +15,8 @@ export async function getMidi(): Promise<MIDIAccess> {
         return midiAccess
     } catch (e) {
         const error = e as Error
-        const errMessage = `错误! ${error.message}`
-        console.log(errMessage)
+        const errMessage = `错误❌：您的设备/浏览器不支持 MIDI API，请使用电脑端的 Chrome / Edge / Opera 浏览器`
+        console.log(error.message)
         throw Error(errMessage)
     }
 }
