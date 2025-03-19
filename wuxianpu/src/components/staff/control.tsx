@@ -83,13 +83,19 @@ export default function Control({
         ShengJiangOption.NO_SHENGJIANG
     )
 
-    const { newNoteTrigger } = useContext(ControlContext)
+    const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
 
     const clefToggleOnChange = () => {
         if (!randomClef) updateClef(clef == Clef.BASS ? Clef.TREBLE : Clef.BASS)
     }
     const randomClefToggleOnChange = () => setRandomClef(!randomClef)
-    const autoGenerateToggleOnChange = () => setAutoGenerate(!autoGenerate)
+    const autoGenerateToggleOnChange = () => {
+        const newAutoGenerate = !autoGenerate
+        setAutoGenerate(newAutoGenerate)
+        if (newAutoGenerate) {
+            triggerNewNote()
+        }
+    }
 
     const generateButtonOnClick = () => {
         let newClef = null
@@ -153,9 +159,8 @@ export default function Control({
                     ]}
                     onSelect={(value) => setShengjiang(value)}
                     label="升降号"
-                    classNames='w-40'
+                    classNames="w-40"
                 />
-
             </div>
             <div className="flex justify-center items-center">
                 <div className="flex flex-grow justify-center items-center">

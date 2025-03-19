@@ -120,7 +120,7 @@ export default function Canvas({
     }, [clef, noteName])
 
     return (
-        <div className="relative">
+        <div className="relative w-full">
             <img
                 className={clsx(
                     'absolute w-[100px] top-[47px] left-[80px]',
