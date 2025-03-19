@@ -1,21 +1,67 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../common/button/button'
-import { NoteName, OptionalNote } from '../../common/common'
+import { NoteName, OptionalNote, UpDownSymbol } from '../../common/common'
 import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
-import { noteNames } from './notes_mapping'
+import { whiteKeyNoteNames } from './notes_mapping'
 import clsx from 'clsx'
 import { ControlContext } from '../../common/context'
 import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
+import { randomSelect } from '../../common/utils'
 
-function generateRandomNoteName(clef: Clef): NoteName {
-    const candidates = noteNames[clef]
-    const index = Math.floor(Math.random() * candidates.length)
-    return candidates[index]
+function generateRandomNoteName(
+    clef: Clef,
+    shengjiang: ShengJiangOption
+): NoteName {
+    const candidates = whiteKeyNoteNames[clef]
+    const whiteKey = randomSelect(candidates)
+    switch (shengjiang) {
+        case ShengJiangOption.NO_SHENGJIANG:
+            return whiteKey
+        case ShengJiangOption.SHARP_ONLY:
+            return whiteKey.copy(
+                randomSelect([UpDownSymbol.SHARP, UpDownSymbol.DOUBLE_SHARP])
+            )
+        case ShengJiangOption.FLAT_ONLY:
+            return whiteKey.copy(
+                randomSelect([UpDownSymbol.FLAT, UpDownSymbol.DOUBLE_FLAT])
+            )
+        case ShengJiangOption.SHARP_FLAT_ONLY:
+            return whiteKey.copy(
+                randomSelect([
+                    UpDownSymbol.SHARP,
+                    UpDownSymbol.DOUBLE_SHARP,
+                    UpDownSymbol.FLAT,
+                    UpDownSymbol.DOUBLE_FLAT,
+                ])
+            )
+        case ShengJiangOption.RANDOM_SHARP_FLAT:
+            return whiteKey.copy(
+                randomSelect([
+                    UpDownSymbol.SHARP,
+                    UpDownSymbol.DOUBLE_SHARP,
+                    UpDownSymbol.FLAT,
+                    UpDownSymbol.DOUBLE_FLAT,
+                    // duplicate to increase the weight for NONE
+                    UpDownSymbol.NONE,
+                    UpDownSymbol.NONE,
+                    UpDownSymbol.NONE,
+                    UpDownSymbol.NONE,
+                ])
+            )
+    }
 }
 
 function generateRandomClef(): Clef {
-    return Math.random() > 0.5 ? Clef.TREBLE : Clef.BASS
+    return randomSelect([Clef.TREBLE, Clef.BASS])
+}
+
+enum ShengJiangOption {
+    NO_SHENGJIANG = 1,
+    SHARP_ONLY = 2,
+    FLAT_ONLY = 3,
+    SHARP_FLAT_ONLY = 4,
+    RANDOM_SHARP_FLAT = 5,
 }
 
 export default function Control({
@@ -32,6 +78,9 @@ export default function Control({
     const [randomClef, setRandomClef] = useState<boolean>(false)
     const [autoGenerate, setAutoGenerate] = useState<boolean>(false)
     const [scanAnimate, setScanAnimate] = useState<boolean>(false)
+    const [shengjiang, setShengjiang] = useState<ShengJiangOption>(
+        ShengJiangOption.NO_SHENGJIANG
+    )
 
     const { newNoteTrigger } = useContext(ControlContext)
 
@@ -47,7 +96,7 @@ export default function Control({
             newClef = generateRandomClef()
             updateClef(newClef)
         }
-        updateNoteName(generateRandomNoteName(newClef || clef))
+        updateNoteName(generateRandomNoteName(newClef || clef, shengjiang))
         clearInputNote()
     }
 
@@ -86,13 +135,23 @@ export default function Control({
                 />
                 <DropdownMenu
                     elements={[
-                        {label: "无升降音", value: 1},
-                        {label: "仅升音", value: 2},
-                        {label: "仅降音", value: 3},
-                        {label: "随机升降音", value: 4},
+                        {
+                            label: '无升降音',
+                            value: ShengJiangOption.NO_SHENGJIANG,
+                        },
+                        { label: '仅升音', value: ShengJiangOption.SHARP_ONLY },
+                        { label: '仅降音', value: ShengJiangOption.FLAT_ONLY },
+                        {
+                            label: '仅升/降音',
+                            value: ShengJiangOption.SHARP_FLAT_ONLY,
+                        },
+                        {
+                            label: '随机升/降音',
+                            value: ShengJiangOption.RANDOM_SHARP_FLAT,
+                        },
                     ]}
-                    onSelect={value => console.log(value)}
-                    label='升降号'
+                    onSelect={(value) => setShengjiang(value)}
+                    label="升降号"
                 />
             </div>
             <div className="flex justify-center items-center">
