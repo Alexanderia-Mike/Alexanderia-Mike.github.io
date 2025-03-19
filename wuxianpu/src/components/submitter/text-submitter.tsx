@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useRef } from 'react'
 import Button from '../../common/button/button'
 import { parseNoteName } from '../../common/common'
 import { SubmitterInterface } from './submitter-interface'

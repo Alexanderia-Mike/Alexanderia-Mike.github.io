@@ -41,8 +41,8 @@ export default function Submitter() {
     ])
 
     function getNavigationLinks() {
-        return navigationPagesMapping
-            .entries()
+        return Array.from(navigationPagesMapping
+            .entries())
             .map(([link, [_, text]], idx) => (
                 <NavLink
                     className={({ isActive }) =>
@@ -60,16 +60,14 @@ export default function Submitter() {
                     {text}
                 </NavLink>
             ))
-            .toArray()
     }
 
     function getNavigationRoutes() {
-        return navigationPagesMapping
-            .entries()
+        return Array.from(navigationPagesMapping
+            .entries())
             .map(([link, [elmt, _]], idx) => {
                 return <Route path={'/' + link} element={elmt} key={idx} />
             })
-            .toArray()
     }
 
     const defaultSubmitter = (

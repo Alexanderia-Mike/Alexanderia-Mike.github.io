@@ -1,8 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { JSX, useEffect, useRef, useState } from 'react'
 import { Clef } from './clef'
-import { Note, notes } from './notes_mapping'
+import { Note, noteNameToNote } from './notes_mapping'
 import clsx from 'clsx'
-import { OptionalNote } from '../../common/common'
+import { OptionalNote, UpDownSymbol } from '../../common/common'
+import { Sharp } from './symbols/sharp'
+import { Flat } from './symbols/flat'
+import { DoubleSharp } from './symbols/double_sharp'
+import { Natural } from './symbols/natural'
+import { DoubleFlat } from './symbols/double_flat'
 
 const BASS_HEIGHT = 140
 const TREBLE_HEIGHT = -19
@@ -45,14 +50,36 @@ function drawNote(
     ctx: CanvasRenderingContext2D,
     note: Note,
     clef: Clef,
-    canvasWidth: number
+    canvasWidth: number,
+    setUpDown: React.Dispatch<React.SetStateAction<JSX.Element>>
 ) {
+    // note dot
+    console.log(`note name is ${note.name.toString()}`)
     const baseHeight = clef == Clef.TREBLE ? TREBLE_HEIGHT : BASS_HEIGHT
     ctx.beginPath()
     ctx.arc(canvasWidth / 2, note.y + baseHeight, 7, 0, 2 * Math.PI)
     ctx.fillStyle = '#000'
     ctx.fill()
     ctx.stroke()
+    // up down symbol
+    const x = canvasWidth / 2 - 30
+    const y = note.y + baseHeight
+    const upDownSymbol = note.name.upDownSymbol
+    const upDownSymbolHtml =
+        upDownSymbol == UpDownSymbol.DOUBLE_SHARP ? (
+            <DoubleSharp x={x} y={y} />
+        ) : upDownSymbol == UpDownSymbol.SHARP ? (
+            <Sharp x={x} y={y} />
+        ) : upDownSymbol == UpDownSymbol.NATURAL ? (
+            <Natural x={x} y={y} />
+        ) : upDownSymbol == UpDownSymbol.FLAT ? (
+            <Flat x={x} y={y} />
+        ) : upDownSymbol == UpDownSymbol.DOUBLE_FLAT ? (
+            <DoubleFlat x={x} y={y} />
+        ) : (
+            <></>
+        )
+    setUpDown(upDownSymbolHtml)
 }
 
 export default function Canvas({
@@ -63,7 +90,8 @@ export default function Canvas({
     noteName: OptionalNote
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const note = noteName && notes[clef].get(noteName)
+    const note = noteName && noteNameToNote(noteName, clef)
+    const [upDown, setUpDown] = useState<JSX.Element>(<></>)
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -72,7 +100,13 @@ export default function Canvas({
             canvas.height = canvas.clientHeight
             const ctx = canvas.getContext('2d')
             if (ctx) {
-                drawStaffSingle(ctx, TREBLE_HEIGHT, canvas.width, clef == Clef.TREBLE, note)
+                drawStaffSingle(
+                    ctx,
+                    TREBLE_HEIGHT,
+                    canvas.width,
+                    clef == Clef.TREBLE,
+                    note
+                )
                 drawStaffSingle(
                     ctx,
                     BASS_HEIGHT,
@@ -80,33 +114,34 @@ export default function Canvas({
                     clef == Clef.BASS,
                     note
                 )
-                note && drawNote(ctx, note, clef, canvas.width)
+                note && drawNote(ctx, note, clef, canvas.width, setUpDown)
             }
         }
     }, [clef, noteName])
 
     return (
-        <div className='relative'>
+        <div className="relative">
             <img
                 className={clsx(
                     'absolute w-[100px] top-[47px] left-[80px]',
                     clef == Clef.BASS && 'opacity-10'
                 )}
-                src="gaoyin.png"
-                style={{transform: `translateY(${TREBLE_HEIGHT}px)`}}
+                src="assets/gaoyin.png"
+                style={{ transform: `translateY(${TREBLE_HEIGHT}px)` }}
             />
             <img
                 className={clsx(
                     'absolute w-[75px] top-[86px] left-[95px]  translate-y-1',
                     clef == Clef.TREBLE && 'opacity-30'
                 )}
-                src="diyin.svg"
-                style={{transform: `translateY(${BASS_HEIGHT}px)`}}
+                src="assets/diyin.svg"
+                style={{ transform: `translateY(${BASS_HEIGHT}px)` }}
             />
             <canvas
                 className="border border-border-color bg-white w-full h-[385px]"
                 ref={canvasRef}
             ></canvas>
+            {upDown}
         </div>
     )
 }

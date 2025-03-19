@@ -71,6 +71,7 @@ export enum UpDownSymbol {
     FLAT = -1,
     DOUBLE_SHARP = 2,
     DOUBLE_FLAT = -2,
+    NATURAL = 10,
 }
 
 const upDownSymbolToString: Record<UpDownSymbol, string> = {
@@ -79,6 +80,7 @@ const upDownSymbolToString: Record<UpDownSymbol, string> = {
     [UpDownSymbol.FLAT]: 'b',
     [UpDownSymbol.DOUBLE_SHARP]: 'x',
     [UpDownSymbol.DOUBLE_FLAT]: 'v', // use v to denote double-flat
+    [UpDownSymbol.NATURAL]: '@', // use @ to denote natural
 }
 
 export class NoteName {
@@ -92,14 +94,22 @@ export class NoteName {
         this.upDownSymbol = upDownSymbol
     }
     toString(): String {
+        // TODO: should we consider adding 调号?
         const whiteKeyName = WhiteKeyNoteName[this.whiteKeyNote]
         return upDownSymbolToString[this.upDownSymbol] + whiteKeyName
     }
     toValue(): number {
-        return this.whiteKeyNote + this.upDownSymbol;
+        // TODO: if upDownSymbol is None, then needs to depend on 调号
+        if (this.upDownSymbol != UpDownSymbol.NATURAL)
+            return this.whiteKeyNote + this.upDownSymbol;
+        else
+            return this.whiteKeyNote
     }
     equals(other: NoteName): boolean {
         return this.upDownSymbol == other.upDownSymbol && this.whiteKeyNote == other.whiteKeyNote
+    }
+    copy(newUpDownSymbol: UpDownSymbol): NoteName {
+        return new NoteName(this.whiteKeyNote, newUpDownSymbol)
     }
 }
 
@@ -114,6 +124,7 @@ export function parseNoteName(noteString: string): OptionalNote {
     const upDown = Object.entries(upDownSymbolToString).find(
         (pair) => pair[1] == prefix
     )
+    // TODO: natural symbol should not be allowed here
     if (upDown) {
         const whiteKeyName = parseWhiteKeyNoteName(noteString.slice(1))
         return (
