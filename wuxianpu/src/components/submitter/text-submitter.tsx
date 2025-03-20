@@ -1,9 +1,15 @@
-import { useContext, useRef } from 'react'
+import { useContext, useRef, useState } from 'react'
 import Button from '../../common/button/button'
 import { parseNoteName } from '../../common/common'
 import { SubmitterInterface } from './submitter-interface'
 import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswer } from './lib/check-answer'
+import clsx from 'clsx'
+import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
+import { Sharp } from '../staff/symbols/sharp'
+import { Flat } from '../staff/symbols/flat'
+import { DoubleSharp } from '../staff/symbols/double_sharp'
+import { DoubleFlat } from '../staff/symbols/double_flat'
 
 export function TextSubmitter({
     incrementCorrect,
@@ -13,21 +19,30 @@ export function TextSubmitter({
     const { currentNote, setInputNote } = useContext(NoteContext)
     const { triggerNewNote } = useContext(ControlContext)
 
+    const [shengjiangString, setShengjiangString] = useState('')
+
     const submitButtonOnClick = () => {
         if (inputRef.current) {
-            const noteName = parseNoteName(inputRef.current.value)
-            if (noteName) {
-                setInputNote(noteName)
-            }
-            const [_, displayContent] = checkAnswer(
-                noteName,
-                currentNote,
-                incrementTotal,
-                incrementCorrect,
-                triggerNewNote
+            const combinedNoteString = shengjiangString + inputRef.current.value
+            console.log(`combinedNoteString is ${combinedNoteString}`)
+            const noteName = parseNoteName(
+                combinedNoteString
             )
-            if (spanRef.current) {
-                spanRef.current.innerText = displayContent
+            if (noteName == undefined) {
+                if (spanRef.current)
+                    spanRef.current.innerText = `不能识别 ${inputRef.current.value}！`
+            } else {
+                setInputNote(noteName)
+                const [_, displayContent] = checkAnswer(
+                    noteName,
+                    currentNote,
+                    incrementTotal,
+                    incrementCorrect,
+                    triggerNewNote
+                )
+                if (spanRef.current) {
+                    spanRef.current.innerText = displayContent
+                }
             }
         }
     }
@@ -35,7 +50,58 @@ export function TextSubmitter({
     const spanRef = useRef<HTMLSpanElement | null>(null)
 
     return (
-        <>
+        <div
+            className={clsx(
+                'flex items-center justify-center',
+                'flex-col', // on phone
+                'sm:flex-row' // other devices
+            )}
+        >
+            <DropdownMenu
+                elements={[
+                    { label: '无', value: '' },
+                    {
+                        label: '升号',
+                        value: '#',
+                        render: () => (
+                            <div className="w-full h-10 relative">
+                                <Sharp x_percent={50} y_percent={50} width={30} />
+                            </div>
+                        ),
+                    },
+                    {
+                        label: '降号',
+                        value: 'b',
+                        render: () => (
+                            <div className="w-full h-10 relative">
+                                <Flat x_percent={50} y_percent={50} width={30} />
+                            </div>
+                        ),
+                    },
+                    {
+                        label: '重升号',
+                        value: 'x',
+                        render: () => (
+                            <div className="w-full h-10 relative">
+                                <DoubleSharp x_percent={50} y_percent={50} width={17} />
+                            </div>
+                        ),
+                    },
+                    {
+                        label: '重降号',
+                        value: 'v',
+                        render: () => (
+                            <div className="w-full h-10 relative">
+                                <DoubleFlat x_percent={50} y_percent={50} width={30} />
+                            </div>
+                        ),
+                    },
+                ]}
+                onSelect={(value) => setShengjiangString(value)}
+                label="升降号"
+                defaultIndex={0}
+                classNames='flex-grow-0'
+            />
             <input
                 type="text"
                 id="noteInput"
@@ -45,9 +111,9 @@ export function TextSubmitter({
             />
             <Button label={'提交答案'} onClick={submitButtonOnClick} />
             <span
-                className="block mt-3 text-center text-orange-400"
+                className="mt-3 text-center text-orange-400"
                 ref={spanRef}
             ></span>
-        </>
+        </div>
     )
 }

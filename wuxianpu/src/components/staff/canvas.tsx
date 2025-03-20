@@ -67,15 +67,15 @@ function drawNote(
     const upDownSymbol = note.name.upDownSymbol
     const upDownSymbolHtml =
         upDownSymbol == UpDownSymbol.DOUBLE_SHARP ? (
-            <DoubleSharp x={x} y={y} />
+            <DoubleSharp x={x} y={y} width={28} />
         ) : upDownSymbol == UpDownSymbol.SHARP ? (
-            <Sharp x={x} y={y} />
+            <Sharp x={x} y={y} width={48} />
         ) : upDownSymbol == UpDownSymbol.NATURAL ? (
-            <Natural x={x} y={y} />
+            <Natural x={x} y={y} width={20} />
         ) : upDownSymbol == UpDownSymbol.FLAT ? (
-            <Flat x={x} y={y} />
+            <Flat x={x} y={y} width={48} />
         ) : upDownSymbol == UpDownSymbol.DOUBLE_FLAT ? (
-            <DoubleFlat x={x} y={y} />
+            <DoubleFlat x={x} y={y} width={48} />
         ) : (
             <></>
         )

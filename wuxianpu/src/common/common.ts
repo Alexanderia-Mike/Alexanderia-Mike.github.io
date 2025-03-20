@@ -101,12 +101,14 @@ export class NoteName {
     toValue(): number {
         // TODO: if upDownSymbol is None, then needs to depend on 调号
         if (this.upDownSymbol != UpDownSymbol.NATURAL)
-            return this.whiteKeyNote + this.upDownSymbol;
-        else
-            return this.whiteKeyNote
+            return this.whiteKeyNote + this.upDownSymbol
+        else return this.whiteKeyNote
     }
     equals(other: NoteName): boolean {
-        return this.upDownSymbol == other.upDownSymbol && this.whiteKeyNote == other.whiteKeyNote
+        return (
+            this.upDownSymbol == other.upDownSymbol &&
+            this.whiteKeyNote == other.whiteKeyNote
+        )
     }
     copy(newUpDownSymbol: UpDownSymbol): NoteName {
         return new NoteName(this.whiteKeyNote, newUpDownSymbol)
@@ -131,7 +133,7 @@ export function parseNoteName(noteString: string): OptionalNote {
             whiteKeyName &&
             new NoteName(
                 whiteKeyName,
-                UpDownSymbol[prefix as keyof typeof UpDownSymbol]
+                parseInt(upDown[0]) as UpDownSymbol
             )
         )
     } else {

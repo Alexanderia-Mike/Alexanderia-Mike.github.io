@@ -41,7 +41,7 @@ export function DropdownMenu<T>({
                 updateSelectedElmt(elements[defaultIndex])
             }
         }
-    })
+    }, [])
 
     useEffect(() => {
         const clickOutsideMenuEventListener = (event: MouseEvent) => {

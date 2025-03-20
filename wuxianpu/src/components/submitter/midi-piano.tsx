@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { getMidi, handleMidiMessages, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
 import ReadonlyPiano from './lib/readonly-piano'
@@ -37,10 +37,12 @@ export default function MIDIPiano({
             if (midiAccess.inputs.size == 0) {
                 throw Error('没有检测到 MIDI 设备!')
             }
-            deviceSuccess(`当前连接到设备: [${midiAccess.inputs
+            deviceSuccess(
+                `当前连接到设备: [${midiAccess.inputs
                     .values()
                     .map((i) => i.name)
-                    .toArray()}]`)
+                    .toArray()}]`
+            )
             handleMidiMessages(midiAccess, (message) => {
                 if (message.data) {
                     const [eventType, keyNote, _] = message.data
@@ -65,21 +67,31 @@ export default function MIDIPiano({
         setupMidi()
     })
 
+    const isFirst = useRef(true)
     useEffect(() => {
-        const [_, displayContent] = checkAnswer(
-            inputNote,
-            currentNote,
-            incrementTotal,
-            incrementCorrect,
-            triggerNewNote
-        )
-        setFeedback(displayContent)
+        console.log(`isFirst is ${isFirst.current}`)
+        if (!isFirst.current) {
+            const [_, displayContent] = checkAnswer(
+                inputNote,
+                currentNote,
+                incrementTotal,
+                incrementCorrect,
+                triggerNewNote
+            )
+            setFeedback(displayContent)
+        }
+        isFirst.current = false
     }, [inputNote])
 
     return (
         <div>
             <div className="flex flex-row justify-center items-center">
-                <span className={clsx("text-center flex text-lg", deviceHealthy ? "text-green-400" : "text-red-500")}>
+                <span
+                    className={clsx(
+                        'text-center flex text-lg',
+                        deviceHealthy ? 'text-green-400' : 'text-red-500'
+                    )}
+                >
                     {deviceMessage}
                 </span>
                 <Button
@@ -89,7 +101,9 @@ export default function MIDIPiano({
                 />
             </div>
             <div className="my-2 flex flex-row justify-center items-center">
-                <span className={clsx("text-center flex text-sm text-gray-400", )}>
+                <span
+                    className={clsx('text-center flex text-sm text-gray-400')}
+                >
                     请用数据线连接您的电脑和支持 MIDI API 的电子乐器
                 </span>
             </div>
