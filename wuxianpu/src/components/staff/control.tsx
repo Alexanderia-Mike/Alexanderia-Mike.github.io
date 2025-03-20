@@ -85,10 +85,13 @@ export default function Control({
 
     const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
 
-    const clefToggleOnChange = () => {
-        if (!randomClef) updateClef(clef == Clef.BASS ? Clef.TREBLE : Clef.BASS)
+    const clefDropdownOnSelect = (value: Clef | undefined) => {
+        if (value == undefined) {
+            setRandomClef(true)
+        } else {
+            updateClef(value)
+        }
     }
-    const randomClefToggleOnChange = () => setRandomClef(!randomClef)
     const autoGenerateToggleOnChange = () => {
         const newAutoGenerate = !autoGenerate
         setAutoGenerate(newAutoGenerate)
@@ -127,6 +130,10 @@ export default function Control({
                 )}
             >
                 <Toggle
+                    onChange={autoGenerateToggleOnChange}
+                    commonText="自动出题"
+                />
+                {/* <Toggle
                     onText="高音谱号"
                     offText="低音谱号"
                     onChange={clefToggleOnChange}
@@ -135,10 +142,17 @@ export default function Control({
                 <Toggle
                     onChange={randomClefToggleOnChange}
                     commonText="随机高低音谱"
-                />
-                <Toggle
-                    onChange={autoGenerateToggleOnChange}
-                    commonText="自动出题"
+                /> */}
+                <DropdownMenu
+                    elements={[
+                        { label: '高音谱号', value: Clef.TREBLE },
+                        { label: '低音谱号', value: Clef.BASS },
+                        { label: '随机高低音', value: undefined },
+                    ]}
+                    onSelect={clefDropdownOnSelect}
+                    defaultIndex={0}
+                    label="谱号"
+                    classNames="w-40"
                 />
                 <DropdownMenu
                     elements={[

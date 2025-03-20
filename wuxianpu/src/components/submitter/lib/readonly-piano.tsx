@@ -10,13 +10,17 @@ export default function ReadonlyPiano({
     correctKeys = [],
     pressedKeys = [],
     showColor = false,
+    grayed = false
 }: {
     correctKeys?: NoteName[]
     pressedKeys?: NoteName[]
     showColor?: boolean
+    grayed?: boolean
 }) {
     const getCommonKeyStyle = (i: number) => [
-        'flex flex-grow max-w-5 border-r border-y h-full border-black',
+        'flex flex-grow max-w-5 border-r border-y h-full',
+        grayed && "border-gray-300",
+        !grayed && "border-black",
         i == 0 && 'border-l',
     ]
 
@@ -57,7 +61,7 @@ export default function ReadonlyPiano({
                         style={colorKeyStyle(key)}
                     >
                         <div
-                            className="w-2/3 h-2/3 bg-black absolute -translate-x-1/2 z-10"
+                            className={clsx("w-2/3 h-2/3 absolute -translate-x-1/2 z-10", grayed && "bg-gray-300", !grayed && "bg-black")}
                             style={colorKeyStyle(key, true)}
                         ></div>
                     </div>

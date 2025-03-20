@@ -14,6 +14,7 @@ interface DropdownMenuProps<T> extends Hiddable, ExtraClassNames {
     // without placeholder, will select first element by default
     placeholder?: string
     label?: string
+    defaultIndex?: number
 }
 
 export function DropdownMenu<T>({
@@ -23,11 +24,24 @@ export function DropdownMenu<T>({
     hide,
     classNames,
     label,
+    defaultIndex,
 }: DropdownMenuProps<T>) {
     const [selectedElmt, updateSelectedElmt] =
         useState<DropdownElement<T> | null>(null)
     const [expand, updateExpand] = useState<boolean>(false)
     const menuBody = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        if (defaultIndex != undefined) {
+            if (defaultIndex >= elements.length) {
+                console.log(
+                    `default index ${defaultIndex} is larger than the element length ${elements.length}`
+                )
+            } else {
+                updateSelectedElmt(elements[defaultIndex])
+            }
+        }
+    }, [])
 
     useEffect(() => {
         const clickOutsideMenuEventListener = (event: MouseEvent) => {
@@ -60,7 +74,7 @@ export function DropdownMenu<T>({
     )
 
     const dropdownElements = (
-        <div className="absolute mx-4 min-w-[calc(100%-2rem)] top-full bg-white z-20 rounded-sm shadow-lg w-fit">
+        <div className="absolute mx-4 min-w-[calc(100%-2rem)] top-full bg-white bg-opacity-90 z-20 rounded-2xl shadow-lg w-fit">
             {elements.map((elmt, idx) => (
                 <div
                     className="my-1 hover:bg-slate-200 active:bg-slate-300"
@@ -74,7 +88,7 @@ export function DropdownMenu<T>({
                     {elmt.render ? (
                         elmt.render()
                     ) : (
-                        <div className="text-center my-3 whitespace-nowrap cursor-pointer">
+                        <div className="text-center my-1 py-2 px-2 whitespace-nowrap cursor-pointer">
                             {elmt.label}
                         </div>
                     )}
