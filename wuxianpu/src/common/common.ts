@@ -76,11 +76,11 @@ export enum UpDownSymbol {
 
 const upDownSymbolToString: Record<UpDownSymbol, string> = {
     [UpDownSymbol.NONE]: '',
-    [UpDownSymbol.SHARP]: '#',
-    [UpDownSymbol.FLAT]: 'b',
-    [UpDownSymbol.DOUBLE_SHARP]: 'x',
-    [UpDownSymbol.DOUBLE_FLAT]: 'v', // use v to denote double-flat
-    [UpDownSymbol.NATURAL]: '@', // use @ to denote natural
+    [UpDownSymbol.SHARP]: '升',
+    [UpDownSymbol.FLAT]: '降',
+    [UpDownSymbol.DOUBLE_SHARP]: '重升',
+    [UpDownSymbol.DOUBLE_FLAT]: '重降',
+    [UpDownSymbol.NATURAL]: '还原',
 }
 
 export class NoteName {
@@ -122,13 +122,14 @@ export function parseWhiteKeyNoteName(
 }
 
 export function parseNoteName(noteString: string): OptionalNote {
-    const prefix = noteString[0]
+    const prefix = noteString.includes(" ") ? noteString.split(" ")[0] : ""
+    const whiteKeyNoteName = noteString.slice(prefix.length).trim()
     const upDown = Object.entries(upDownSymbolToString).find(
         (pair) => pair[1] == prefix
     )
     // TODO: natural symbol should not be allowed here
+    const whiteKeyName = parseWhiteKeyNoteName(whiteKeyNoteName)
     if (upDown) {
-        const whiteKeyName = parseWhiteKeyNoteName(noteString.slice(1))
         return (
             whiteKeyName &&
             new NoteName(
@@ -137,7 +138,6 @@ export function parseNoteName(noteString: string): OptionalNote {
             )
         )
     } else {
-        const whiteKeyName = parseWhiteKeyNoteName(noteString)
         return whiteKeyName && new NoteName(whiteKeyName, UpDownSymbol.NONE)
     }
 }

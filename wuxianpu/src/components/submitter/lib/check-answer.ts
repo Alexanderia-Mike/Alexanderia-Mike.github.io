@@ -1,4 +1,4 @@
-import { OptionalNote } from '../../../common/common'
+import { NoteName, OptionalNote, UpDownSymbol } from '../../../common/common'
 
 export function checkAnswer(
     inputNote: OptionalNote,
