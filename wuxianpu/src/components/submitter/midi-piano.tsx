@@ -79,7 +79,7 @@ export default function MIDIPiano({
     return (
         <div>
             <div className="flex flex-row justify-center items-center">
-                <span className={clsx("text-center flex", deviceHealthy ? "text-green-400" : "text-red-500")}>
+                <span className={clsx("text-center flex text-lg", deviceHealthy ? "text-green-400" : "text-red-500")}>
                     {deviceMessage}
                 </span>
                 <Button
@@ -88,12 +88,18 @@ export default function MIDIPiano({
                     hide={deviceHealthy}
                 />
             </div>
+            <div className="my-2 flex flex-row justify-center items-center">
+                <span className={clsx("text-center flex text-sm text-gray-400", )}>
+                    请用数据线连接您的电脑和支持 MIDI API 的电子乐器
+                </span>
+            </div>
             <span className="text-center block">{feedback}</span>
             <div className="h-5"></div>
             <ReadonlyPiano
                 correctKeys={currentNote ? [currentNote] : []}
                 pressedKeys={inputNote ? [inputNote] : []}
                 showColor={inputNote != undefined}
+                grayed={!deviceHealthy}
             />
         </div>
     )
