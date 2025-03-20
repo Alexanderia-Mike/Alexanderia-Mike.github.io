@@ -14,6 +14,7 @@ interface DropdownMenuProps<T> extends Hiddable, ExtraClassNames {
     // without placeholder, will select first element by default
     placeholder?: string
     label?: string
+    defaultIndex?: number
 }
 
 export function DropdownMenu<T>({
@@ -23,11 +24,24 @@ export function DropdownMenu<T>({
     hide,
     classNames,
     label,
+    defaultIndex,
 }: DropdownMenuProps<T>) {
     const [selectedElmt, updateSelectedElmt] =
         useState<DropdownElement<T> | null>(null)
     const [expand, updateExpand] = useState<boolean>(false)
     const menuBody = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        if (defaultIndex != undefined) {
+            if (defaultIndex >= elements.length) {
+                console.log(
+                    `default index ${defaultIndex} is larger than the element length ${elements.length}`
+                )
+            } else {
+                updateSelectedElmt(elements[defaultIndex])
+            }
+        }
+    })
 
     useEffect(() => {
         const clickOutsideMenuEventListener = (event: MouseEvent) => {
