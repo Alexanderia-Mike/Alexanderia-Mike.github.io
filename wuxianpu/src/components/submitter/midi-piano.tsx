@@ -69,7 +69,6 @@ export default function MIDIPiano({
 
     const isFirst = useRef(true)
     useEffect(() => {
-        console.log(`isFirst is ${isFirst.current}`)
         if (!isFirst.current) {
             const [_, displayContent] = checkAnswer(
                 inputNote,

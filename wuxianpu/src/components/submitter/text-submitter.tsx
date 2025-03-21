@@ -10,6 +10,7 @@ import { Sharp } from '../staff/symbols/sharp'
 import { Flat } from '../staff/symbols/flat'
 import { DoubleSharp } from '../staff/symbols/double_sharp'
 import { DoubleFlat } from '../staff/symbols/double_flat'
+import { PitchNotation } from './lib/pitch-notation'
 
 export function TextSubmitter({
     incrementCorrect,
@@ -20,12 +21,16 @@ export function TextSubmitter({
     const { triggerNewNote } = useContext(ControlContext)
 
     const [shengjiangString, setShengjiangString] = useState('')
+    const [pitchNotation, setPitchNotation] = useState<PitchNotation>(
+        PitchNotation.HELMHOLTZ
+    )
 
     const submitButtonOnClick = () => {
         if (inputRef.current) {
-            const combinedNoteString = shengjiangString + inputRef.current.value
+            const whiteKeyNoteName = inputRef.current.value
+            const combinedNoteString = shengjiangString + whiteKeyNoteName
             console.log(`combinedNoteString is ${combinedNoteString}`)
-            const noteName = parseNoteName(combinedNoteString)
+            const noteName = parseNoteName(combinedNoteString, pitchNotation)
             if (noteName == undefined) {
                 if (spanRef.current)
                     spanRef.current.innerText = `不能识别 ${inputRef.current.value}！`
@@ -36,7 +41,8 @@ export function TextSubmitter({
                     currentNote,
                     incrementTotal,
                     incrementCorrect,
-                    triggerNewNote
+                    triggerNewNote,
+                    pitchNotation,
                 )
                 if (spanRef.current) {
                     spanRef.current.innerText = displayContent
@@ -48,14 +54,30 @@ export function TextSubmitter({
     const spanRef = useRef<HTMLSpanElement | null>(null)
 
     return (
-        <div className='flex flex-col items-center justify-center'>
+        <div className="flex flex-col items-center justify-center">
             <div
                 className={clsx(
                     'flex items-center justify-center',
                     'flex-col', // on phone
-                    'sm:flex-row' // other devices
+                    'md:flex-row' // other devices
                 )}
             >
+                <DropdownMenu
+                    elements={[
+                        {
+                            label: '亥姆霍茲音高记号',
+                            value: PitchNotation.HELMHOLTZ,
+                        },
+                        {
+                            label: '科学音高记号',
+                            value: PitchNotation.SCIENTIFIC,
+                        },
+                    ]}
+                    label="音高记号"
+                    defaultIndex={0}
+                    onSelect={(value) => setPitchNotation(value)}
+                    classNames="flex-grow-0"
+                />
                 <DropdownMenu
                     elements={[
                         { label: '无', value: '' },
@@ -121,7 +143,11 @@ export function TextSubmitter({
                     type="text"
                     id="noteInput"
                     ref={inputRef}
-                    placeholder="输入音名 (如 c, D, e2)"
+                    placeholder={`输入音名 (如 ${
+                        pitchNotation == PitchNotation.HELMHOLTZ
+                            ? 'c, D, e2'
+                            : 'C3, D2, E5'
+                    })`}
                     className="rounded-full mx-4 mt-2 mb-4 sm:mb-2 px-3 py-2 text-md border border-solid border-slate-400 min-w-10"
                 />
                 <Button label={'提交答案'} onClick={submitButtonOnClick} />

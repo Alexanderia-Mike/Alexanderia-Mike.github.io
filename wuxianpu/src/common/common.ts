@@ -1,3 +1,9 @@
+import {
+    helmholtzToScientific,
+    PitchNotation,
+    scientificToHelmholtz,
+} from '../components/submitter/lib/pitch-notation'
+
 export interface Hiddable {
     hide?: boolean
 }
@@ -93,9 +99,12 @@ export class NoteName {
         this.whiteKeyNote = whiteKeyNote
         this.upDownSymbol = upDownSymbol
     }
-    toString(): String {
+    toString(pitchNotation: PitchNotation = PitchNotation.HELMHOLTZ): string {
         // TODO: should we consider adding 调号?
-        const whiteKeyName = WhiteKeyNoteName[this.whiteKeyNote]
+        let whiteKeyName = WhiteKeyNoteName[this.whiteKeyNote]
+        if (pitchNotation == PitchNotation.SCIENTIFIC) {
+            whiteKeyName = helmholtzToScientific(whiteKeyName)
+        }
         return upDownSymbolToString[this.upDownSymbol] + whiteKeyName
     }
     toValue(): number {
@@ -116,27 +125,30 @@ export class NoteName {
 }
 
 export function parseWhiteKeyNoteName(
-    noteString: string
+    noteString: string,
+    pitchNotation: PitchNotation = PitchNotation.HELMHOLTZ
 ): WhiteKeyNoteName | undefined {
+    if (pitchNotation == PitchNotation.SCIENTIFIC) {
+        noteString = scientificToHelmholtz(noteString)
+    }
     return WhiteKeyNoteName[noteString as keyof typeof WhiteKeyNoteName]
 }
 
-export function parseNoteName(noteString: string): OptionalNote {
-    const prefix = noteString.includes(" ") ? noteString.split(" ")[0] : ""
+export function parseNoteName(
+    noteString: string,
+    pitchNotation: PitchNotation
+): OptionalNote {
+    const prefix = noteString.includes(' ') ? noteString.split(' ')[0] : ''
     const whiteKeyNoteName = noteString.slice(prefix.length).trim()
     const upDown = Object.entries(upDownSymbolToString).find(
         (pair) => pair[1] == prefix
     )
-    // TODO: natural symbol should not be allowed here
-    const whiteKeyName = parseWhiteKeyNoteName(whiteKeyNoteName)
+    const whiteKeyName = parseWhiteKeyNoteName(whiteKeyNoteName, pitchNotation)
     if (upDown) {
-        return (
-            whiteKeyName &&
-            new NoteName(
-                whiteKeyName,
-                parseInt(upDown[0]) as UpDownSymbol
-            )
-        )
+        const upDownSymbol = parseInt(upDown[0]) as UpDownSymbol
+        if (upDownSymbol == UpDownSymbol.NATURAL)
+            throw new Error('natural symbol should not be allowed here!')
+        return whiteKeyName && new NoteName(whiteKeyName, upDownSymbol)
     } else {
         return whiteKeyName && new NoteName(whiteKeyName, UpDownSymbol.NONE)
     }

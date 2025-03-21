@@ -2,6 +2,7 @@ import {
     parseWhiteKeyNoteName,
     NoteName,
     UpDownSymbol,
+    OptionalNote,
 } from '../../../common/common'
 
 let midiAccess: MIDIAccess | null = null
@@ -34,7 +35,7 @@ function midiToNoteHelper(noteNumber: number): [number, string, boolean] {
     const noteNames: [string, boolean][] = [
         // [note base name, whether sharp]
         ['C', false],
-        ['C', false],
+        ['C', true],
         ['D', false],
         ['D', true],
         ['E', false],
@@ -63,12 +64,7 @@ function midiToHelmholtzHelper(noteNumber: number): [string, boolean] {
     }
 }
 
-export function midiToHelmholtz(noteNumber: number) {
-    const [helmholtzBase, isSharp] = midiToHelmholtzHelper(noteNumber)
-    return (isSharp ? '#' : '') + helmholtzBase
-}
-
-export function midiToNoteName(noteNumber: number) {
+export function midiToNoteName(noteNumber: number): OptionalNote {
     const [helmholtzBase, isSharp] = midiToHelmholtzHelper(noteNumber)
     const whiteKeyNoteName = parseWhiteKeyNoteName(helmholtzBase)
     return (
