@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { NoteName, WhiteKeyNoteName } from '../../../common/common'
+import { NoteName, WhiteKeyNoteName } from '../../../common/notes-utils/notes'
 
 const keys = Object.entries(WhiteKeyNoteName)
     .filter(([_, v]) => typeof v == 'number')

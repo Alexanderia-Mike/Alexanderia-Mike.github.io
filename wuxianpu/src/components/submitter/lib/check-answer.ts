@@ -1,5 +1,5 @@
-import { OptionalNote } from '../../../common/common'
-import { PitchNotation } from './pitch-notation'
+import { OptionalNote } from '../../../common/notes-utils/notes'
+import { PitchNotation } from '../../../common/notes-utils/pitch-notation'
 
 export function checkAnswer(
     inputNote: OptionalNote,

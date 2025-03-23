@@ -1,4 +1,4 @@
-import { NoteName, WhiteKeyNoteName } from '../../common/common'
+import { NoteName, WhiteKeyNoteName } from '../../common/notes-utils/notes'
 import { Clef } from './clef'
 
 export class Note {

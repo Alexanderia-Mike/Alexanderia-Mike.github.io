@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react'
 import Button from '../../common/button/button'
-import { parseNoteName } from '../../common/common'
+import { parseNoteName } from '../../common/notes-utils/notes'
 import { SubmitterInterface } from './submitter-interface'
 import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswer } from './lib/check-answer'
@@ -10,7 +10,7 @@ import { Sharp } from '../staff/symbols/sharp'
 import { Flat } from '../staff/symbols/flat'
 import { DoubleSharp } from '../staff/symbols/double_sharp'
 import { DoubleFlat } from '../staff/symbols/double_flat'
-import { PitchNotation } from './lib/pitch-notation'
+import { PitchNotation } from '../../common/notes-utils/pitch-notation'
 import { SelectionPanel } from '../../common/selectionpanel/selectionpanel'
 
 export function TextSubmitter({

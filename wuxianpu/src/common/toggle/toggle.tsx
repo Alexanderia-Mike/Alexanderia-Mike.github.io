@@ -1,41 +1,35 @@
-import { ChangeEvent, ChangeEventHandler, useState } from 'react'
+import { ChangeEvent, ChangeEventHandler, ReactNode, useState } from 'react'
 import './style.css'
 import clsx from 'clsx'
 import { Hiddable } from '../common'
 
 interface ToggleProps extends Hiddable {
     onChange: ChangeEventHandler
-    commonText?: string
-    onText?: string
-    offText?: string
+    label: string
+    render?: () => ReactNode
 }
 
-export default function Toggle({
-    onChange,
-    hide,
-    onText,
-    offText,
-    commonText
-}: ToggleProps) {
-    const [checked, setChecked] = useState(false)
+export default function Toggle({ onChange, hide, label, render }: ToggleProps) {
     const inputElmt = (
         <input
             type="checkbox"
             hidden
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                const checked = event.target.checked
-                setChecked(checked)
                 onChange(event)
             }}
         />
     )
     return (
-        <label className={clsx('toggle mx-5 flex flex-grow flex-shrink-0 my-3', hide && 'hidden')}>
-            {inputElmt}
-            <span className="slider"></span>
+        <div
+            className={clsx(
+                'toggle mx-5 flex flex-grow flex-shrink-0 my-3',
+                hide && 'hidden'
+            )}
+        >
+            <label className="slider">{inputElmt}</label>
             <span className="label whitespace-nowrap" id="slider-label">
-                {commonText || (checked ? onText || '' : offText || '')}
+                {render ? render() : label}
             </span>
-        </label>
+        </div>
     )
 }

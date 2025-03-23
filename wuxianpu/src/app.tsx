@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Staff from './components/staff/staff'
-import { OptionalNote } from './common/common'
+import { OptionalNote } from './common/notes-utils/notes'
 import Submitter from './components/submitter/submitter'
 import { ControlContext, NoteContext } from './common/context'
 

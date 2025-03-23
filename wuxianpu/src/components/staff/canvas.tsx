@@ -2,7 +2,7 @@ import { JSX, useEffect, useRef, useState } from 'react'
 import { Clef } from './clef'
 import { Note, noteNameToNote } from './notes_mapping'
 import clsx from 'clsx'
-import { OptionalNote, UpDownSymbol } from '../../common/common'
+import { OptionalNote, Accidental } from '../../common/notes-utils/notes'
 import { Sharp } from './symbols/sharp'
 import { Flat } from './symbols/flat'
 import { DoubleSharp } from './symbols/double_sharp'
@@ -55,7 +55,7 @@ function drawNote(
     note: Note,
     clef: Clef,
     noteX: number,
-    setUpDown: React.Dispatch<React.SetStateAction<JSX.Element>>
+    setAccidental: React.Dispatch<React.SetStateAction<JSX.Element>>
 ) {
     // note dot
     console.log(`note name is ${note.name.toString()}`)
@@ -68,22 +68,22 @@ function drawNote(
     // up down symbol
     const x = noteX - 30
     const y = note.y + baseHeight
-    const upDownSymbol = note.name.upDownSymbol
-    const upDownSymbolHtml =
-        upDownSymbol == UpDownSymbol.DOUBLE_SHARP ? (
+    const accidental = note.name.accidental
+    const accidentalHtml =
+        accidental == Accidental.DOUBLE_SHARP ? (
             <DoubleSharp x={x} y={y} width={28} />
-        ) : upDownSymbol == UpDownSymbol.SHARP ? (
+        ) : accidental == Accidental.SHARP ? (
             <Sharp x={x} y={y} width={48} />
-        ) : upDownSymbol == UpDownSymbol.NATURAL ? (
+        ) : accidental == Accidental.NATURAL ? (
             <Natural x={x} y={y} width={20} />
-        ) : upDownSymbol == UpDownSymbol.FLAT ? (
+        ) : accidental == Accidental.FLAT ? (
             <Flat x={x} y={y} width={48} />
-        ) : upDownSymbol == UpDownSymbol.DOUBLE_FLAT ? (
+        ) : accidental == Accidental.DOUBLE_FLAT ? (
             <DoubleFlat x={x} y={y} width={48} />
         ) : (
             <></>
         )
-    setUpDown(upDownSymbolHtml)
+    setAccidental(accidentalHtml)
 }
 
 export default function Canvas({
@@ -95,7 +95,7 @@ export default function Canvas({
 }) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const note = noteName && noteNameToNote(noteName, clef)
-    const [upDown, setUpDown] = useState<JSX.Element>(<></>)
+    const [accidental, setAccidental] = useState<JSX.Element>(<></>)
     const [trebleLeft, setTrebleLeft] = useState(TREBLE_LEFT)
     const [bassLeft, setBassLeft] = useState(BASS_LEFT)
     const [noteXRatio, setNoteXRatio] = useState(0.5)
@@ -129,7 +129,7 @@ export default function Canvas({
                         note,
                         clef,
                         canvas.width * noteXRatio,
-                        setUpDown
+                        setAccidental
                     )
             }
         }
@@ -183,7 +183,7 @@ export default function Canvas({
                 className="border border-border-color bg-white w-full h-[385px]"
                 ref={canvasRef}
             ></canvas>
-            {upDown}
+            {accidental}
         </div>
     )
 }

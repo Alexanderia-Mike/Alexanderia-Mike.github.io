@@ -1,9 +1,9 @@
 import {
     parseWhiteKeyNoteName,
     NoteName,
-    UpDownSymbol,
-    OptionalNote,
-} from '../../../common/common'
+    Accidental,
+    OptionalNote
+} from '../../../common/notes-utils/notes'
 
 let midiAccess: MIDIAccess | null = null
 
@@ -71,7 +71,7 @@ export function midiToNoteName(noteNumber: number): OptionalNote {
         whiteKeyNoteName &&
         new NoteName(
             whiteKeyNoteName,
-            isSharp ? UpDownSymbol.SHARP : UpDownSymbol.NONE
+            isSharp ? Accidental.SHARP : Accidental.NONE
         )
     )
 }

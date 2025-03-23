@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { OptionalNote } from './common'
+import { OptionalNote } from './notes-utils/notes'
 
 interface NoteContextInterface {
     currentNote: OptionalNote

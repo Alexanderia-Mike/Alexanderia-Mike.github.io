@@ -33,6 +33,7 @@
     "react-intersection-observer": "^9.14.1",
     "react-router-dom": "^7.1.3",
     "style-loader": "^4.0.0",
+    "tailwindcss-plugin-icons": "^2.2.2",
     "three": "^0.172.0",
     "url-loader": "^4.1.1"
   }

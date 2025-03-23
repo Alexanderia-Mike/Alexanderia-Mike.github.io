@@ -1,4 +1,4 @@
-import { OptionalNote } from '../../common/common'
+import { OptionalNote } from '../../common/notes-utils/notes'
 
 export interface SubmitterInterface {
     incrementCorrect: () => void

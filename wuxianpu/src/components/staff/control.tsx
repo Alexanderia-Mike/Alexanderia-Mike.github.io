@@ -1,6 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../common/button/button'
-import { NoteName, OptionalNote, UpDownSymbol } from '../../common/common'
+import {
+    NoteName,
+    OptionalNote,
+    Accidental,
+} from '../../common/notes-utils/notes'
 import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
 import { whiteKeyNoteNames } from './notes_mapping'
@@ -8,6 +12,7 @@ import clsx from 'clsx'
 import { ControlContext } from '../../common/context'
 import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
 import { randomSelect } from '../../common/utils'
+import { FloatingDiv } from '../../common/floatingdiv/floatingdiv'
 
 function generateRandomNoteName(
     clef: Clef,
@@ -21,33 +26,33 @@ function generateRandomNoteName(
             return whiteKey
         case ShengJiangOption.SHARP_ONLY:
             return whiteKey.copy(
-                randomSelect([UpDownSymbol.SHARP, UpDownSymbol.DOUBLE_SHARP])
+                randomSelect([Accidental.SHARP, Accidental.DOUBLE_SHARP])
             )
         case ShengJiangOption.FLAT_ONLY:
             return whiteKey.copy(
-                randomSelect([UpDownSymbol.FLAT, UpDownSymbol.DOUBLE_FLAT])
+                randomSelect([Accidental.FLAT, Accidental.DOUBLE_FLAT])
             )
         case ShengJiangOption.SHARP_FLAT_ONLY:
             return whiteKey.copy(
                 randomSelect([
-                    UpDownSymbol.SHARP,
-                    UpDownSymbol.DOUBLE_SHARP,
-                    UpDownSymbol.FLAT,
-                    UpDownSymbol.DOUBLE_FLAT,
+                    Accidental.SHARP,
+                    Accidental.DOUBLE_SHARP,
+                    Accidental.FLAT,
+                    Accidental.DOUBLE_FLAT,
                 ])
             )
         case ShengJiangOption.RANDOM_SHARP_FLAT:
             return whiteKey.copy(
                 randomSelect([
-                    UpDownSymbol.SHARP,
-                    UpDownSymbol.DOUBLE_SHARP,
-                    UpDownSymbol.FLAT,
-                    UpDownSymbol.DOUBLE_FLAT,
+                    Accidental.SHARP,
+                    Accidental.DOUBLE_SHARP,
+                    Accidental.FLAT,
+                    Accidental.DOUBLE_FLAT,
                     // duplicate to increase the weight for NONE
-                    UpDownSymbol.NONE,
-                    UpDownSymbol.NONE,
-                    UpDownSymbol.NONE,
-                    UpDownSymbol.NONE,
+                    Accidental.NONE,
+                    Accidental.NONE,
+                    Accidental.NONE,
+                    Accidental.NONE,
                 ])
             )
     }
@@ -131,7 +136,13 @@ export default function Control({
             >
                 <Toggle
                     onChange={autoGenerateToggleOnChange}
-                    commonText="自动出题"
+                    label="自动出题"
+                    render={() => (
+                        <div className="flex items-center">
+                            <span className="mr-1">自动出题 </span>
+                            <FloatingDiv content="当回答正确后，自动出下一题" />
+                        </div>
+                    )}
                 />
                 <DropdownMenu
                     elements={[
@@ -146,9 +157,7 @@ export default function Control({
                 />
                 <DropdownMenu
                     // TODO: implements other 调号
-                    elements={[
-                        { label: 'C大调 / A小调', value: 0 },
-                    ]}
+                    elements={[{ label: 'C大调 / A小调', value: 0 }]}
                     onSelect={() => {}}
                     defaultIndex={0}
                     label="调号"
