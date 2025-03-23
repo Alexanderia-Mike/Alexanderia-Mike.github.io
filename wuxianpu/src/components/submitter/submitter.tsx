@@ -14,7 +14,7 @@ export default function Submitter() {
     const incrementCorrect = () => setCorrect(correct + 1)
     const incrementTotal = () => setTotal(total + 1)
 
-    const {setInputNote} = useContext(NoteContext)
+    const { setInputNote } = useContext(NoteContext)
 
     const navigationPagesMapping: Map<string, [JSX.Element, string]> = new Map([
         [
@@ -41,33 +41,51 @@ export default function Submitter() {
     ])
 
     function getNavigationLinks() {
-        return Array.from(navigationPagesMapping
-            .entries())
-            .map(([link, [_, text]], idx) => (
+        const activeNavDecoratorStart = (
+            <div className="absolute bg-white w-3 h-3 -translate-x-full bottom-0 left-0">
+                <div className="w-full h-full bg-custom-bg rounded-ee-xl"></div>
+            </div>
+        )
+        const activeNavDecoratorEnd = (
+            <div className="absolute bg-white w-3 h-3 translate-x-full bottom-0 right-0">
+                <div className="w-full h-full bg-custom-bg rounded-es-xl"></div>
+            </div>
+        )
+        return Array.from(navigationPagesMapping.entries()).map(
+            ([link, [_, text]], idx) => (
                 <NavLink
                     className={({ isActive }) =>
                         clsx(
-                            'mx-5 my-2 px-3 py-2 rounded-full hover:bg-white active:bg-slate-500',
+                            'mt-2 px-1 py-1 flex flex-grow-0 relative',
                             isActive
-                                ? 'bg-slate-200 border border-gray-400'
-                                : 'bg-slate-300'
+                                ? 'bg-white rounded-ss-xl rounded-se-xl'
+                                : 'bg-transparent'
                         )
                     }
                     key={idx}
                     to={'/' + link}
                     onClick={() => setInputNote(undefined)}
                 >
-                    {text}
+                    {({ isActive }) => (
+                        <>
+                            {isActive && activeNavDecoratorStart}
+                            <div className="py-2 px-5 rounded-xl hover:bg-white hover:z-10 active:bg-slate-500 active:z-10">
+                                {text}
+                            </div>
+                            {isActive && activeNavDecoratorEnd}
+                        </>
+                    )}
                 </NavLink>
-            ))
+            )
+        )
     }
 
     function getNavigationRoutes() {
-        return Array.from(navigationPagesMapping
-            .entries())
-            .map(([link, [elmt, _]], idx) => {
+        return Array.from(navigationPagesMapping.entries()).map(
+            ([link, [elmt, _]], idx) => {
                 return <Route path={'/' + link} element={elmt} key={idx} />
-            })
+            }
+        )
     }
 
     const defaultSubmitter = (
@@ -86,11 +104,15 @@ export default function Submitter() {
             />
             <hr className="mb-5 mt-10" />
             <div className="mt-5">
-                <nav className="mt-3 mb-10 py-3">{getNavigationLinks()}</nav>
-                <Routes>
-                    <Route path="*" element={defaultSubmitter} />
-                    {getNavigationRoutes()}
-                </Routes>
+                <nav className="mt-3 pt-3 flex justify-center items-center">
+                    {getNavigationLinks()}
+                </nav>
+                <div className="bg-white pt-10 flow-root">
+                    <Routes>
+                        <Route path="*" element={defaultSubmitter} />
+                        {getNavigationRoutes()}
+                    </Routes>
+                </div>
             </div>
         </Router>
     )

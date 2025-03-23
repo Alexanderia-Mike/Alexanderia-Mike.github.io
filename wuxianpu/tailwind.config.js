@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'border-color': '#ccc'
+        'border-color': '#ccc',
+        'custom-bg': '#e7e7e7',
       }
     },
   },

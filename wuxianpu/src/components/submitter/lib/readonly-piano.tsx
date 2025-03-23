@@ -52,7 +52,13 @@ export default function ReadonlyPiano({
         ) && i != 0
 
     return (
-        <div className="flex h-40 justify-center relative">
+        <div className={clsx(
+            "flex justify-center relative",
+            "h-14",
+            "sm:h-20",
+            "md:h-32",
+            "lg:h-40",
+            )}>
             {keys.map((key, i) =>
                 followingBlackKey(key, i) ? (
                     <div

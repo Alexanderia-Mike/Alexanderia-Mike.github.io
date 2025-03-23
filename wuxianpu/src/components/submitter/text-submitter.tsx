@@ -11,6 +11,7 @@ import { Flat } from '../staff/symbols/flat'
 import { DoubleSharp } from '../staff/symbols/double_sharp'
 import { DoubleFlat } from '../staff/symbols/double_flat'
 import { PitchNotation } from './lib/pitch-notation'
+import { SelectionPanel } from '../../common/selectionpanel/selectionpanel'
 
 export function TextSubmitter({
     incrementCorrect,
@@ -42,7 +43,7 @@ export function TextSubmitter({
                     incrementTotal,
                     incrementCorrect,
                     triggerNewNote,
-                    pitchNotation,
+                    pitchNotation
                 )
                 if (spanRef.current) {
                     spanRef.current.innerText = displayContent
@@ -54,7 +55,23 @@ export function TextSubmitter({
     const spanRef = useRef<HTMLSpanElement | null>(null)
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center mb-10">
+            <SelectionPanel
+                elements={[
+                    {
+                        label: '亥姆霍茲音高记号',
+                        value: PitchNotation.HELMHOLTZ,
+                    },
+                    {
+                        label: '科学音高记号',
+                        value: PitchNotation.SCIENTIFIC,
+                    },
+                ]}
+                label="音高记号"
+                defaultIndex={0}
+                onSelect={(value) => setPitchNotation(value)}
+                classNames="flex-grow-0 mb-5"
+            />
             <div
                 className={clsx(
                     'flex items-center justify-center',
@@ -62,22 +79,6 @@ export function TextSubmitter({
                     'md:flex-row' // other devices
                 )}
             >
-                <DropdownMenu
-                    elements={[
-                        {
-                            label: '亥姆霍茲音高记号',
-                            value: PitchNotation.HELMHOLTZ,
-                        },
-                        {
-                            label: '科学音高记号',
-                            value: PitchNotation.SCIENTIFIC,
-                        },
-                    ]}
-                    label="音高记号"
-                    defaultIndex={0}
-                    onSelect={(value) => setPitchNotation(value)}
-                    classNames="flex-grow-0"
-                />
                 <DropdownMenu
                     elements={[
                         { label: '无', value: '' },

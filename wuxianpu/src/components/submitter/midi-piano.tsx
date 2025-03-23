@@ -83,7 +83,7 @@ export default function MIDIPiano({
     }, [inputNote])
 
     return (
-        <div>
+        <div className='mb-10'>
             <div className="flex flex-row justify-center items-center">
                 <span
                     className={clsx(

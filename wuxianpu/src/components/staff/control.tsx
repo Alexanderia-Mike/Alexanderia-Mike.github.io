@@ -133,16 +133,6 @@ export default function Control({
                     onChange={autoGenerateToggleOnChange}
                     commonText="自动出题"
                 />
-                {/* <Toggle
-                    onText="高音谱号"
-                    offText="低音谱号"
-                    onChange={clefToggleOnChange}
-                    hide={randomClef}
-                />
-                <Toggle
-                    onChange={randomClefToggleOnChange}
-                    commonText="随机高低音谱"
-                /> */}
                 <DropdownMenu
                     elements={[
                         { label: '高音谱号', value: Clef.TREBLE },
@@ -152,6 +142,16 @@ export default function Control({
                     onSelect={clefDropdownOnSelect}
                     defaultIndex={0}
                     label="谱号"
+                    classNames="w-40"
+                />
+                <DropdownMenu
+                    // TODO: implements other 调号
+                    elements={[
+                        { label: 'C大调 / A小调', value: 0 },
+                    ]}
+                    onSelect={() => {}}
+                    defaultIndex={0}
+                    label="调号"
                     classNames="w-40"
                 />
                 <DropdownMenu
@@ -174,6 +174,7 @@ export default function Control({
                     onSelect={(value) => setShengjiang(value)}
                     label="升降号"
                     classNames="w-40"
+                    defaultIndex={0}
                 />
             </div>
             <div className="flex justify-center items-center">
