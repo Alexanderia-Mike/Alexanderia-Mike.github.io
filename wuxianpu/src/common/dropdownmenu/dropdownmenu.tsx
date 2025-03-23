@@ -11,7 +11,6 @@ export interface DropdownElement<T> {
 interface DropdownMenuProps<T> extends Hiddable, ExtraClassNames {
     elements: DropdownElement<T>[]
     onSelect: (value: T) => void
-    // without placeholder, will select first element by default
     placeholder?: string
     label?: string
     defaultIndex?: number

@@ -22,12 +22,14 @@ export default function ScoreBoard({
         <div
             className={clsx(
                 // total || 'hidden',
-                'flex flex-grow justify-center items-center'
+                'flex justify-center'
             )}
         >
-            <span className="mx-5">正确: {correct}</span>
-            <span className="mx-5">总共: {total}</span>
-            <Button label={'重置计分表'} onClick={resetButtonOnClick} />
+            <div className="flex flex-grow-0 py-7 px-10 rounded-full shadow-xl justify-center items-center">
+                <span className="mx-5">正确: {correct}</span>
+                <span className="mx-5">总共: {total}</span>
+                <Button label={'重置计分表'} onClick={resetButtonOnClick} />
+            </div>
         </div>
     )
 }
