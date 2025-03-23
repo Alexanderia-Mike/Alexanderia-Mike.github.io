@@ -140,7 +140,7 @@ export default function Control({
                     render={() => (
                         <div className="flex items-center">
                             <span className="mr-1">自动出题 </span>
-                            <FloatingDiv content="当回答正确后，自动出下一题" />
+                            <FloatingDiv content="当回答正确后，自动出下一题" width={20} />
                         </div>
                     )}
                 />

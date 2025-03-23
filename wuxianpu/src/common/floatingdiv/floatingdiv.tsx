@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from 'react'
 
 interface FloatingDivProps {
     content: string
+    width: number
 }
 
 const BOUNDARY_THRESHOLD = 10
-const FLOATING_VERTICAL_MARGIN = 10
 
-export function FloatingDiv({ content }: FloatingDivProps) {
+export function FloatingDiv({ content, width }: FloatingDivProps) {
     const iconRef = useRef<SVGSVGElement | null>(null)
     const floatingRef = useRef<HTMLDivElement | null>(null)
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -19,7 +19,9 @@ export function FloatingDiv({ content }: FloatingDivProps) {
         const clickOutsideMenuEventListener = (event: MouseEvent) => {
             if (
                 iconRef.current &&
-                !iconRef.current.contains(event.target as Node)
+                !iconRef.current.contains(event.target as Node) &&
+                floatingRef.current &&
+                !floatingRef.current.contains(event.target as Node)
             ) {
                 setIsOpen(false)
             }
@@ -33,32 +35,31 @@ export function FloatingDiv({ content }: FloatingDivProps) {
     }, [])
 
     useEffect(() => {
-        console.log(
-            `window.width: ${window.innerWidth}; floating.width: ${
-                floatingRef.current?.clientWidth
-            }; container.left: ${iconRef.current?.getBoundingClientRect().left}`
-        )
-        if (iconRef.current && floatingRef.current) {
-            const containerRect = iconRef.current.getBoundingClientRect()
-            const floatingRect = floatingRef.current.getBoundingClientRect()
-            setLeft(
-                Math.min(
-                    0,
-                    window.innerWidth -
-                        containerRect.left -
-                        floatingRect.width -
-                        BOUNDARY_THRESHOLD
+        const resizeHandler = () => {
+            if (iconRef.current && floatingRef.current) {
+                const containerRect = iconRef.current.getBoundingClientRect()
+                const floatingRect = floatingRef.current.getBoundingClientRect()
+                setLeft(
+                    Math.min(
+                        0,
+                        window.innerWidth -
+                            containerRect.left -
+                            floatingRect.width -
+                            BOUNDARY_THRESHOLD
+                    )
                 )
-            )
-            setBelowIcon(
-                containerRect.top +
-                    containerRect.height +
-                    FLOATING_VERTICAL_MARGIN +
-                    floatingRect.width +
-                    BOUNDARY_THRESHOLD <
-                    window.innerHeight
-            )
+                setBelowIcon(
+                    containerRect.top +
+                        containerRect.height +
+                        floatingRect.height +
+                        BOUNDARY_THRESHOLD <
+                        window.innerHeight
+                )
+            }
         }
+        resizeHandler()
+        window.addEventListener('resize', resizeHandler)
+        return () => window.removeEventListener('resize', resizeHandler)
     })
 
     return (
@@ -66,12 +67,14 @@ export function FloatingDiv({ content }: FloatingDivProps) {
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewBox={`0 0 24 24`}
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6"
+                width={`${width}px`}
+                height={`${width}px`}
                 ref={iconRef}
                 onClick={() => setIsOpen(!isOpen)}
+                className="hover:cursor-pointer active:cursor-pointer"
             >
                 <path
                     strokeLinecap="round"
@@ -81,13 +84,15 @@ export function FloatingDiv({ content }: FloatingDivProps) {
             </svg>
             <div
                 className={clsx(
-                    'px-4 py-2 max-w-200 max-h-40 overflow-auto absolute bg-white bg-opacity-90 rounded-2xl shadow-xl z-30',
+                    'px-4 py-2 max-w-[50rem] whitespace-nowrap max-h-40 overflow-auto absolute bg-white bg-opacity-90 rounded-2xl shadow-xl z-30',
                     isOpen || 'hidden',
-                    belowIcon ? `bottom-0 translate-y-full` : 'top-0 -translate-y-full'
+                    belowIcon
+                        ? `bottom-0 translate-y-full`
+                        : 'top-0 -translate-y-full'
                 )}
                 ref={floatingRef}
                 style={{
-                    left: `${left}px`
+                    left: `${left}px`,
                 }}
             >
                 {content}

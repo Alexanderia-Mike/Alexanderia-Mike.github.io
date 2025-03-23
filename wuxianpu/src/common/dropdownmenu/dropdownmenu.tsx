@@ -73,7 +73,7 @@ export function DropdownMenu<T>({
     )
 
     const dropdownElements = (
-        <div className="absolute mx-4 min-w-[calc(100%-2rem)] top-full bg-white bg-opacity-90 z-20 rounded-2xl shadow-lg w-fit">
+        <div className="absolute mx-4 min-w-[calc(100%-2rem)] max-h-60 overflow-auto top-full bg-white bg-opacity-90 z-20 rounded-2xl shadow-lg w-fit">
             {elements.map((elmt, idx) => (
                 <div
                     className="my-1 hover:bg-slate-200 active:bg-slate-300"

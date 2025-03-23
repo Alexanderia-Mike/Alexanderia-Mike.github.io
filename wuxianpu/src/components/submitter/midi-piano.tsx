@@ -6,6 +6,7 @@ import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswer } from './lib/check-answer'
 import Button from '../../common/button/button'
 import clsx from 'clsx'
+import { FloatingDiv } from '../../common/floatingdiv/floatingdiv'
 
 let lastTimestamp = 0
 
@@ -87,24 +88,18 @@ export default function MIDIPiano({
             <div className="flex flex-row justify-center items-center">
                 <span
                     className={clsx(
-                        'text-center flex text-lg',
+                        'text-center flex text-lg me-1',
                         deviceHealthy ? 'text-green-400' : 'text-red-500'
                     )}
                 >
                     {deviceMessage}
                 </span>
+                <FloatingDiv content="请用数据线连接您的电脑和支持 MIDI API 的电子乐器" width={20} />
                 <Button
                     label={'重新连接'}
                     onClick={setupMidi}
                     hide={deviceHealthy}
                 />
-            </div>
-            <div className="my-2 flex flex-row justify-center items-center">
-                <span
-                    className={clsx('text-center flex text-sm text-gray-400')}
-                >
-                    请用数据线连接您的电脑和支持 MIDI API 的电子乐器
-                </span>
             </div>
             <span className="text-center block">{feedback}</span>
             <div className="h-5"></div>
