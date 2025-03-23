@@ -6,6 +6,7 @@ interface SymbolProps {
     y?: number
     x_percent?: number
     y_percent?: number
+    additionalStyles?: CSSProperties
 }
 
 export abstract class AbstractSymbol extends Component<SymbolProps> {
@@ -37,7 +38,7 @@ export abstract class AbstractSymbol extends Component<SymbolProps> {
             style.top = `${this.props.y_percent}%`
         style.width =
             this.props.width != undefined ? `${this.props.width}px` : '3rem'
-        return style
+        return { ...style, ...this.props.additionalStyles }
     }
 
     render(): ReactNode {

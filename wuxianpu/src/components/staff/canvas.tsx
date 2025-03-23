@@ -1,20 +1,21 @@
 import { JSX, useEffect, useRef, useState } from 'react'
 import { Clef } from './clef'
 import { Note, noteNameToNote } from './notes_mapping'
-import clsx from 'clsx'
 import { OptionalNote, Accidental } from '../../common/notes-utils/notes'
 import { Sharp } from './symbols/sharp'
 import { Flat } from './symbols/flat'
 import { DoubleSharp } from './symbols/double_sharp'
 import { Natural } from './symbols/natural'
 import { DoubleFlat } from './symbols/double_flat'
+import { Treble } from './symbols/treble'
+import { Bass } from './symbols/bass'
 
 const BASS_HEIGHT = 140
-const BASS_LEFT = 95
+const BASS_LEFT = 132.5
 const BASS_LEFT_PHONE = 65
 const TREBLE_HEIGHT = -19
-const TREBLE_LEFT = 80
-const TREBLE_LEFT_PHONE = 50
+const TREBLE_LEFT = 130
+const TREBLE_LEFT_PHONE = 100
 
 function drawStaffSingle(
     ctx: CanvasRenderingContext2D,
@@ -157,27 +158,17 @@ export default function Canvas({
 
     return (
         <div className="relative w-full">
-            <img
-                className={clsx(
-                    'absolute w-[100px] top-[47px]',
-                    clef == Clef.BASS && 'opacity-10'
-                )}
-                src="assets/gaoyin.png"
-                style={{
-                    transform: `translateY(${TREBLE_HEIGHT}px)`,
-                    left: `${trebleLeft}px`,
-                }}
+            <Treble
+                width={100}
+                x={trebleLeft}
+                y={113 + TREBLE_HEIGHT}
+                additionalStyles={{ opacity: clef == Clef.BASS ? 0.3 : 1 }}
             />
-            <img
-                className={clsx(
-                    'absolute w-[75px] top-[86px] translate-y-1',
-                    clef == Clef.TREBLE && 'opacity-30'
-                )}
-                src="assets/diyin.svg"
-                style={{
-                    transform: `translateY(${BASS_HEIGHT}px)`,
-                    left: `${bassLeft}px`,
-                }}
+            <Bass
+                width={75}
+                x={bassLeft}
+                y={126 + BASS_HEIGHT}
+                additionalStyles={{ opacity: clef == Clef.TREBLE ? 0.3 : 1 }}
             />
             <canvas
                 className="border border-border-color bg-white w-full h-[385px]"
