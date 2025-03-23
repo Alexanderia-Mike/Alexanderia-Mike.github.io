@@ -1,6 +1,6 @@
-import { AbstractSymbol } from './common'
+import { SymbolWithImageSource } from './common'
 
-export class Treble extends AbstractSymbol {
+export class Treble extends SymbolWithImageSource {
     override getImageSource(): string {
         return 'assets/gaoyin.png'
     }

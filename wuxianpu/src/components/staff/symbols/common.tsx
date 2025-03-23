@@ -1,7 +1,7 @@
 import { Component, CSSProperties, ReactNode } from 'react'
 
-interface SymbolProps {
-    width: number
+export interface SymbolProps {
+    width?: number
     x?: number
     y?: number
     x_percent?: number
@@ -9,25 +9,7 @@ interface SymbolProps {
     additionalStyles?: CSSProperties
 }
 
-export abstract class AbstractSymbol extends Component<SymbolProps> {
-    protected abstract getImageSource(): string
-
-    protected getImageNode(
-        style: CSSProperties,
-        className?: string
-    ): ReactNode {
-        return (
-            <img
-                className={
-                    className ||
-                    'absolute -translate-x-1/2 -translate-y-1/2 w-7'
-                }
-                src={this.getImageSource()}
-                style={style}
-            />
-        )
-    }
-
+export abstract class BaseSymbol extends Component<SymbolProps> {
     protected getStyle(): CSSProperties {
         const style: CSSProperties = {}
         if (this.props.x != undefined) style.left = `${this.props.x}px`
@@ -36,12 +18,53 @@ export abstract class AbstractSymbol extends Component<SymbolProps> {
             style.left = `${this.props.x_percent}%`
         if (this.props.y_percent != undefined)
             style.top = `${this.props.y_percent}%`
-        style.width =
-            this.props.width != undefined ? `${this.props.width}px` : '3rem'
+        if (this.props.width != undefined) style.width = `${this.props.width}px`
         return { ...style, ...this.props.additionalStyles }
     }
+}
 
-    render(): ReactNode {
+export abstract class SymbolWithImageSource extends BaseSymbol {
+    protected abstract getImageSource(): string
+
+    protected getImageNode(
+        style: CSSProperties,
+        className?: string
+    ): ReactNode {
+        return (
+            <div
+                className={
+                    className || 'absolute -translate-x-1/2 -translate-y-1/2'
+                }
+                style={style}
+            >
+                <img className="w-full" src={this.getImageSource()} />
+            </div>
+        )
+    }
+
+    override render(): ReactNode {
         return this.getImageNode(this.getStyle())
+    }
+}
+
+export abstract class CompositeSymbol extends BaseSymbol {
+    protected abstract symbols: BaseSymbol[]
+
+    protected getCompositeNode(style: CSSProperties) {
+        return (
+            <div
+                className="absolute -translate-x-1/2 -translate-y-1/2 w-fit"
+                style={style}
+            >
+                {this.symbols.map((symbol, idx) => (
+                    <div key={idx}>{symbol.render()}</div>
+                ))}
+                <div className="w-3 bg-black"></div>
+            </div>
+        )
+    }
+
+    override render(): ReactNode {
+        return this.getCompositeNode(this.getStyle())
     }
 }

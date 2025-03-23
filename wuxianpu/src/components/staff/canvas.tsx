@@ -9,13 +9,20 @@ import { Natural } from './symbols/natural'
 import { DoubleFlat } from './symbols/double_flat'
 import { Treble } from './symbols/treble'
 import { Bass } from './symbols/bass'
+import { KeyG } from './symbols/key_g'
+import { KeyF } from './symbols/key_f'
+import { KeyD } from './symbols/key_d'
+import { KeyA } from './symbols/key_a'
+import { KeyE } from './symbols/key_e'
+import { KeyB } from './symbols/key_b'
+import { KeySharpF } from './symbols/key_#f'
 
 const BASS_HEIGHT = 140
 const BASS_LEFT = 132.5
-const BASS_LEFT_PHONE = 65
+const BASS_LEFT_PHONE = 85
 const TREBLE_HEIGHT = -19
 const TREBLE_LEFT = 130
-const TREBLE_LEFT_PHONE = 100
+const TREBLE_LEFT_PHONE = 82.5
 
 function drawStaffSingle(
     ctx: CanvasRenderingContext2D,
@@ -74,7 +81,7 @@ function drawNote(
         accidental == Accidental.DOUBLE_SHARP ? (
             <DoubleSharp x={x} y={y} width={28} />
         ) : accidental == Accidental.SHARP ? (
-            <Sharp x={x} y={y} width={48} />
+            <Sharp x={x} y={y} width={30} />
         ) : accidental == Accidental.NATURAL ? (
             <Natural x={x} y={y} width={20} />
         ) : accidental == Accidental.FLAT ? (
@@ -164,6 +171,7 @@ export default function Canvas({
                 y={113 + TREBLE_HEIGHT}
                 additionalStyles={{ opacity: clef == Clef.BASS ? 0.3 : 1 }}
             />
+            <KeySharpF x={trebleLeft} y={130 + TREBLE_HEIGHT} />
             <Bass
                 width={75}
                 x={bassLeft}

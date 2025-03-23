@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
-import { AbstractSymbol } from './common'
+import { SymbolWithImageSource } from './common'
 
-export class DoubleFlat extends AbstractSymbol {
+export class DoubleFlat extends SymbolWithImageSource {
     override getImageSource(): string {
         return 'assets/flat.png'
     }
@@ -11,11 +11,11 @@ export class DoubleFlat extends AbstractSymbol {
             <div>
                 {this.getImageNode(
                     this.getStyle(),
-                    'absolute -translate-x-[62%] -translate-y-1/2 w-12'
+                    'absolute -translate-x-[62%] -translate-y-[65%] w-12'
                 )}
                 {this.getImageNode(
                     this.getStyle(),
-                    'absolute -translate-x-[38%] -translate-y-1/2 w-12'
+                    'absolute -translate-x-[38%] -translate-y-[65%] w-12'
                 )}
             </div>
         )

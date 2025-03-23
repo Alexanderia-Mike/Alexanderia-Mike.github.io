@@ -1,7 +1,7 @@
-import { AbstractSymbol } from './common'
+import { SymbolWithImageSource } from './common'
 
-export class Sharp extends AbstractSymbol {
+export class Sharp extends SymbolWithImageSource {
     override getImageSource(): string {
-        return 'assets/sharp.png'
+        return 'assets/sharp.svg'
     }
 }
