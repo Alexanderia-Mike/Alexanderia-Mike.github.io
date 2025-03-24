@@ -12,7 +12,10 @@ export function checkAnswer(
     console.log(`input note is ${inputNote}, correct note is ${currentNote}`)
 
     const isCorrect =
-        (inputNote && currentNote && inputNote.toValue() == currentNote.toValue()) || false
+        (inputNote &&
+            currentNote &&
+            inputNote.valueOf() == currentNote.valueOf()) ||
+        false
     const displayContent = !currentNote
         ? '请先生成练习题！'
         : !inputNote

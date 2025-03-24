@@ -15,6 +15,8 @@ import {
 } from './symbols/key-signatures/sharpkeys'
 import { NoteContext } from '../../common/context'
 import { getKeySignatureSymbol } from './symbols/key-signatures/utils'
+import { KeySignature } from '../../common/notes-utils/key-signature'
+import { noteInKeys } from '../../common/notes-utils/utils'
 
 const BASS_HEIGHT = 140
 const BASS_LEFT = 132.5
@@ -62,7 +64,8 @@ function drawNote(
     note: Note,
     clef: Clef,
     noteX: number,
-    setAccidental: React.Dispatch<React.SetStateAction<JSX.Element>>
+    setAccidental: React.Dispatch<React.SetStateAction<JSX.Element>>,
+    keySignature: KeySignature
 ) {
     // note dot
     console.log(`note name is ${note.name.toString()}`)
@@ -76,21 +79,27 @@ function drawNote(
     const x = noteX - 30
     const y = note.y + baseHeight
     const accidental = note.name.accidental
-    const accidentalHtml =
-        accidental == Accidental.DOUBLE_SHARP ? (
-            <DoubleSharp x={x} y={y} width={28} />
-        ) : accidental == Accidental.SHARP ? (
-            <Sharp x={x} y={y} width={30} />
-        ) : accidental == Accidental.NATURAL ? (
-            <Natural x={x} y={y} width={20} />
-        ) : accidental == Accidental.FLAT ? (
-            <Flat x={x} y={y} width={48} />
-        ) : accidental == Accidental.DOUBLE_FLAT ? (
-            <DoubleFlat x={x} y={y} />
-        ) : (
-            <></>
-        )
-    setAccidental(accidentalHtml)
+    // TODO: if the key signature already contains the same accidental, then skip
+    if (noteInKeys(note.name, keySignature)) {
+        setAccidental(<></>)
+    } else {
+        const accidentalHtml =
+            accidental == Accidental.DOUBLE_SHARP ? (
+                <DoubleSharp x={x} y={y} width={28} />
+            ) : accidental == Accidental.SHARP ? (
+                <Sharp x={x} y={y} width={30} />
+            ) : accidental == Accidental.NONE ? (
+                // TODO: if key signature has an inherent accidental, draw the Natural
+                <Natural x={x} y={y} width={20} />
+            ) : accidental == Accidental.FLAT ? (
+                <Flat x={x} y={y} width={48} />
+            ) : accidental == Accidental.DOUBLE_FLAT ? (
+                <DoubleFlat x={x} y={y} />
+            ) : (
+                <></>
+            )
+        setAccidental(accidentalHtml)
+    }
 }
 
 export default function Canvas({
@@ -138,7 +147,8 @@ export default function Canvas({
                         note,
                         clef,
                         canvas.width * noteXRatio,
-                        setAccidental
+                        setAccidental,
+                        keySignature
                     )
             }
         }

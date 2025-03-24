@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react'
 import Button from '../../common/button/button'
-import { parseNoteName } from '../../common/notes-utils/notes'
+import { parseNoteName } from '../../common/notes-utils/utils'
 import { SubmitterInterface } from './submitter-interface'
 import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswer } from './lib/check-answer'

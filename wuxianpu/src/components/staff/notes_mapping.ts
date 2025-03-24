@@ -1,4 +1,10 @@
-import { NoteName, WhiteKeyNoteName } from '../../common/notes-utils/notes'
+import {
+    ALL_WHITE_KEYS,
+    NoteName,
+    NoteNameBase,
+    WhiteKeyNoteName,
+} from '../../common/notes-utils/notes'
+import { getIntervalWhiteKey } from '../../common/notes-utils/utils'
 import { Clef } from './clef'
 
 export class Note {
@@ -11,72 +17,46 @@ export class Note {
     y: number
 }
 
-const whiteKeyToHeightMapping: Record<Clef, Map<WhiteKeyNoteName, number>> = {
-    [Clef.TREBLE]: new Map([
-        [WhiteKeyNoteName.e3, 30],
-        [WhiteKeyNoteName.d3, 40],
-        [WhiteKeyNoteName.c3, 50],
-        [WhiteKeyNoteName.b2, 60],
-        [WhiteKeyNoteName.a2, 70],
-        // below need additional staff
-        [WhiteKeyNoteName.g2, 80],
-        [WhiteKeyNoteName.f2, 90],
-        [WhiteKeyNoteName.e2, 100],
-        [WhiteKeyNoteName.d2, 110],
-        [WhiteKeyNoteName.c2, 120],
-        [WhiteKeyNoteName.b1, 130],
-        [WhiteKeyNoteName.a1, 140],
-        [WhiteKeyNoteName.g1, 150],
-        [WhiteKeyNoteName.f1, 160],
-        [WhiteKeyNoteName.e1, 170],
-        [WhiteKeyNoteName.d1, 180],
-        // above need additional staff
-        [WhiteKeyNoteName.c1, 190],
-        [WhiteKeyNoteName.b, 200],
-        [WhiteKeyNoteName.a, 210],
-        [WhiteKeyNoteName.g, 220],
-        [WhiteKeyNoteName.f, 230],
-    ]),
-    [Clef.BASS]: new Map([
-        [WhiteKeyNoteName.g1, 30],
-        [WhiteKeyNoteName.f1, 40],
-        [WhiteKeyNoteName.e1, 50],
-        [WhiteKeyNoteName.d1, 60],
-        [WhiteKeyNoteName.c1, 70],
-        // below need additional staff
-        [WhiteKeyNoteName.b, 80],
-        [WhiteKeyNoteName.a, 90],
-        [WhiteKeyNoteName.g, 100],
-        [WhiteKeyNoteName.f, 110],
-        [WhiteKeyNoteName.e, 120],
-        [WhiteKeyNoteName.d, 130],
-        [WhiteKeyNoteName.c, 140],
-        [WhiteKeyNoteName.B, 150],
-        [WhiteKeyNoteName.A, 160],
-        [WhiteKeyNoteName.G, 170],
-        [WhiteKeyNoteName.F, 180],
-        // above need additional staff
-        [WhiteKeyNoteName.E, 190],
-        [WhiteKeyNoteName.D, 200],
-        [WhiteKeyNoteName.C, 210],
-        [WhiteKeyNoteName.B1, 220],
-        [WhiteKeyNoteName.A1, 230],
-    ]),
+const TREBLE_LOWEST_KEY = new WhiteKeyNoteName(NoteNameBase.F, 3)
+const TREBLE_HEIGHEST_KEY = new WhiteKeyNoteName(NoteNameBase.E, 6)
+const BASS_LOWEST_KEY = new WhiteKeyNoteName(NoteNameBase.A, 1)
+const BASS_HEIGHEST_KEY = new WhiteKeyNoteName(NoteNameBase.G, 4)
+
+function getWhiteKeyHeight(
+    clef: Clef,
+    whiteKey: WhiteKeyNoteName
+): number | undefined {
+    let lowestKey, heighestKey
+    switch (clef) {
+        case Clef.TREBLE:
+            lowestKey = TREBLE_LOWEST_KEY
+            heighestKey = TREBLE_HEIGHEST_KEY
+            break
+        case Clef.BASS:
+            lowestKey = BASS_LOWEST_KEY
+            heighestKey = BASS_HEIGHEST_KEY
+            break
+    }
+    if (whiteKey < lowestKey || whiteKey > heighestKey) {
+        return undefined
+    }
+    console.log(`interval = ${getIntervalWhiteKey(whiteKey, heighestKey)}`)
+    return 20 + 10 * getIntervalWhiteKey(whiteKey, heighestKey)
 }
 
 export function noteNameToNote(
     noteName: NoteName,
     clef: Clef
 ): Note | undefined {
-    const height = whiteKeyToHeightMapping[clef].get(noteName.whiteKeyNote)
+    const height = getWhiteKeyHeight(clef, noteName.whiteKeyNote)
     return height != undefined ? new Note(noteName, height) : undefined
 }
 
 export const whiteKeyNoteNames: Record<Clef, NoteName[]> = {
-    [Clef.TREBLE]: Array.from(whiteKeyToHeightMapping[Clef.TREBLE]
-        .keys())
-        .map((wk) => new NoteName(wk)),
-    [Clef.BASS]: Array.from(whiteKeyToHeightMapping[Clef.BASS]
-        .keys())
-        .map((wk) => new NoteName(wk)),
+    [Clef.TREBLE]: ALL_WHITE_KEYS.filter(
+        (wk) => wk < TREBLE_HEIGHEST_KEY && wk > TREBLE_LOWEST_KEY
+    ).map((wk) => new NoteName(wk)),
+    [Clef.BASS]: ALL_WHITE_KEYS.filter(
+        (wk) => wk < BASS_HEIGHEST_KEY && wk > BASS_LOWEST_KEY
+    ).map((wk) => new NoteName(wk)),
 }

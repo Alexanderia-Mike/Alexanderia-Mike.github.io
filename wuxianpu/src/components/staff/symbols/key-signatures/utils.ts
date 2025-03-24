@@ -34,6 +34,11 @@ import {
     KeySharpCBass,
     KeySharpFBass,
 } from './sharpkeys'
+import {
+    Accidental,
+    NoteName,
+    NoteNameBase,
+} from '../../../../common/notes-utils/notes'
 
 export function getKeySignatureSymbol(
     keySignature: KeySignature,

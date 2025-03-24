@@ -17,12 +17,12 @@ import { KeySignature } from '../../common/notes-utils/key-signature'
 
 function generateRandomNoteName(
     clef: Clef,
-    shengjiang: ShengJiangOption
+    accidental: ShengJiangOption
 ): NoteName {
     // after adding 调号, will need to add Natural symbol to it
     const candidates = whiteKeyNoteNames[clef]
     const whiteKey = randomSelect(candidates)
-    switch (shengjiang) {
+    switch (accidental) {
         case ShengJiangOption.NO_SHENGJIANG:
             return whiteKey
         case ShengJiangOption.SHARP_ONLY:
@@ -85,7 +85,7 @@ export default function Control({
     const [randomClef, setRandomClef] = useState<boolean>(false)
     const [autoGenerate, setAutoGenerate] = useState<boolean>(false)
     const [scanAnimate, setScanAnimate] = useState<boolean>(false)
-    const [shengjiang, setShengjiang] = useState<ShengJiangOption>(
+    const [accidental, setShengjiang] = useState<ShengJiangOption>(
         ShengJiangOption.NO_SHENGJIANG
     )
 
@@ -113,7 +113,7 @@ export default function Control({
             newClef = generateRandomClef()
             updateClef(newClef)
         }
-        updateNoteName(generateRandomNoteName(newClef || clef, shengjiang))
+        updateNoteName(generateRandomNoteName(newClef || clef, accidental))
         clearInputNote()
     }
 

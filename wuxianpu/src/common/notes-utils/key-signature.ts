@@ -1,6 +1,3 @@
-import { Accidental, NoteName, WhiteKeyNoteName } from './notes'
-import { GeneralSolfege, Solfege } from './solfege'
-
 export enum KeySignature {
     C = 0,
     G = 1,
@@ -17,20 +14,4 @@ export enum KeySignature {
     FLAT_D = -5,
     FLAT_G = -6,
     FLAT_C = -7,
-}
-
-export function whiteKeyNoteToSolfege(
-    whiteKeyNote: WhiteKeyNoteName,
-    keySignature: KeySignature
-): Solfege {
-    // TODO
-    return Solfege.Do
-}
-
-export function noteNameToSolfege(
-    noteName: NoteName,
-    keySignature: KeySignature
-): GeneralSolfege {
-    // TODO
-    return new GeneralSolfege(Solfege.Do, Accidental.NONE)
 }

@@ -1,9 +1,9 @@
 import {
-    parseWhiteKeyNoteName,
     NoteName,
     Accidental,
-    OptionalNote
+    OptionalNote,
 } from '../../../common/notes-utils/notes'
+import { parseWhiteKeyNoteName } from '../../../common/notes-utils/utils'
 
 let midiAccess: MIDIAccess | null = null
 
