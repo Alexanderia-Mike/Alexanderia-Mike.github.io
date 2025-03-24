@@ -2,20 +2,17 @@ import { JSX, useEffect, useRef, useState } from 'react'
 import { Clef } from './clef'
 import { Note, noteNameToNote } from './notes_mapping'
 import { OptionalNote, Accidental } from '../../common/notes-utils/notes'
-import { Sharp } from './symbols/sharp'
-import { Flat } from './symbols/flat'
-import { DoubleSharp } from './symbols/double_sharp'
+import { Sharp } from './symbols/accidentals/sharp'
+import { Flat } from './symbols/accidentals/flat'
+import { DoubleSharp } from './symbols/accidentals/double_sharp'
 import { Natural } from './symbols/natural'
-import { DoubleFlat } from './symbols/double_flat'
+import { DoubleFlat } from './symbols/accidentals/double_flat'
 import { Treble } from './symbols/treble'
 import { Bass } from './symbols/bass'
-import { KeyG } from './symbols/key_g'
-import { KeyF } from './symbols/key_f'
-import { KeyD } from './symbols/key_d'
-import { KeyA } from './symbols/key_a'
-import { KeyE } from './symbols/key_e'
-import { KeyB } from './symbols/key_b'
-import { KeySharpF } from './symbols/key_#f'
+import {
+    KeySharpFBass,
+    KeySharpFTreble,
+} from './symbols/key-signatures/sharpkeys'
 
 const BASS_HEIGHT = 140
 const BASS_LEFT = 132.5
@@ -87,7 +84,7 @@ function drawNote(
         ) : accidental == Accidental.FLAT ? (
             <Flat x={x} y={y} width={48} />
         ) : accidental == Accidental.DOUBLE_FLAT ? (
-            <DoubleFlat x={x} y={y} width={48} />
+            <DoubleFlat x={x} y={y} />
         ) : (
             <></>
         )
@@ -146,10 +143,14 @@ export default function Canvas({
     useEffect(() => {
         const handleResize = () => {
             const width = window.innerWidth
-            if (width < 640) {
+            if (width < 768) {
                 setBassLeft(BASS_LEFT_PHONE)
                 setTrebleLeft(TREBLE_LEFT_PHONE)
-                setNoteXRatio(0.65)
+                if (width < 640) {
+                    setNoteXRatio(0.8)
+                } else if (width < 768) {
+                    setNoteXRatio(0.65)
+                }
             } else {
                 setBassLeft(BASS_LEFT)
                 setTrebleLeft(TREBLE_LEFT)
@@ -171,13 +172,14 @@ export default function Canvas({
                 y={113 + TREBLE_HEIGHT}
                 additionalStyles={{ opacity: clef == Clef.BASS ? 0.3 : 1 }}
             />
-            <KeySharpF x={trebleLeft} y={130 + TREBLE_HEIGHT} />
+            <KeySharpFTreble x={trebleLeft} y={130 + TREBLE_HEIGHT} />
             <Bass
                 width={75}
                 x={bassLeft}
                 y={126 + BASS_HEIGHT}
                 additionalStyles={{ opacity: clef == Clef.TREBLE ? 0.3 : 1 }}
             />
+            <KeySharpFBass x={bassLeft} y={130 + BASS_HEIGHT} />
             <canvas
                 className="border border-border-color bg-white w-full h-[385px]"
                 ref={canvasRef}

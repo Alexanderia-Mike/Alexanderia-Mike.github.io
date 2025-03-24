@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { SymbolWithImageSource } from './common'
+import { SymbolWithImageSource } from '../common'
 
 export class Flat extends SymbolWithImageSource {
     override getImageSource(): string {

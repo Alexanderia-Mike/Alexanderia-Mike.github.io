@@ -9,10 +9,11 @@ import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
 import { whiteKeyNoteNames } from './notes_mapping'
 import clsx from 'clsx'
-import { ControlContext } from '../../common/context'
+import { ControlContext, NoteContext } from '../../common/context'
 import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
 import { randomSelect } from '../../common/utils'
 import { FloatingDiv } from '../../common/floatingdiv/floatingdiv'
+import { KeySignature } from '../../common/notes-utils/key-signature'
 
 function generateRandomNoteName(
     clef: Clef,
@@ -89,6 +90,7 @@ export default function Control({
     )
 
     const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
+    const { keySignature, setKeySignature } = useContext(NoteContext)
 
     const clefDropdownOnSelect = (value: Clef | undefined) => {
         if (value == undefined) {
@@ -140,7 +142,10 @@ export default function Control({
                     render={() => (
                         <div className="flex items-center">
                             <span className="mr-1">自动出题 </span>
-                            <FloatingDiv content="当回答正确后，自动出下一题" width={20} />
+                            <FloatingDiv
+                                content="当回答正确后，自动出下一题"
+                                width={20}
+                            />
                         </div>
                     )}
                 />
@@ -157,8 +162,37 @@ export default function Control({
                 />
                 <DropdownMenu
                     // TODO: implements other 调号
-                    elements={[{ label: 'C大调 / A小调', value: 0 }]}
-                    onSelect={() => {}}
+                    elements={[
+                        { label: 'C大调 / A小调', value: KeySignature.C },
+                        { label: 'D大调 / B小调', value: KeySignature.D },
+                        { label: 'E大调 / #C小调', value: KeySignature.E },
+                        { label: 'F大调 / D小调', value: KeySignature.F },
+                        { label: 'G大调 / E小调', value: KeySignature.G },
+                        { label: 'A大调 / #F小调', value: KeySignature.A },
+                        { label: 'B大调 / #G小调', value: KeySignature.B },
+                        {
+                            label: 'bC大调 / bA小调',
+                            value: KeySignature.FLAT_C,
+                        },
+                        {
+                            label: 'bD大调 / bB小调',
+                            value: KeySignature.FLAT_D,
+                        },
+                        { label: 'bE大调 / C小调', value: KeySignature.FLAT_E },
+                        {
+                            label: '#F大调 / #D小调',
+                            value: KeySignature.SHARP_F,
+                        },
+                        {
+                            label: 'bG大调 / bE小调',
+                            value: KeySignature.FLAT_G,
+                        },
+                        { label: 'bA大调 / F小调', value: KeySignature.FLAT_A },
+                        { label: 'bB大调 / G小调', value: KeySignature.FLAT_B },
+                    ]}
+                    onSelect={(value) => {
+                        setKeySignature(value)
+                    }}
                     defaultIndex={0}
                     label="调号"
                     classNames="w-40"

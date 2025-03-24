@@ -1,8 +1,23 @@
 import { Accidental, NoteName, WhiteKeyNoteName } from './notes'
 import { GeneralSolfege, Solfege } from './solfege'
 
-export enum KeySignature {}
-// TODO
+export enum KeySignature {
+    C = 0,
+    G = 1,
+    D = 2,
+    A = 3,
+    E = 4,
+    B = 5,
+    SHARP_F = 6,
+    SHARP_C = 7,
+    F = -1,
+    FLAT_B = -2,
+    FLAT_E = -3,
+    FLAT_A = -4,
+    FLAT_D = -5,
+    FLAT_G = -6,
+    FLAT_C = -7,
+}
 
 export function whiteKeyNoteToSolfege(
     whiteKeyNote: WhiteKeyNoteName,
