@@ -90,7 +90,7 @@ export default function Control({
     )
 
     const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
-    const { keySignature, setKeySignature } = useContext(NoteContext)
+    const { setKeySignature } = useContext(NoteContext)
 
     const clefDropdownOnSelect = (value: Clef | undefined) => {
         if (value == undefined) {

@@ -1,4 +1,4 @@
-import { JSX, useEffect, useRef, useState } from 'react'
+import { JSX, useContext, useEffect, useRef, useState } from 'react'
 import { Clef } from './clef'
 import { Note, noteNameToNote } from './notes_mapping'
 import { OptionalNote, Accidental } from '../../common/notes-utils/notes'
@@ -13,6 +13,8 @@ import {
     KeySharpFBass,
     KeySharpFTreble,
 } from './symbols/key-signatures/sharpkeys'
+import { NoteContext } from '../../common/context'
+import { getKeySignatureSymbol } from './symbols/key-signatures/utils'
 
 const BASS_HEIGHT = 140
 const BASS_LEFT = 132.5
@@ -105,7 +107,9 @@ export default function Canvas({
     const [bassLeft, setBassLeft] = useState(BASS_LEFT)
     const [noteXRatio, setNoteXRatio] = useState(0.5)
 
-    useEffect(() => {
+    const { keySignature } = useContext(NoteContext)
+
+    const refreshCanvas = () => {
         const canvas = canvasRef.current
         if (canvas) {
             canvas.width = canvas.clientWidth
@@ -138,7 +142,13 @@ export default function Canvas({
                     )
             }
         }
-    }, [clef, noteName])
+    }
+
+    useEffect(refreshCanvas, [clef, noteName])
+    useEffect(() => {
+        window.addEventListener('resize', refreshCanvas)
+        return () => window.removeEventListener('resize', refreshCanvas)
+    })
 
     useEffect(() => {
         const handleResize = () => {
@@ -172,14 +182,22 @@ export default function Canvas({
                 y={113 + TREBLE_HEIGHT}
                 additionalStyles={{ opacity: clef == Clef.BASS ? 0.3 : 1 }}
             />
-            <KeySharpFTreble x={trebleLeft} y={130 + TREBLE_HEIGHT} />
+            {getKeySignatureSymbol(keySignature, Clef.TREBLE, {
+                x: trebleLeft,
+                y: 130 + TREBLE_HEIGHT,
+                additionalStyles: { opacity: clef == Clef.BASS ? 0.3 : 1 },
+            })?.render()}
             <Bass
                 width={75}
                 x={bassLeft}
                 y={126 + BASS_HEIGHT}
                 additionalStyles={{ opacity: clef == Clef.TREBLE ? 0.3 : 1 }}
             />
-            <KeySharpFBass x={bassLeft} y={130 + BASS_HEIGHT} />
+            {getKeySignatureSymbol(keySignature, Clef.BASS, {
+                x: bassLeft,
+                y: 130 + BASS_HEIGHT,
+                additionalStyles: { opacity: clef == Clef.TREBLE ? 0.3 : 1 },
+            })?.render()}
             <canvas
                 className="border border-border-color bg-white w-full h-[385px]"
                 ref={canvasRef}

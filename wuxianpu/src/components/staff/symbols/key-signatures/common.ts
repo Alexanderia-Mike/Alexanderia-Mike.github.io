@@ -33,7 +33,7 @@ abstract class FlatKeySignatureSymbol extends CompositeSymbol {
     get symbols(): BaseSymbol[] {
         return this.ys.map(
             (y, idx) =>
-                new Flat({ width: 30, x: this.baseX + this.gapX * idx, y: y })
+                new Flat({ width: 48, x: this.baseX + this.gapX * idx, y: y })
         )
     }
 }
