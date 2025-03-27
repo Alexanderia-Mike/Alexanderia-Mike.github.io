@@ -3,7 +3,7 @@ import { getMidi, handleMidiMessages, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
 import ReadonlyPiano from './lib/readonly-piano'
 import { ControlContext, NoteContext } from '../../common/context'
-import { checkAnswer } from './lib/check-answer'
+import { checkAnswerNote } from './lib/check-answer'
 import Button from '../../common/button/button'
 import clsx from 'clsx'
 import { FloatingDiv } from '../../common/floatingdiv/floatingdiv'
@@ -71,7 +71,7 @@ export default function MIDIPiano({
     const isFirst = useRef(true)
     useEffect(() => {
         if (!isFirst.current) {
-            const [_, displayContent] = checkAnswer(
+            const [_, displayContent] = checkAnswerNote(
                 inputNote,
                 currentNote,
                 incrementTotal,
@@ -84,7 +84,7 @@ export default function MIDIPiano({
     }, [inputNote])
 
     return (
-        <div className='mb-10'>
+        <div className="mb-20">
             <div className="flex flex-row justify-center items-center">
                 <span
                     className={clsx(
@@ -94,7 +94,10 @@ export default function MIDIPiano({
                 >
                     {deviceMessage}
                 </span>
-                <FloatingDiv content="请用数据线连接您的电脑和支持 MIDI API 的电子乐器" width={20} />
+                <FloatingDiv
+                    content="请用数据线连接您的电脑和支持 MIDI API 的电子乐器"
+                    width={20}
+                />
                 <Button
                     label={'重新连接'}
                     onClick={setupMidi}

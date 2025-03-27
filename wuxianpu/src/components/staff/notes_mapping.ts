@@ -40,8 +40,7 @@ function getWhiteKeyHeight(
     if (whiteKey < lowestKey || whiteKey > heighestKey) {
         return undefined
     }
-    console.log(`interval = ${getIntervalWhiteKey(whiteKey, heighestKey)}`)
-    return 20 + 10 * getIntervalWhiteKey(whiteKey, heighestKey)
+    return 30 + 10 * getIntervalWhiteKey(whiteKey, heighestKey)
 }
 
 export function noteNameToNote(

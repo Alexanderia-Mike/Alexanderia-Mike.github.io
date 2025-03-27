@@ -14,16 +14,19 @@ export enum NoteNameBase {
 export class WhiteKeyNoteName {
     noteNameBase: NoteNameBase
     octave: number // same to scientific notation
-
     constructor(noteNameBase: NoteNameBase, octave: number) {
         this.noteNameBase = noteNameBase
         this.octave = octave
     }
-
     valueOf(): number {
         return 12 + this.octave * 12 + this.noteNameBase
     }
-
+    equals(other: WhiteKeyNoteName): boolean {
+        return (
+            this.noteNameBase == other.noteNameBase &&
+            this.octave == other.octave
+        )
+    }
     toString(pitchNotation: PitchNotation): string {
         const noteNameBaseString = NoteNameBase[this.noteNameBase]
         switch (pitchNotation) {
@@ -49,6 +52,8 @@ export enum Accidental {
     FLAT = -1,
     DOUBLE_SHARP = 2,
     DOUBLE_FLAT = -2,
+    TRIPLE_SHARP = 3,
+    TRIPLE_FLAT = -3,
 }
 export const accidentalToString: Record<Accidental, string> = {
     [Accidental.NONE]: '',
@@ -56,6 +61,8 @@ export const accidentalToString: Record<Accidental, string> = {
     [Accidental.FLAT]: '降',
     [Accidental.DOUBLE_SHARP]: '重升',
     [Accidental.DOUBLE_FLAT]: '重降',
+    [Accidental.TRIPLE_SHARP]: '三重升',
+    [Accidental.TRIPLE_FLAT]: '三重降',
 }
 
 export class NoteName {
@@ -78,7 +85,7 @@ export class NoteName {
     equals(other: NoteName): boolean {
         return (
             this.accidental == other.accidental &&
-            this.whiteKeyNote == other.whiteKeyNote
+            this.whiteKeyNote.equals(other.whiteKeyNote)
         )
     }
     copy(newAccidental: Accidental): NoteName {

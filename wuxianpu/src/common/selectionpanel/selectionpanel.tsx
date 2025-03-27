@@ -62,7 +62,8 @@ export function SelectionPanel<T>({
             ref={menuBody}
             className={clsx(
                 'mx-5 my-3 flex flex-grow flex-shrink-0 justify-center items-center',
-                classNames
+                classNames,
+                hide && 'hidden'
             )}
         >
             {label && <div className="mr-2 whitespace-nowrap">{label}</div>}

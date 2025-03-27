@@ -1,4 +1,8 @@
-import { KeySignature } from './key-signature'
+import {
+    getKeySignatureNoteNameBase,
+    getKeySignatureTonics,
+    KeySignature,
+} from './key-signature'
 import {
     Accidental,
     accidentalToString,
@@ -8,7 +12,12 @@ import {
     WhiteKeyNoteName,
 } from './notes'
 import { PitchNotation } from './pitch-notation'
-import { Solfege, GeneralSolfege } from './solfege'
+import {
+    Solfege,
+    GeneralSolfege,
+    OptionalSolfege,
+    getSolfegeSeminoteCount,
+} from './solfege'
 
 const numberedNoteNameBase: Record<NoteNameBase, number> = {
     [NoteNameBase.C]: 0,
@@ -21,6 +30,7 @@ const numberedNoteNameBase: Record<NoteNameBase, number> = {
 }
 
 // interval from note1 rising to note2. Negative if note1 is higher than note2
+// WARN: it's not the same interval in music theory. It's 0 when two notes are equal
 export function getIntervalWhiteKey(
     note1: WhiteKeyNoteName,
     note2: WhiteKeyNoteName
@@ -28,11 +38,11 @@ export function getIntervalWhiteKey(
     return (
         (note2.octave - note1.octave) * 7 +
         (numberedNoteNameBase[note2.noteNameBase] -
-            numberedNoteNameBase[note1.noteNameBase]) +
-        1
+            numberedNoteNameBase[note1.noteNameBase])
     )
 }
 
+// WARN: it's not the same interval in music theory. It's 0 when two notes are equal
 export function getInterval(note1: NoteName, note2: NoteName): number {
     return getIntervalWhiteKey(note1.whiteKeyNote, note2.whiteKeyNote)
 }
@@ -91,134 +101,57 @@ export function parseNoteName(
         return whiteKeyName && new NoteName(whiteKeyName, Accidental.NONE)
     }
 }
-export function whiteKeyNoteToSolfege(
-    whiteKeyNote: WhiteKeyNoteName,
-    keySignature: KeySignature
-): Solfege {
-    // TODO
-    return Solfege.Do
+
+export function parseSolfege(solfegeString: string): Solfege | undefined {
+    try {
+        return parseInt(solfegeString) as Solfege
+    } catch (e) {
+        console.log(`cannot parse ${solfegeString} as Solfege`)
+        console.log((e as Error).message)
+        return undefined
+    }
+}
+
+export function parseGeneralSolfege(
+    generalSolfegeString: string
+): OptionalSolfege {
+    const prefix = generalSolfegeString.includes(' ')
+        ? generalSolfegeString.split(' ')[0]
+        : ''
+    const solfegeString = generalSolfegeString.slice(prefix.length).trim()
+    const accidental = Object.entries(accidentalToString).find(
+        (pair) => pair[1] == prefix
+    )
+    const solfege = parseSolfege(solfegeString)
+    if (accidental) {
+        const accidentalSymbol = parseInt(accidental[0]) as Accidental
+        return solfege && new GeneralSolfege(solfege, accidentalSymbol)
+    } else {
+        return solfege && new GeneralSolfege(solfege, Accidental.NONE)
+    }
 }
 
 export function noteNameToSolfege(
     noteName: NoteName,
     keySignature: KeySignature
 ): GeneralSolfege {
-    // TODO
-    return new GeneralSolfege(Solfege.Do, Accidental.NONE)
-}
-function getSharpNotesForKey(keySignature: KeySignature): NoteNameBase[] {
-    switch (keySignature) {
-        case KeySignature.SHARP_C:
-            return [
-                NoteNameBase.F,
-                NoteNameBase.C,
-                NoteNameBase.G,
-                NoteNameBase.D,
-                NoteNameBase.A,
-                NoteNameBase.E,
-                NoteNameBase.C,
-            ]
-        case KeySignature.SHARP_F:
-            return [
-                NoteNameBase.F,
-                NoteNameBase.C,
-                NoteNameBase.G,
-                NoteNameBase.D,
-                NoteNameBase.A,
-                NoteNameBase.E,
-            ]
-        case KeySignature.B:
-            return [
-                NoteNameBase.F,
-                NoteNameBase.C,
-                NoteNameBase.G,
-                NoteNameBase.D,
-                NoteNameBase.A,
-            ]
-        case KeySignature.E:
-            return [
-                NoteNameBase.F,
-                NoteNameBase.C,
-                NoteNameBase.G,
-                NoteNameBase.D,
-            ]
-        case KeySignature.A:
-            return [NoteNameBase.F, NoteNameBase.C, NoteNameBase.G]
-        case KeySignature.D:
-            return [NoteNameBase.F, NoteNameBase.C]
-        case KeySignature.G:
-            return [NoteNameBase.F]
-        default:
-            return []
-    }
-}
-function getFlatNotesForKey(keySignature: KeySignature): NoteNameBase[] {
-    switch (keySignature) {
-        case KeySignature.FLAT_C:
-            return [
-                NoteNameBase.B,
-                NoteNameBase.E,
-                NoteNameBase.A,
-                NoteNameBase.D,
-                NoteNameBase.G,
-                NoteNameBase.C,
-                NoteNameBase.F,
-            ]
-        case KeySignature.FLAT_G:
-            return [
-                NoteNameBase.B,
-                NoteNameBase.E,
-                NoteNameBase.A,
-                NoteNameBase.D,
-                NoteNameBase.G,
-                NoteNameBase.C,
-            ]
-        case KeySignature.FLAT_D:
-            return [
-                NoteNameBase.B,
-                NoteNameBase.E,
-                NoteNameBase.A,
-                NoteNameBase.D,
-                NoteNameBase.G,
-            ]
-        case KeySignature.FLAT_A:
-            return [
-                NoteNameBase.B,
-                NoteNameBase.E,
-                NoteNameBase.A,
-                NoteNameBase.D,
-            ]
-        case KeySignature.FLAT_E:
-            return [NoteNameBase.B, NoteNameBase.E, NoteNameBase.A]
-        case KeySignature.FLAT_B:
-            return [NoteNameBase.B, NoteNameBase.E]
-        case KeySignature.F:
-            return [NoteNameBase.B]
-        default:
-            return []
-    }
+    const tonicNoteBase = getKeySignatureNoteNameBase(keySignature)
+    const octave =
+        noteName.whiteKeyNote.noteNameBase >= tonicNoteBase
+            ? noteName.whiteKeyNote.octave
+            : noteName.whiteKeyNote.octave - 1
+    const tonic = getKeySignatureTonics(keySignature, octave)
+    const interval = getInterval(tonic, noteName)
+    console.log(`tonic = ${tonic}`)
+    console.log(`noteName = ${noteName}`)
+    console.log(`interval = ${interval}`)
+
+    const solfege = (interval + 1) as Solfege
+    const accidental = (getSemitoneCount(tonic, noteName) -
+        getSolfegeSeminoteCount(solfege)) as Accidental
+    return new GeneralSolfege(solfege, accidental)
 }
 
-export function noteInKeys(
-    noteName: NoteName,
-    keySignature: KeySignature
-): boolean {
-    const sharpNotesForKey = getSharpNotesForKey(keySignature)
-    const flatNotesForKey = getFlatNotesForKey(keySignature)
-    const baseNoteName = noteName.whiteKeyNote.noteNameBase
-    const matchSharp = sharpNotesForKey.includes(baseNoteName)
-    const matchFlat = flatNotesForKey.includes(baseNoteName)
-    switch (noteName.accidental) {
-        case Accidental.SHARP:
-            return matchSharp
-        case Accidental.FLAT:
-            return matchFlat
-        case Accidental.NONE:
-            return !matchSharp && !matchFlat
-        default:
-            return false
-    }
-}
 export function helmholtzToScientific(noteString: string): string | undefined {
     return parseNoteName(noteString, PitchNotation.HELMHOLTZ)?.toString(
         PitchNotation.SCIENTIFIC

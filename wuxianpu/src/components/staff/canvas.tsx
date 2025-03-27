@@ -9,14 +9,10 @@ import { Natural } from './symbols/natural'
 import { DoubleFlat } from './symbols/accidentals/double_flat'
 import { Treble } from './symbols/treble'
 import { Bass } from './symbols/bass'
-import {
-    KeySharpFBass,
-    KeySharpFTreble,
-} from './symbols/key-signatures/sharpkeys'
 import { NoteContext } from '../../common/context'
 import { getKeySignatureSymbol } from './symbols/key-signatures/utils'
 import { KeySignature } from '../../common/notes-utils/key-signature'
-import { noteInKeys } from '../../common/notes-utils/utils'
+import { noteInKeys } from '../../common/notes-utils/key-signature'
 
 const BASS_HEIGHT = 140
 const BASS_LEFT = 132.5
@@ -79,7 +75,6 @@ function drawNote(
     const x = noteX - 30
     const y = note.y + baseHeight
     const accidental = note.name.accidental
-    // TODO: if the key signature already contains the same accidental, then skip
     if (noteInKeys(note.name, keySignature)) {
         setAccidental(<></>)
     } else {
@@ -89,7 +84,6 @@ function drawNote(
             ) : accidental == Accidental.SHARP ? (
                 <Sharp x={x} y={y} width={30} />
             ) : accidental == Accidental.NONE ? (
-                // TODO: if key signature has an inherent accidental, draw the Natural
                 <Natural x={x} y={y} width={20} />
             ) : accidental == Accidental.FLAT ? (
                 <Flat x={x} y={y} width={48} />

@@ -1,9 +1,13 @@
 import { useContext, useRef, useState } from 'react'
 import Button from '../../common/button/button'
-import { parseNoteName } from '../../common/notes-utils/utils'
+import {
+    noteNameToSolfege,
+    parseGeneralSolfege,
+    parseNoteName,
+} from '../../common/notes-utils/utils'
 import { SubmitterInterface } from './submitter-interface'
 import { ControlContext, NoteContext } from '../../common/context'
-import { checkAnswer } from './lib/check-answer'
+import { checkAnswerNote, checkAnswerSolfege } from './lib/check-answer'
 import clsx from 'clsx'
 import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
 import { Sharp } from '../staff/symbols/accidentals/sharp'
@@ -12,39 +16,37 @@ import { DoubleSharp } from '../staff/symbols/accidentals/double_sharp'
 import { DoubleFlat } from '../staff/symbols/accidentals/double_flat'
 import { PitchNotation } from '../../common/notes-utils/pitch-notation'
 import { SelectionPanel } from '../../common/selectionpanel/selectionpanel'
+import { GeneralSolfege } from '../../common/notes-utils/solfege'
+import { NoteName } from '../../common/notes-utils/notes'
 
 export function TextSubmitter({
     incrementCorrect,
     incrementTotal,
 }: SubmitterInterface) {
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const { currentNote, setInputNote } = useContext(NoteContext)
+    const { currentNote, setInputNote, keySignature } = useContext(NoteContext)
     const { triggerNewNote } = useContext(ControlContext)
+    const [useSolfege, setUseSolfege] = useState(false)
 
-    const [shengjiangString, setShengjiangString] = useState('')
+    const [accidentalString, setShengjiangString] = useState('')
     const [pitchNotation, setPitchNotation] = useState<PitchNotation>(
         PitchNotation.HELMHOLTZ
     )
 
-    const submitButtonOnClick = () => {
+    const submitButtonTemplate = <T,>(
+        parseInput: (str: string) => T | undefined,
+        checkAnswer: (v: T) => string
+    ) => {
         if (inputRef.current) {
-            const whiteKeyNoteName = inputRef.current.value
-            const combinedNoteString = shengjiangString + whiteKeyNoteName
-            console.log(`combinedNoteString is ${combinedNoteString}`)
-            const noteName = parseNoteName(combinedNoteString, pitchNotation)
-            if (noteName == undefined) {
+            const inputString = inputRef.current.value
+            const combinedInputString = accidentalString + inputString
+            console.log(`combinedInputString is ${combinedInputString}`)
+            const parsed = parseInput(combinedInputString)
+            if (parsed == undefined) {
                 if (spanRef.current)
                     spanRef.current.innerText = `不能识别 ${inputRef.current.value}！`
             } else {
-                setInputNote(noteName)
-                const [_, displayContent] = checkAnswer(
-                    noteName,
-                    currentNote,
-                    incrementTotal,
-                    incrementCorrect,
-                    triggerNewNote,
-                    pitchNotation
-                )
+                const displayContent = checkAnswer(parsed)
                 if (spanRef.current) {
                     spanRef.current.innerText = displayContent
                 }
@@ -52,10 +54,57 @@ export function TextSubmitter({
         }
     }
 
+    const submitButtonOnClick = () => {
+        if (useSolfege) {
+            submitButtonTemplate(
+                parseGeneralSolfege,
+                (solfege: GeneralSolfege) => {
+                    const [_, displayContent] = checkAnswerSolfege(
+                        solfege,
+                        currentNote &&
+                            noteNameToSolfege(currentNote, keySignature),
+                        incrementTotal,
+                        incrementCorrect,
+                        triggerNewNote
+                    )
+                    return displayContent
+                }
+            )
+        } else {
+            submitButtonTemplate(
+                (noteString: string) =>
+                    parseNoteName(noteString, pitchNotation),
+                (note: NoteName) => {
+                    setInputNote(note)
+                    const [_, displayContent] = checkAnswerNote(
+                        note,
+                        currentNote,
+                        incrementTotal,
+                        incrementCorrect,
+                        triggerNewNote,
+                        pitchNotation,
+                        true
+                    )
+                    return displayContent
+                }
+            )
+        }
+    }
+
     const spanRef = useRef<HTMLSpanElement | null>(null)
 
     return (
-        <div className="flex flex-col items-center justify-center mb-10">
+        <div className="flex flex-col items-center justify-center mb-20">
+            <SelectionPanel
+                elements={[
+                    { label: '音名 (固定调)', value: false },
+                    { label: '唱名 (首调)', value: true },
+                ]}
+                label="训练目标"
+                defaultIndex={0}
+                onSelect={(value) => setUseSolfege(value)}
+                classNames="flex-grow-0 mb-5"
+            />
             <SelectionPanel
                 elements={[
                     {
@@ -71,6 +120,7 @@ export function TextSubmitter({
                 defaultIndex={0}
                 onSelect={(value) => setPitchNotation(value)}
                 classNames="flex-grow-0 mb-5"
+                hide={useSolfege}
             />
             <div
                 className={clsx(
@@ -85,54 +135,26 @@ export function TextSubmitter({
                         {
                             label: '升号',
                             value: '升 ',
-                            render: () => (
-                                <div className="w-full h-10 relative">
-                                    <Sharp
-                                        x_percent={50}
-                                        y_percent={50}
-                                        width={30}
-                                    />
-                                </div>
-                            ),
                         },
                         {
                             label: '降号',
                             value: '降 ',
-                            render: () => (
-                                <div className="w-full h-10 relative">
-                                    <Flat
-                                        x_percent={50}
-                                        y_percent={50}
-                                        width={30}
-                                    />
-                                </div>
-                            ),
                         },
                         {
                             label: '重升号',
                             value: '重升 ',
-                            render: () => (
-                                <div className="w-full h-10 relative">
-                                    <DoubleSharp
-                                        x_percent={50}
-                                        y_percent={50}
-                                        width={17}
-                                    />
-                                </div>
-                            ),
                         },
                         {
                             label: '重降号',
                             value: '重降 ',
-                            render: () => (
-                                <div className="w-full h-10 relative">
-                                    <DoubleFlat
-                                        x_percent={50}
-                                        y_percent={50}
-                                        width={30}
-                                    />
-                                </div>
-                            ),
+                        },
+                        {
+                            label: '三重升号',
+                            value: '三重升 ',
+                        },
+                        {
+                            label: '三重降号',
+                            value: '三重降 ',
                         },
                     ]}
                     onSelect={(value) => setShengjiangString(value)}
@@ -144,8 +166,10 @@ export function TextSubmitter({
                     type="text"
                     id="noteInput"
                     ref={inputRef}
-                    placeholder={`输入音名 (如 ${
-                        pitchNotation == PitchNotation.HELMHOLTZ
+                    placeholder={`输入${useSolfege ? '唱名' : '音名'} (如 ${
+                        useSolfege
+                            ? '1, 2, 3'
+                            : pitchNotation == PitchNotation.HELMHOLTZ
                             ? 'c, D, e2'
                             : 'C3, D2, E5'
                     })`}

@@ -16,7 +16,6 @@ export default function Button({
     children,
 }: ButtonProps) {
     // TODO: migrate css to classnames
-    // TODO: add a parameter for extra class names
     return (
         <button
             className={clsx(
@@ -27,7 +26,9 @@ export default function Button({
             onClick={onClick}
         >
             {children}
-            <span className="text-md text-white z-10 relative whitespace-nowrap">{label}</span>
+            <span className="text-md text-white z-10 relative whitespace-nowrap">
+                {label}
+            </span>
         </button>
     )
 }
