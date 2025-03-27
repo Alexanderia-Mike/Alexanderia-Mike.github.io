@@ -17,23 +17,23 @@ import { KeySignature } from '../../common/notes-utils/key-signature'
 
 function generateRandomNoteName(
     clef: Clef,
-    accidental: ShengJiangOption
+    accidental: AccidentalOption
 ): NoteName {
     // after adding 调号, will need to add Natural symbol to it
     const candidates = whiteKeyNoteNames[clef]
     const whiteKey = randomSelect(candidates)
     switch (accidental) {
-        case ShengJiangOption.NO_SHENGJIANG:
+        case AccidentalOption.NO_SHENGJIANG:
             return whiteKey
-        case ShengJiangOption.SHARP_ONLY:
+        case AccidentalOption.SHARP_ONLY:
             return whiteKey.copy(
                 randomSelect([Accidental.SHARP, Accidental.DOUBLE_SHARP])
             )
-        case ShengJiangOption.FLAT_ONLY:
+        case AccidentalOption.FLAT_ONLY:
             return whiteKey.copy(
                 randomSelect([Accidental.FLAT, Accidental.DOUBLE_FLAT])
             )
-        case ShengJiangOption.SHARP_FLAT_ONLY:
+        case AccidentalOption.SHARP_FLAT_ONLY:
             return whiteKey.copy(
                 randomSelect([
                     Accidental.SHARP,
@@ -42,7 +42,7 @@ function generateRandomNoteName(
                     Accidental.DOUBLE_FLAT,
                 ])
             )
-        case ShengJiangOption.RANDOM_SHARP_FLAT:
+        case AccidentalOption.RANDOM_SHARP_FLAT:
             return whiteKey.copy(
                 randomSelect([
                     Accidental.SHARP,
@@ -63,7 +63,7 @@ function generateRandomClef(): Clef {
     return randomSelect([Clef.TREBLE, Clef.BASS])
 }
 
-enum ShengJiangOption {
+enum AccidentalOption {
     NO_SHENGJIANG = 1,
     SHARP_ONLY = 2,
     FLAT_ONLY = 3,
@@ -85,8 +85,8 @@ export default function Control({
     const [randomClef, setRandomClef] = useState<boolean>(false)
     const [autoGenerate, setAutoGenerate] = useState<boolean>(false)
     const [scanAnimate, setScanAnimate] = useState<boolean>(false)
-    const [accidental, setShengjiang] = useState<ShengJiangOption>(
-        ShengJiangOption.NO_SHENGJIANG
+    const [accidental, setShengjiang] = useState<AccidentalOption>(
+        AccidentalOption.NO_SHENGJIANG
     )
 
     const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
@@ -189,6 +189,14 @@ export default function Control({
                         },
                         { label: 'bA大调 / F小调', value: KeySignature.FLAT_A },
                         { label: 'bB大调 / G小调', value: KeySignature.FLAT_B },
+                        {
+                            label: 'bC大调 / bA小调',
+                            value: KeySignature.FLAT_C,
+                        },
+                        {
+                            label: '#C大调 / #A小调',
+                            value: KeySignature.SHARP_C,
+                        },
                     ]}
                     onSelect={(value) => {
                         setKeySignature(value)
@@ -201,17 +209,17 @@ export default function Control({
                     elements={[
                         {
                             label: '无升降音',
-                            value: ShengJiangOption.NO_SHENGJIANG,
+                            value: AccidentalOption.NO_SHENGJIANG,
                         },
-                        { label: '仅升音', value: ShengJiangOption.SHARP_ONLY },
-                        { label: '仅降音', value: ShengJiangOption.FLAT_ONLY },
+                        { label: '仅升音', value: AccidentalOption.SHARP_ONLY },
+                        { label: '仅降音', value: AccidentalOption.FLAT_ONLY },
                         {
                             label: '仅升/降音',
-                            value: ShengJiangOption.SHARP_FLAT_ONLY,
+                            value: AccidentalOption.SHARP_FLAT_ONLY,
                         },
                         {
                             label: '随机升/降音',
-                            value: ShengJiangOption.RANDOM_SHARP_FLAT,
+                            value: AccidentalOption.RANDOM_SHARP_FLAT,
                         },
                     ]}
                     onSelect={(value) => setShengjiang(value)}
