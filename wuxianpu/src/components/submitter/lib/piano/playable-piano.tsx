@@ -5,6 +5,7 @@ import {
     NoteName,
 } from '../../../../common/notes-utils/notes'
 import { followingBlackKey, PlayableKey } from './piano-interface'
+import { ReactNode } from 'react'
 
 const keys = ALL_WHITE_KEYS
 
@@ -23,6 +24,26 @@ export default function PlayablePiano({
     showColor,
     grayed = false,
 }: PlayablePianoProps) {
+    const getKey = (
+        i: number,
+        key: NoteName,
+        isWhite: boolean,
+        children?: ReactNode
+    ) => (
+        <PlayableKey
+            onPress={onPress}
+            idx={i}
+            key={i}
+            note={key}
+            isCorrect={correctKeyValues.includes(key.valueOf())}
+            isWhite={isWhite}
+            showColor={showColor}
+            grayed={grayed}
+            children={children}
+        />
+    )
+
+    const correctKeyValues = correctKeys.map((k) => k.valueOf())
     return (
         <div
             className={clsx(
@@ -31,42 +52,16 @@ export default function PlayablePiano({
                 !scrollable && 'min-w-[1100px] overflow-auto'
             )}
         >
-            {keys.map((key, i) => {
-                const correctKeyValues = correctKeys.map((k) => k.valueOf())
-                return followingBlackKey(key, i) ? (
-                    <PlayableKey
-                        onPress={onPress}
-                        idx={i}
-                        note={new NoteName(key)}
-                        isCorrect={correctKeyValues.includes(key.valueOf())}
-                        isWhite={true}
-                        showColor={showColor}
-                        grayed={grayed}
-                    >
-                        <PlayableKey
-                            onPress={onPress}
-                            idx={i}
-                            note={new NoteName(key, Accidental.FLAT)}
-                            isCorrect={correctKeyValues.includes(
-                                key.valueOf() - 1
-                            )}
-                            isWhite={false}
-                            showColor={showColor}
-                            grayed={grayed}
-                        />
-                    </PlayableKey>
-                ) : (
-                    <PlayableKey
-                        onPress={onPress}
-                        idx={i}
-                        note={new NoteName(key)}
-                        isCorrect={correctKeyValues.includes(key.valueOf())}
-                        isWhite={true}
-                        showColor={showColor}
-                        grayed={grayed}
-                    />
+            {keys.map((key, i) =>
+                getKey(
+                    i,
+                    new NoteName(key),
+                    true,
+                    followingBlackKey(key, i)
+                        ? getKey(i, new NoteName(key, Accidental.FLAT), false)
+                        : undefined
                 )
-            })}
+            )}
         </div>
     )
 }

@@ -5,6 +5,7 @@ import {
     NoteName,
 } from '../../../../common/notes-utils/notes'
 import { followingBlackKey, ReadOnlyKey, whiteKeys } from './piano-interface'
+import { ReactNode } from 'react'
 
 interface ReadOnlyPianoProps {
     correctKeys: NoteName[]
@@ -21,6 +22,25 @@ export default function ReadOnlyPiano({
     showColor,
     grayed = false,
 }: ReadOnlyPianoProps) {
+    const getKey = (
+        i: number,
+        key: NoteName,
+        isWhite: boolean,
+        children?: ReactNode
+    ) => (
+        <ReadOnlyKey
+            isPressed={pressedKeyValues.includes(key.valueOf())}
+            idx={i}
+            key={i}
+            note={key}
+            isCorrect={correctKeyValues.includes(key.valueOf())}
+            isWhite={isWhite}
+            showColor={showColor}
+            grayed={grayed}
+            children={children}
+        />
+    )
+
     const correctKeyValues = correctKeys.map((k) => k.valueOf())
     const pressedKeyValues = pressedKeys.map((k) => k.valueOf())
     return (
@@ -31,43 +51,16 @@ export default function ReadOnlyPiano({
                 scrollable && 'w-[1100px] overflow-auto'
             )}
         >
-            {whiteKeys.map((key, i) => {
-                return followingBlackKey(key, i) ? (
-                    <ReadOnlyKey
-                        isPressed={pressedKeyValues.includes(key.valueOf())}
-                        idx={i}
-                        note={new NoteName(key)}
-                        isCorrect={correctKeyValues.includes(key.valueOf())}
-                        isWhite={true}
-                        showColor={showColor}
-                        grayed={grayed}
-                    >
-                        <ReadOnlyKey
-                            isPressed={pressedKeyValues.includes(
-                                key.valueOf() - 1
-                            )}
-                            idx={i}
-                            note={new NoteName(key, Accidental.FLAT)}
-                            isCorrect={correctKeyValues.includes(
-                                key.valueOf() - 1
-                            )}
-                            isWhite={false}
-                            showColor={showColor}
-                            grayed={grayed}
-                        />
-                    </ReadOnlyKey>
-                ) : (
-                    <ReadOnlyKey
-                        isPressed={pressedKeyValues.includes(key.valueOf())}
-                        idx={i}
-                        note={new NoteName(key)}
-                        isCorrect={correctKeyValues.includes(key.valueOf())}
-                        isWhite={true}
-                        showColor={showColor}
-                        grayed={grayed}
-                    />
+            {whiteKeys.map((key, i) =>
+                getKey(
+                    i,
+                    new NoteName(key),
+                    true,
+                    followingBlackKey(key, i)
+                        ? getKey(i, new NoteName(key, Accidental.FLAT), false)
+                        : undefined
                 )
-            })}
+            )}
         </div>
     )
 }
