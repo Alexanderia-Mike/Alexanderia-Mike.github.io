@@ -12,6 +12,7 @@ export interface PianoKeyProps {
     note: NoteName
     isCorrect: boolean
     isWhite: boolean
+    showColor: boolean
     children?: ReactNode
     grayed?: boolean
 }
@@ -39,13 +40,9 @@ export abstract class PianoKey<
               )
     }
     protected colorStyle(): React.CSSProperties {
-        console.log(
-            `note = ${
-                this.props.note
-            }, value = ${this.props.note.valueOf()}, correct = ${
-                this.props.isCorrect
-            }; pressed = ${this.state.isPressed}`
-        )
+        if (!this.props.showColor) {
+            return {}
+        }
         return this.props.isCorrect && this.state.isPressed
             ? { backgroundColor: '#7CFC00' }
             : this.props.isCorrect
@@ -72,6 +69,11 @@ export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
         super(props)
         this.state = {
             isPressed: props.isPressed,
+        }
+    }
+    componentDidUpdate(prevProps: ReadOnlyKeyProps) {
+        if (prevProps.isPressed !== this.props.isPressed) {
+            this.setState({ isPressed: this.props.isPressed })
         }
     }
 }

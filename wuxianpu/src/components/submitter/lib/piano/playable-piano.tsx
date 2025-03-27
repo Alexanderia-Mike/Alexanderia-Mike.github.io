@@ -12,6 +12,7 @@ interface PlayablePianoProps {
     correctKeys: NoteName[]
     scrollable: boolean // if true, piano will be scrollable when the window is small
     onPress: () => void
+    showColor: boolean
     grayed?: boolean
 }
 
@@ -19,6 +20,7 @@ export default function PlayablePiano({
     correctKeys,
     scrollable,
     onPress,
+    showColor,
     grayed = false,
 }: PlayablePianoProps) {
     return (
@@ -38,6 +40,7 @@ export default function PlayablePiano({
                         note={new NoteName(key)}
                         isCorrect={correctKeyValues.includes(key.valueOf())}
                         isWhite={true}
+                        showColor={showColor}
                         grayed={grayed}
                     >
                         <PlayableKey
@@ -48,6 +51,7 @@ export default function PlayablePiano({
                                 key.valueOf() - 1
                             )}
                             isWhite={false}
+                            showColor={showColor}
                             grayed={grayed}
                         />
                     </PlayableKey>
@@ -58,6 +62,7 @@ export default function PlayablePiano({
                         note={new NoteName(key)}
                         isCorrect={correctKeyValues.includes(key.valueOf())}
                         isWhite={true}
+                        showColor={showColor}
                         grayed={grayed}
                     />
                 )

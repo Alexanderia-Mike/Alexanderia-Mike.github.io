@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { getMidi, handleMidiMessages, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
-// import ReadonlyPiano from './lib/readonly-piano'
 import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswerNote } from './lib/check-answer'
 import Button from '../../common/button/button'
@@ -107,17 +106,12 @@ export default function MIDIPiano({
             </div>
             <span className="text-center block">{feedback}</span>
             <div className="h-5"></div>
-            {/* <ReadonlyPiano
-                correctKeys={currentNote ? [currentNote] : []}
-                pressedKeys={inputNote ? [inputNote] : []}
-                showColor={inputNote != undefined}
-                grayed={!deviceHealthy}
-            /> */}
             <ReadOnlyPiano
                 correctKeys={currentNote ? [currentNote] : []}
                 pressedKeys={inputNote ? [inputNote] : []}
                 grayed={!deviceHealthy}
                 scrollable={false}
+                showColor={inputNote != undefined}
             />
         </div>
     )
