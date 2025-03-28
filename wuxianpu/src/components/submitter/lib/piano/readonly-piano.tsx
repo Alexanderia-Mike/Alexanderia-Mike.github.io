@@ -21,6 +21,7 @@ export default class ReadOnlyPiano extends Piano<ReadOnlyPianoProps> {
                 idx={i}
                 key={i}
                 note={key}
+                resizable={this.props.resizable}
                 isCorrect={this.props.correctKeys
                     .map((k) => k.valueOf())
                     .includes(key.valueOf())}

@@ -7,6 +7,7 @@ import {
 } from '../../../../common/notes-utils/notes'
 import { Component, ReactNode } from 'react'
 import { followingBlackKey } from './utils'
+import './piano-scrollbar.css'
 
 export interface PianoKeyProps {
     idx: number
@@ -14,6 +15,7 @@ export interface PianoKeyProps {
     isCorrect: boolean
     isWhite: boolean
     showColor: boolean
+    resizable: boolean
     children?: ReactNode
     grayed?: boolean
 }
@@ -80,7 +82,7 @@ export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
 }
 
 interface PlayableKeyProps extends PianoKeyProps {
-    onPress: () => void
+    onPress: (k: PlayableKey) => void
 }
 
 export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
@@ -91,13 +93,18 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         }
     }
     protected override getClassNames(): string {
-        return super.getClassNames() + 'cursor-pointer' + this.props.isWhite
-            ? 'hover:bg-gray-200 active:bg-gray-300'
-            : 'hover:bg-gray-500 active:bg-gray-400'
+        return clsx(
+            super.getClassNames(),
+            'cursor-pointer',
+            this.props.isWhite
+                ? 'hover:bg-gray-200 active:bg-gray-300'
+                : 'hover:bg-gray-500 active:bg-gray-400',
+            !this.props.resizable && this.props.isWhite && 'min-w-7'
+        )
     }
     private onPress = () => {
         // TODO: play sound
-        this.props.onPress()
+        this.props.onPress(this)
         this.setState({ isPressed: true })
     }
     private onRelease = () => {
@@ -109,7 +116,9 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
                 className={this.getClassNames()}
                 style={this.colorStyle()}
                 onMouseDown={this.onPress}
+                onTouchStart={this.onPress}
                 onMouseUp={this.onRelease}
+                onTouchEnd={this.onRelease}
             >
                 {this.props.children}
             </div>
@@ -119,7 +128,7 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
 
 export interface PianoProps {
     correctKeys: NoteName[]
-    scrollable: boolean // if true, piano will be scrollable when the window is small
+    resizable: boolean // if true, piano will be scrollable when the window is small
     showColor: boolean
     grayed?: boolean
 }
@@ -137,9 +146,10 @@ export abstract class Piano<T extends PianoProps> extends Component<T> {
         return (
             <div
                 className={clsx(
-                    'flex justify-center relative h-14',
-                    !this.props.scrollable && 'sm:h-20 md:h-24 lg:h-32',
-                    this.props.scrollable && 'w-[1100px] overflow-auto'
+                    'flex justify-center relative',
+                    this.props.resizable && 'h-14 sm:h-20 md:h-24 lg:h-32',
+                    !this.props.resizable &&
+                        'm-auto overflow-x-scroll h-44 piano'
                 )}
             >
                 {ALL_WHITE_KEYS.map((key, i) =>

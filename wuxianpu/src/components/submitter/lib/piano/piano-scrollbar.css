@@ -1,0 +1,17 @@
+.piano::-webkit-scrollbar {
+    height: 30px; /* Height of horizontal scrollbar */
+}
+
+.piano::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Track color */
+    border-radius: 5px;
+}
+
+.piano::-webkit-scrollbar-thumb {
+    background: #888; /* Thumb color */
+    border-radius: 5px;
+}
+
+.piano::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Thumb color on hover */
+}

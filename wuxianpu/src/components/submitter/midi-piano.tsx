@@ -110,7 +110,7 @@ export default function MIDIPiano({
                 correctKeys={currentNote ? [currentNote] : []}
                 pressedKeys={inputNote ? [inputNote] : []}
                 grayed={!deviceHealthy}
-                scrollable={false}
+                resizable={true}
                 showColor={inputNote != undefined}
             />
         </div>
