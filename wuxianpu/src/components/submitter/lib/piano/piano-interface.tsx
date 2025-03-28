@@ -1,11 +1,12 @@
 import clsx from 'clsx'
 import {
+    Accidental,
     ALL_WHITE_KEYS,
     NoteName,
-    NoteNameBase,
     WhiteKeyNoteName,
 } from '../../../../common/notes-utils/notes'
 import { Component, ReactNode } from 'react'
+import { followingBlackKey } from './utils'
 
 export interface PianoKeyProps {
     idx: number
@@ -116,12 +117,48 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     }
 }
 
-export function followingBlackKey(key: WhiteKeyNoteName, i: number) {
-    return (
-        ['d', 'e', 'g', 'a', 'b'].includes(
-            NoteNameBase[key.noteNameBase][0].toLowerCase()
-        ) && i != 0
-    )
+export interface PianoProps {
+    correctKeys: NoteName[]
+    scrollable: boolean // if true, piano will be scrollable when the window is small
+    showColor: boolean
+    grayed?: boolean
+}
+
+export abstract class Piano<T extends PianoProps> extends Component<T> {
+    protected abstract getKey(
+        i: number,
+        key: NoteName,
+        isWhite: boolean,
+        children?: ReactNode
+    ): ReactNode
+
+    correctKeyValues = this.props.correctKeys.map((k) => k.valueOf())
+    override render(): ReactNode {
+        return (
+            <div
+                className={clsx(
+                    'flex justify-center relative h-14',
+                    !this.props.scrollable && 'sm:h-20 md:h-24 lg:h-32',
+                    this.props.scrollable && 'w-[1100px] overflow-auto'
+                )}
+            >
+                {ALL_WHITE_KEYS.map((key, i) =>
+                    this.getKey(
+                        i,
+                        new NoteName(key),
+                        true,
+                        followingBlackKey(key, i)
+                            ? this.getKey(
+                                  i,
+                                  new NoteName(key, Accidental.FLAT),
+                                  false
+                              )
+                            : undefined
+                    )
+                )}
+            </div>
+        )
+    }
 }
 
 export const whiteKeys: WhiteKeyNoteName[] = ALL_WHITE_KEYS

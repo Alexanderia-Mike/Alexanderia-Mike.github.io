@@ -4,7 +4,8 @@ import {
     ALL_WHITE_KEYS,
     NoteName,
 } from '../../../../common/notes-utils/notes'
-import { followingBlackKey, PlayableKey } from './piano-interface'
+import { PlayableKey } from './piano-interface'
+import { followingBlackKey } from './utils'
 import { ReactNode } from 'react'
 
 const keys = ALL_WHITE_KEYS
