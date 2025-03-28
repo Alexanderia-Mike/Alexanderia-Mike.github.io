@@ -1,3 +1,15 @@
+/* keys */
+.white-key:not(:has(.black-key:hover)):hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1)) /* #e5e7eb */;
+}
+
+.white-key:not(:has(.black-key:active)):active {
+    --tw-bg-opacity: 1;
+    background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1)) /* #d1d5db */;
+}
+
+/* scroll bar */
 .piano::-webkit-scrollbar {
     height: 30px; /* Height of horizontal scrollbar */
 }

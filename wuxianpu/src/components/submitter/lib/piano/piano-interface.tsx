@@ -7,7 +7,7 @@ import {
 } from '../../../../common/notes-utils/notes'
 import { Component, ReactNode } from 'react'
 import { followingBlackKey } from './utils'
-import './piano-scrollbar.css'
+import './piano.css'
 
 export interface PianoKeyProps {
     idx: number
@@ -97,17 +97,19 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
             super.getClassNames(),
             'cursor-pointer',
             this.props.isWhite
-                ? 'hover:bg-gray-200 active:bg-gray-300'
-                : 'hover:bg-gray-500 active:bg-gray-400',
+                ? 'white-key'
+                : 'black-key hover:bg-gray-500 active:bg-gray-400',
             !this.props.resizable && this.props.isWhite && 'min-w-7'
         )
     }
-    private onPress = () => {
+    private onPress = (event: React.MouseEvent | React.TouchEvent) => {
         // TODO: play sound
+        event.stopPropagation()
         this.props.onPress(this)
         this.setState({ isPressed: true })
     }
-    private onRelease = () => {
+    private onRelease = (event: React.MouseEvent | React.TouchEvent) => {
+        event.stopPropagation()
         this.setState({ isPressed: false })
     }
     override render(): ReactNode {
