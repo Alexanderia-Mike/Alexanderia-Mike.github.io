@@ -1,25 +1,23 @@
 import clsx from 'clsx'
+import { ReactNode, Component } from 'react'
 import {
-    Accidental,
     ALL_WHITE_KEYS,
     NoteName,
     WhiteKeyNoteName,
 } from '../../../../common/notes-utils/notes'
-import { Component, ReactNode } from 'react'
-import { followingBlackKey } from './utils'
-import './piano.css'
+import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
 
 export interface PianoKeyProps {
     idx: number
     note: NoteName
     isCorrect: boolean
+    isPressed: boolean
     isWhite: boolean
     showColor: boolean
     resizable: boolean
     children?: ReactNode
     grayed?: boolean
 }
-
 interface PianoKeyStates {
     isPressed: boolean
 }
@@ -62,17 +60,12 @@ export abstract class PianoKey<
         )
     }
 }
-
-interface ReadOnlyKeyProps extends PianoKeyProps {
-    isPressed: boolean
-}
+interface ReadOnlyKeyProps extends PianoKeyProps {}
 
 export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
     constructor(props: ReadOnlyKeyProps) {
         super(props)
-        this.state = {
-            isPressed: props.isPressed,
-        }
+        this.state = { isPressed: props.isPressed }
     }
     componentDidUpdate(prevProps: ReadOnlyKeyProps) {
         if (prevProps.isPressed !== this.props.isPressed) {
@@ -80,7 +73,6 @@ export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
         }
     }
 }
-
 interface PlayableKeyProps extends PianoKeyProps {
     onPress: (k: PlayableKey) => void
 }
@@ -88,8 +80,11 @@ interface PlayableKeyProps extends PianoKeyProps {
 export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     constructor(props: PlayableKeyProps) {
         super(props)
-        this.state = {
-            isPressed: false,
+        this.state = { isPressed: props.isPressed }
+    }
+    componentDidUpdate(prevProps: PlayableKeyProps) {
+        if (prevProps.isPressed !== this.props.isPressed) {
+            this.setState({ isPressed: this.props.isPressed })
         }
     }
     protected override getClassNames(): string {
@@ -106,11 +101,11 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         // TODO: play sound
         event.stopPropagation()
         this.props.onPress(this)
-        this.setState({ isPressed: true })
+        // this.setState({ isPressed: true })
     }
     private onRelease = (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation()
-        this.setState({ isPressed: false })
+        // this.setState({ isPressed: false })
     }
     override render(): ReactNode {
         return (
@@ -127,50 +122,4 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         )
     }
 }
-
-export interface PianoProps {
-    correctKeys: NoteName[]
-    resizable: boolean // if true, piano will be scrollable when the window is small
-    showColor: boolean
-    grayed?: boolean
-}
-
-export abstract class Piano<T extends PianoProps> extends Component<T> {
-    protected abstract getKey(
-        i: number,
-        key: NoteName,
-        isWhite: boolean,
-        children?: ReactNode
-    ): ReactNode
-
-    correctKeyValues = this.props.correctKeys.map((k) => k.valueOf())
-    override render(): ReactNode {
-        return (
-            <div
-                className={clsx(
-                    'flex justify-center relative',
-                    this.props.resizable && 'h-14 sm:h-20 md:h-24 lg:h-32',
-                    !this.props.resizable &&
-                        'm-auto overflow-x-scroll h-44 piano'
-                )}
-            >
-                {ALL_WHITE_KEYS.map((key, i) =>
-                    this.getKey(
-                        i,
-                        new NoteName(key),
-                        true,
-                        followingBlackKey(key, i)
-                            ? this.getKey(
-                                  i,
-                                  new NoteName(key, Accidental.FLAT),
-                                  false
-                              )
-                            : undefined
-                    )
-                )}
-            </div>
-        )
-    }
-}
-
 export const whiteKeys: WhiteKeyNoteName[] = ALL_WHITE_KEYS
