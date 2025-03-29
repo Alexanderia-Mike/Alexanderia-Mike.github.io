@@ -1,9 +1,9 @@
 import { ChangeEvent, ChangeEventHandler, ReactNode, useState } from 'react'
 import './style.css'
 import clsx from 'clsx'
-import { Hiddable } from '../common'
+import { ExtraClassNames, Hiddable } from '../common'
 
-interface ToggleProps extends Hiddable {
+interface ToggleProps extends Hiddable, ExtraClassNames {
     onChange: ChangeEventHandler
     label: string
     render?: () => ReactNode
@@ -16,6 +16,7 @@ export default function Toggle({
     label,
     checked,
     render,
+    classNames,
 }: ToggleProps) {
     const inputElmt = (
         <input
@@ -31,6 +32,7 @@ export default function Toggle({
         <div
             className={clsx(
                 'toggle mx-5 flex flex-grow flex-shrink-0 my-3',
+                classNames,
                 hide && 'hidden'
             )}
         >

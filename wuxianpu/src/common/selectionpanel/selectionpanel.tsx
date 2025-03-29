@@ -27,7 +27,7 @@ export function SelectionPanel<T>({
     const menuBody = useRef<HTMLDivElement | null>(null)
 
     const options = (
-        <div className="flex justify-center items-center mx-4 bg-transparent w-fit">
+        <div className="flex justify-center items-center mx-2 bg-transparent w-fit">
             {elements.map((elmt, idx) => (
                 <div
                     className={clsx(

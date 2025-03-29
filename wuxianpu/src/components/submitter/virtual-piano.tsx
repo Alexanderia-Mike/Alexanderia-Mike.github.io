@@ -51,6 +51,12 @@ export default function VirtualPiano({
     return (
         <div className="mb-20">
             <div className="flex justify-center items-center flex-wrap">
+                <Toggle
+                    label="开启扬声器"
+                    onChange={isToneEnabled() ? disableTone : enableTone}
+                    checked={isToneEnabled()}
+                    classNames="flex-grow-0"
+                />
                 <SelectionPanel
                     elements={[
                         {
@@ -62,15 +68,10 @@ export default function VirtualPiano({
                             value: PitchNotation.SCIENTIFIC,
                         },
                     ]}
-                    label="音高标记："
+                    label="音高标记"
                     defaultIndex={0}
                     onSelect={(value) => setPitchNotation(value)}
                     classNames="flex-grow-0 mb-5"
-                />
-                <Toggle
-                    label="开启扬声器"
-                    onChange={isToneEnabled() ? disableTone : enableTone}
-                    checked={isToneEnabled()}
                 />
             </div>
             <span className="text-center block">{feedback}</span>
