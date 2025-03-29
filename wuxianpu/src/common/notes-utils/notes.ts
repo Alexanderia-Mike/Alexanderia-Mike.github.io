@@ -65,6 +65,9 @@ export const accidentalToString: Record<Accidental, string> = {
     [Accidental.TRIPLE_FLAT]: '三重降',
 }
 
+const standardFreq = 440.0
+const standardNote = new WhiteKeyNoteName(NoteNameBase.A, 4)
+
 export class NoteName {
     whiteKeyNote: WhiteKeyNoteName
     accidental: Accidental
@@ -86,6 +89,12 @@ export class NoteName {
         return (
             this.accidental == other.accidental &&
             this.whiteKeyNote.equals(other.whiteKeyNote)
+        )
+    }
+    toFrequency(): number {
+        return (
+            standardFreq *
+            Math.pow(2, (this.valueOf() - standardNote.valueOf()) / 12)
         )
     }
     copy(newAccidental: Accidental): NoteName {

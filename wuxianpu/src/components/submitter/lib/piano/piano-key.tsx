@@ -6,6 +6,16 @@ import {
     WhiteKeyNoteName,
 } from '../../../../common/notes-utils/notes'
 import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
+import * as Tone from 'tone'
+
+const polySynth = new Tone.PolySynth(Tone.Synth, {
+    envelope: {
+        attack: 0.02, // Time to reach full volume (short for quick start)
+        decay: 0.1, // Time to drop to sustain level
+        sustain: 0.3, // Sustained volume level (0 to 1)
+        release: 1.5, // Time to fade out after release (1.5 seconds)
+    },
+}).toDestination()
 
 export interface PianoKeyProps {
     idx: number
@@ -88,6 +98,12 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         super(props)
         this.state = { isPressed: props.isPressed }
     }
+    componentDidMount(): void {
+        const initializeTone = async () => {
+            await Tone.start()
+        }
+        initializeTone()
+    }
     componentDidUpdate(prevProps: PlayableKeyProps) {
         if (prevProps.isPressed !== this.props.isPressed) {
             this.setState({ isPressed: this.props.isPressed })
@@ -103,14 +119,16 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
             !this.props.resizable && this.props.isWhite && 'min-w-7'
         )
     }
-    private onPress = (event: React.MouseEvent | React.TouchEvent) => {
+    private onPress = async (event: React.MouseEvent | React.TouchEvent) => {
         // TODO: play sound
         event.stopPropagation()
+        polySynth.triggerAttack(this.props.note.toFrequency())
         this.props.onPress(this)
         // this.setState({ isPressed: true })
     }
     private onRelease = (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation()
+        polySynth.triggerRelease(this.props.note.toFrequency())
         // this.setState({ isPressed: false })
     }
     override render(): ReactNode {
@@ -119,6 +137,7 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
                 onMouseDown={this.onPress}
                 onTouchStart={this.onPress}
                 onMouseUp={this.onRelease}
+                onMouseLeave={this.onRelease}
                 onTouchEnd={this.onRelease}
             >
                 {super.render()}
