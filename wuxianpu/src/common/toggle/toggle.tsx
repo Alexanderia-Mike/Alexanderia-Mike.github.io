@@ -7,9 +7,16 @@ interface ToggleProps extends Hiddable {
     onChange: ChangeEventHandler
     label: string
     render?: () => ReactNode
+    checked?: boolean // default status at initalization
 }
 
-export default function Toggle({ onChange, hide, label, render }: ToggleProps) {
+export default function Toggle({
+    onChange,
+    hide,
+    label,
+    checked,
+    render,
+}: ToggleProps) {
     const inputElmt = (
         <input
             type="checkbox"
@@ -17,6 +24,7 @@ export default function Toggle({ onChange, hide, label, render }: ToggleProps) {
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 onChange(event)
             }}
+            defaultChecked={checked}
         />
     )
     return (

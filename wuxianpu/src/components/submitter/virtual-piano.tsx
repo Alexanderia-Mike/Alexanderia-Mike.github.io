@@ -70,6 +70,7 @@ export default function VirtualPiano({
                 <Toggle
                     label="开启扬声器"
                     onChange={isToneEnabled() ? disableTone : enableTone}
+                    checked={isToneEnabled()}
                 />
             </div>
             <span className="text-center block">{feedback}</span>
