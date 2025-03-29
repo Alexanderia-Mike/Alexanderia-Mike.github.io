@@ -17,6 +17,7 @@ export interface PianoKeyProps {
     resizable: boolean
     children?: ReactNode
     grayed?: boolean
+    displayNotes?: PitchNotation
 }
 interface PianoKeyStates {
     isPressed: boolean
@@ -56,6 +57,11 @@ export abstract class PianoKey<
         return (
             <div className={this.getClassNames()} style={this.colorStyle()}>
                 {this.props.children}
+                <div className="w-full h-full flex flex-col justify-end items-center">
+                    {this.props.displayNotes &&
+                        this.props.isWhite &&
+                        this.props.note.toString(this.props.displayNotes)}
+                </div>
             </div>
         )
     }
@@ -110,14 +116,12 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     override render(): ReactNode {
         return (
             <div
-                className={this.getClassNames()}
-                style={this.colorStyle()}
                 onMouseDown={this.onPress}
                 onTouchStart={this.onPress}
                 onMouseUp={this.onRelease}
                 onTouchEnd={this.onRelease}
             >
-                {this.props.children}
+                {super.render()}
             </div>
         )
     }

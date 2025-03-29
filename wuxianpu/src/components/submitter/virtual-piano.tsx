@@ -4,6 +4,8 @@ import { PlayableKey } from './lib/piano/piano-key'
 import PlayablePiano from './lib/piano/playable-piano'
 import { SubmitterInterface } from './submitter-interface'
 import { checkAnswerNote } from './lib/check-answer'
+import { SelectionPanel } from '../../common/selectionpanel/selectionpanel'
+import { PitchNotation } from '../../common/notes-utils/pitch-notation'
 
 interface VirtualPianoProps extends SubmitterInterface {}
 
@@ -20,6 +22,7 @@ export default function VirtualPiano({
     const { currentNote, inputNote, setInputNote } = useContext(NoteContext)
     const [feedback, setFeedback] = useState('')
     const { triggerNewNote } = useContext(ControlContext)
+    const [pitchNotation, setPitchNotation] = useState(PitchNotation.HELMHOLTZ)
 
     const onPress = (k: PlayableKey) => {
         // TODO: check answer
@@ -43,13 +46,28 @@ export default function VirtualPiano({
 
     return (
         <div className="mb-20">
+            <SelectionPanel
+                elements={[
+                    {
+                        label: '亥姆霍茲音高记号',
+                        value: PitchNotation.HELMHOLTZ,
+                    },
+                    { label: '科学音高记号', value: PitchNotation.SCIENTIFIC },
+                ]}
+                label="音高标记"
+                defaultIndex={0}
+                onSelect={(value) => setPitchNotation(value)}
+                classNames="flex-grow-0 mb-5"
+            />
             <span className="text-center block">{feedback}</span>
+            <div className="h-5"></div>
             <PlayablePiano
                 correctKeys={currentNote ? [currentNote] : []}
                 onPress={onPress}
                 grayed={false}
                 resizable={false}
                 showColor={inputNote != undefined}
+                displayNotes={pitchNotation}
             />
         </div>
     )

@@ -9,21 +9,20 @@
     background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1)) /* #d1d5db */;
 }
 
-/* scroll bar */
-.piano::-webkit-scrollbar {
-    height: 30px; /* Height of horizontal scrollbar */
+/* .piano::-webkit-scrollbar {
+    height: 30px; 
 }
 
 .piano::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Track color */
+    background: #f1f1f1; 
     border-radius: 5px;
 }
 
 .piano::-webkit-scrollbar-thumb {
-    background: #888; /* Thumb color */
+    background: #888; 
     border-radius: 5px;
 }
 
 .piano::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Thumb color on hover */
-}
+    background: #555; 
+} */

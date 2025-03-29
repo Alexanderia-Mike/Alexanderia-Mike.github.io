@@ -49,6 +49,7 @@ export default class PlayablePiano extends Piano<
                 showColor={this.props.showColor}
                 grayed={this.props.grayed}
                 children={children}
+                displayNotes={this.props.displayNotes}
             />
         )
     }

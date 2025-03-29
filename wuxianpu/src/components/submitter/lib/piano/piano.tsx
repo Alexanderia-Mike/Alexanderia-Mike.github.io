@@ -7,11 +7,13 @@ import {
 import { Component, ReactNode } from 'react'
 import { followingBlackKey } from './utils'
 import './piano.css'
+import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
 
 export interface PianoProps {
     correctKeys: NoteName[]
     resizable: boolean // if true, piano will be scrollable when the window is small
     showColor: boolean
+    displayNotes?: PitchNotation
     grayed?: boolean
 }
 
@@ -35,8 +37,7 @@ export abstract class Piano<
                 className={clsx(
                     'flex justify-center relative',
                     this.props.resizable && 'h-14 sm:h-20 md:h-24 lg:h-32',
-                    !this.props.resizable &&
-                        'm-auto overflow-x-scroll h-44 piano'
+                    !this.props.resizable && 'overflow-x-scroll h-44 piano'
                 )}
             >
                 {ALL_WHITE_KEYS.map((key, i) =>
