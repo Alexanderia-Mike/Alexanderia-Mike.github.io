@@ -40,20 +40,28 @@ export abstract class Piano<
                     !this.props.resizable && 'overflow-x-scroll h-44 piano'
                 )}
             >
-                {ALL_WHITE_KEYS.map((key, i) =>
-                    this.getKey(
-                        i,
-                        new NoteName(key),
-                        true,
-                        followingBlackKey(key, i)
-                            ? this.getKey(
-                                  i,
-                                  new NoteName(key, Accidental.FLAT),
-                                  false
-                              )
-                            : undefined
-                    )
-                )}
+                <div
+                    className={clsx(
+                        'h-full flex',
+                        this.props.resizable && 'w-full justify-center',
+                        !this.props.resizable && 'max-w-full'
+                    )}
+                >
+                    {ALL_WHITE_KEYS.map((key, i) =>
+                        this.getKey(
+                            i,
+                            new NoteName(key),
+                            true,
+                            followingBlackKey(key, i)
+                                ? this.getKey(
+                                      i,
+                                      new NoteName(key, Accidental.FLAT),
+                                      false
+                                  )
+                                : undefined
+                        )
+                    )}
+                </div>
             </div>
         )
     }

@@ -25,7 +25,6 @@ export default function VirtualPiano({
     const [pitchNotation, setPitchNotation] = useState(PitchNotation.HELMHOLTZ)
 
     const onPress = (k: PlayableKey) => {
-        // TODO: check answer
         setInputNote(k.props.note)
     }
 
@@ -54,7 +53,7 @@ export default function VirtualPiano({
                     },
                     { label: '科学音高记号', value: PitchNotation.SCIENTIFIC },
                 ]}
-                label="音高标记"
+                label="音高标记："
                 defaultIndex={0}
                 onSelect={(value) => setPitchNotation(value)}
                 classNames="flex-grow-0 mb-5"
