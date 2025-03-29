@@ -30,28 +30,32 @@ export abstract class PianoKey<
     T2 extends PianoKeyStates
 > extends Component<T1, T2> {
     protected getClassNames(): string {
-        return this.props.isWhite
-            ? clsx(
-                  'relative flex flex-grow max-w-5 border-r border-y h-full',
-                  this.props.grayed && 'border-gray-300',
-                  !this.props.grayed && 'border-black',
-                  this.props.idx == 0 && 'border-l'
-              )
-            : clsx(
-                  'w-2/3 h-2/3 absolute -translate-x-1/2 z-10',
-                  this.props.grayed && 'bg-gray-300',
-                  !this.props.grayed && 'bg-black'
-              )
+        return clsx(
+            this.props.isWhite
+                ? clsx(
+                      'relative flex flex-grow max-w-5 border-r h-full',
+                      this.props.grayed && 'border-gray-300',
+                      !this.props.grayed && 'border-black',
+                      this.props.idx == 0 && 'border-l'
+                  )
+                : clsx(
+                      'w-2/3 h-2/3 absolute -translate-x-1/2 z-10',
+                      this.props.grayed && 'bg-gray-300',
+                      !this.props.grayed && 'bg-black'
+                  ),
+            'rounded-b-md border-y'
+        )
     }
     protected colorStyle(): React.CSSProperties {
         if (!this.props.showColor) {
             return {}
         }
-        return this.props.isCorrect && this.state.isPressed
+        const isPressed = this.props.isPressed || this.state.isPressed
+        return this.props.isCorrect && isPressed
             ? { backgroundColor: '#7CFC00' }
             : this.props.isCorrect
             ? { backgroundColor: 'yellow' }
-            : this.state.isPressed
+            : isPressed
             ? { backgroundColor: 'red' }
             : {}
     }
@@ -77,11 +81,6 @@ export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
         super(props)
         this.state = { isPressed: props.isPressed }
     }
-    componentDidUpdate(prevProps: ReadOnlyKeyProps) {
-        if (prevProps.isPressed !== this.props.isPressed) {
-            this.setState({ isPressed: this.props.isPressed })
-        }
-    }
 }
 interface PlayableKeyProps extends PianoKeyProps {
     onPress: (k: PlayableKey) => void
@@ -100,11 +99,6 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         }
         initializeTone()
     }
-    componentDidUpdate(prevProps: PlayableKeyProps) {
-        if (prevProps.isPressed !== this.props.isPressed) {
-            this.setState({ isPressed: this.props.isPressed })
-        }
-    }
     protected override getClassNames(): string {
         return clsx(
             super.getClassNames(),
@@ -117,23 +111,27 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     }
     private onPress = async (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation()
+        event.preventDefault()
+        this.setState({ isPressed: true })
         this.sampler.triggerAttack(noteToSampleId(this.props.note))
         this.props.onPress(this)
-        // this.setState({ isPressed: true })
     }
     private onRelease = (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation()
+        event.preventDefault()
+        this.setState({ isPressed: false })
         this.sampler.triggerRelease(noteToSampleId(this.props.note))
-        // this.setState({ isPressed: false })
     }
     override render(): ReactNode {
+        const isTouchDevice =
+            'ontouchstart' in window || navigator.maxTouchPoints > 0
         return (
             <div
-                onMouseDown={this.onPress}
-                onTouchStart={this.onPress}
-                onMouseUp={this.onRelease}
-                onMouseLeave={this.onRelease}
-                onTouchEnd={this.onRelease}
+                onMouseDown={isTouchDevice ? undefined : this.onPress}
+                onMouseUp={isTouchDevice ? undefined : this.onRelease}
+                onMouseLeave={isTouchDevice ? undefined : this.onRelease}
+                onTouchStart={isTouchDevice ? this.onPress : undefined}
+                onTouchEnd={isTouchDevice ? this.onRelease : undefined}
             >
                 {super.render()}
             </div>
