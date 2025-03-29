@@ -94,7 +94,7 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     protected override getClassNames(): string {
         return clsx(
             super.getClassNames(),
-            'cursor-pointer select-none',
+            'cursor-pointer select-none shadow-inner',
             this.props.isWhite
                 ? 'white-key'
                 : 'black-key hover:bg-gray-500 active:bg-gray-400',
