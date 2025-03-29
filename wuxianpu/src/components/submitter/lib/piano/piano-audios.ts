@@ -116,6 +116,21 @@ const sampler = new Tone.Sampler({
     release: 1.5,
 }).toDestination()
 
+let toneEnabled = false
+export async function enableTone() {
+    await Tone.start()
+    await Tone.loaded()
+    toneEnabled = true
+}
+
+export function disableTone() {
+    toneEnabled = false
+}
+
+export function isToneEnabled(): boolean {
+    return toneEnabled
+}
+
 export function getSampler() {
     return sampler
 }

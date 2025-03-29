@@ -6,8 +6,7 @@ import {
     WhiteKeyNoteName,
 } from '../../../../common/notes-utils/notes'
 import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
-import * as Tone from 'tone'
-import { getSampler, noteToSampleId } from './piano-audios'
+import { getSampler, isToneEnabled, noteToSampleId } from './piano-audios'
 
 export interface PianoKeyProps {
     idx: number
@@ -92,13 +91,6 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         super(props)
         this.state = { isPressed: props.isPressed }
     }
-    componentDidMount(): void {
-        const initializeTone = async () => {
-            await Tone.start()
-            await Tone.loaded()
-        }
-        initializeTone()
-    }
     protected override getClassNames(): string {
         return clsx(
             super.getClassNames(),
@@ -113,25 +105,34 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         event.stopPropagation()
         event.preventDefault()
         this.setState({ isPressed: true })
-        this.sampler.triggerAttack(noteToSampleId(this.props.note))
+        if (isToneEnabled()) {
+            this.sampler.triggerAttack(noteToSampleId(this.props.note))
+        }
         this.props.onPress(this)
     }
     private onRelease = (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation()
         event.preventDefault()
         this.setState({ isPressed: false })
-        this.sampler.triggerRelease(noteToSampleId(this.props.note))
+        if (isToneEnabled()) {
+            this.sampler.triggerRelease(noteToSampleId(this.props.note))
+        }
     }
     override render(): ReactNode {
-        const isTouchDevice =
-            'ontouchstart' in window || navigator.maxTouchPoints > 0
+        // const isTouchDevice =
+        //     'ontouchstart' in window || navigator.maxTouchPoints > 0
         return (
             <div
-                onMouseDown={isTouchDevice ? undefined : this.onPress}
-                onMouseUp={isTouchDevice ? undefined : this.onRelease}
-                onMouseLeave={isTouchDevice ? undefined : this.onRelease}
-                onTouchStart={isTouchDevice ? this.onPress : undefined}
-                onTouchEnd={isTouchDevice ? this.onRelease : undefined}
+                // onMouseDown={isTouchDevice ? undefined : this.onPress}
+                // onMouseUp={isTouchDevice ? undefined : this.onRelease}
+                // onMouseLeave={isTouchDevice ? undefined : this.onRelease}
+                // onTouchStart={isTouchDevice ? this.onPress : undefined}
+                // onTouchEnd={isTouchDevice ? this.onRelease : undefined}
+                onMouseDown={this.onPress}
+                onMouseUp={this.onRelease}
+                onMouseLeave={this.onRelease}
+                onTouchStart={this.onPress}
+                onTouchEnd={this.onRelease}
             >
                 {super.render()}
             </div>
