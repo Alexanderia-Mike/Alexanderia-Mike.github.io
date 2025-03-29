@@ -4,9 +4,6 @@ import { OptionalNote } from './common/notes-utils/notes'
 import Submitter from './components/submitter/submitter'
 import { ControlContext, NoteContext } from './common/context'
 import { KeySignature } from './common/notes-utils/key-signature'
-import { TestKey } from './test-key'
-import { enableTone } from './components/submitter/lib/piano/piano-audios'
-import Toggle from './common/toggle/toggle'
 
 export default function App() {
     const [currentNote, updateCurrentNote] = useState<OptionalNote>(undefined)
@@ -37,11 +34,5 @@ export default function App() {
                 <Submitter />
             </ControlContext.Provider>
         </NoteContext.Provider>
-
-        // <>
-        //     {/* <button onClick={enableTone}>initialize tone</button> */}
-        //     <Toggle label="initialze tone" onChange={enableTone} />
-        //     <TestKey />
-        // </>
     )
 }

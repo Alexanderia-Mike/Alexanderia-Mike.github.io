@@ -94,7 +94,7 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     protected override getClassNames(): string {
         return clsx(
             super.getClassNames(),
-            'cursor-pointer',
+            'cursor-pointer select-none',
             this.props.isWhite
                 ? 'white-key'
                 : 'black-key hover:bg-gray-500 active:bg-gray-400',
@@ -119,15 +119,8 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         }
     }
     override render(): ReactNode {
-        // const isTouchDevice =
-        //     'ontouchstart' in window || navigator.maxTouchPoints > 0
         return (
             <div
-                // onMouseDown={isTouchDevice ? undefined : this.onPress}
-                // onMouseUp={isTouchDevice ? undefined : this.onRelease}
-                // onMouseLeave={isTouchDevice ? undefined : this.onRelease}
-                // onTouchStart={isTouchDevice ? this.onPress : undefined}
-                // onTouchEnd={isTouchDevice ? this.onRelease : undefined}
                 onMouseDown={this.onPress}
                 onMouseUp={this.onRelease}
                 onMouseLeave={this.onRelease}
