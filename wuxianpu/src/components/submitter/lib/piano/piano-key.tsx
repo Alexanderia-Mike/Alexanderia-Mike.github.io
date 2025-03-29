@@ -7,15 +7,7 @@ import {
 } from '../../../../common/notes-utils/notes'
 import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
 import * as Tone from 'tone'
-
-const polySynth = new Tone.PolySynth(Tone.Synth, {
-    envelope: {
-        attack: 0.02, // Time to reach full volume (short for quick start)
-        decay: 0.1, // Time to drop to sustain level
-        sustain: 0.3, // Sustained volume level (0 to 1)
-        release: 1.5, // Time to fade out after release (1.5 seconds)
-    },
-}).toDestination()
+import { getSampler, noteToSampleId } from './piano-audios'
 
 export interface PianoKeyProps {
     idx: number
@@ -68,9 +60,11 @@ export abstract class PianoKey<
             <div className={this.getClassNames()} style={this.colorStyle()}>
                 {this.props.children}
                 <div className="w-full h-full flex flex-col justify-end items-center">
-                    {this.props.displayNotes &&
-                        this.props.isWhite &&
-                        this.props.note.toString(this.props.displayNotes)}
+                    <span>
+                        {this.props.displayNotes &&
+                            this.props.isWhite &&
+                            this.props.note.toString(this.props.displayNotes)}
+                    </span>
                 </div>
             </div>
         )
@@ -94,6 +88,7 @@ interface PlayableKeyProps extends PianoKeyProps {
 }
 
 export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
+    private sampler = getSampler()
     constructor(props: PlayableKeyProps) {
         super(props)
         this.state = { isPressed: props.isPressed }
@@ -101,6 +96,7 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
     componentDidMount(): void {
         const initializeTone = async () => {
             await Tone.start()
+            await Tone.loaded()
         }
         initializeTone()
     }
@@ -120,15 +116,14 @@ export class PlayableKey extends PianoKey<PlayableKeyProps, PianoKeyStates> {
         )
     }
     private onPress = async (event: React.MouseEvent | React.TouchEvent) => {
-        // TODO: play sound
         event.stopPropagation()
-        polySynth.triggerAttack(this.props.note.toFrequency())
+        this.sampler.triggerAttack(noteToSampleId(this.props.note))
         this.props.onPress(this)
         // this.setState({ isPressed: true })
     }
     private onRelease = (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation()
-        polySynth.triggerRelease(this.props.note.toFrequency())
+        this.sampler.triggerRelease(noteToSampleId(this.props.note))
         // this.setState({ isPressed: false })
     }
     override render(): ReactNode {
