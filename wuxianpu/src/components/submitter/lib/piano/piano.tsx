@@ -76,7 +76,7 @@ export abstract class Piano<
                 >
                     <div
                         ref={this.scrollThumbRef}
-                        className="h-full absolute bg-slate-400 w-20 rounded-xl"
+                        className="h-full absolute bg-slate-400 w-20 rounded-xl hover:bg-slate-500 active:bg-slate-600 cursor-pointer"
                     ></div>
                 </div>
                 <div
