@@ -98,7 +98,7 @@ export default function Submitter() {
     }
 
     const defaultSubmitter = (
-        <div className="text-lg text-orange-400 text-center mt-10">
+        <div className="text-lg text-orange-400 text-center pt-10 min-h-[500px]">
             请先从上方的菜单栏中选择您的答题方式!
         </div>
     )
