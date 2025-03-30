@@ -113,8 +113,8 @@ export function handleScroll(
         document.addEventListener('touchend', upHandler)
     }
 
-    // scrollThumb.addEventListener('mousedown', handleThumbDrag)
-    // scrollThumb.addEventListener('touchstart', handleThumbDrag)
-    // window.addEventListener('resize', resizeHandler)
-    // resizeHandler()
+    scrollThumb.addEventListener('mousedown', handleThumbDrag)
+    scrollThumb.addEventListener('touchstart', handleThumbDrag)
+    window.addEventListener('resize', resizeHandler)
+    resizeHandler()
 }

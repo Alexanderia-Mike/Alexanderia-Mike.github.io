@@ -70,7 +70,7 @@ export abstract class Piano<
                 <div
                     ref={this.scrollBarRef}
                     className={clsx(
-                        'w-2/3 h-16 bg-custom-bg relative rounded-xl',
+                        'w-2/3 h-16 bg-custom-bg relative rounded-xl shadow-inner',
                         this.props.resizable && 'hidden'
                     )}
                 >
