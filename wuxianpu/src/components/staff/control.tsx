@@ -190,10 +190,6 @@ export default function Control({
                         { label: 'bA大调 / F小调', value: KeySignature.FLAT_A },
                         { label: 'bB大调 / G小调', value: KeySignature.FLAT_B },
                         {
-                            label: 'bC大调 / bA小调',
-                            value: KeySignature.FLAT_C,
-                        },
-                        {
                             label: '#C大调 / #A小调',
                             value: KeySignature.SHARP_C,
                         },
