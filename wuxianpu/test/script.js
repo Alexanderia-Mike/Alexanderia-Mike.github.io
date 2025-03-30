@@ -104,6 +104,6 @@ const handleThumbDrag = (event) => {
 }
 
 scrollThumb.addEventListener('mousedown', handleThumbDrag)
-scrollThumb.addEventListener('tochstart', handleThumbDrag)
+scrollThumb.addEventListener('touchstart', handleThumbDrag)
 window.addEventListener('resize', resizeHandler)
 resizeHandler()

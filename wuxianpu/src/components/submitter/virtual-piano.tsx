@@ -70,7 +70,7 @@ export default function VirtualPiano({
                     label="音高标记"
                     defaultIndex={0}
                     onSelect={(value) => setPitchNotation(value)}
-                    classNames="flex-grow-0 mb-5"
+                    classNames="flex-grow-0"
                 />
             </div>
             <span className="text-center block">{feedback}</span>
