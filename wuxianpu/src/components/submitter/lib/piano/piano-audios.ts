@@ -21,6 +21,7 @@ export function noteToSampleId(note: NoteName): string {
     }
 }
 
+// sources of audio data: https://theremin.music.uiowa.edu/MISpiano.html
 const sampler = new Tone.Sampler({
     urls: {
         A0: 'assets/audio_compressed/Piano.ff.A0.mp3',
