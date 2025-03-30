@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { getMidi, handleMidiMessages, midiToNoteName } from './lib/midi'
 import { SubmitterInterface } from './submitter-interface'
-import ReadonlyPiano from './lib/readonly-piano'
 import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswerNote } from './lib/check-answer'
 import Button from '../../common/button/button'
 import clsx from 'clsx'
 import { FloatingDiv } from '../../common/floatingdiv/floatingdiv'
+import ReadOnlyPiano from './lib/piano/readonly-piano'
 
 let lastTimestamp = 0
 
@@ -84,7 +84,7 @@ export default function MIDIPiano({
     }, [inputNote])
 
     return (
-        <div className="mb-20">
+        <div className="min-h-[500px]">
             <div className="flex flex-row justify-center items-center">
                 <span
                     className={clsx(
@@ -106,11 +106,12 @@ export default function MIDIPiano({
             </div>
             <span className="text-center block">{feedback}</span>
             <div className="h-5"></div>
-            <ReadonlyPiano
+            <ReadOnlyPiano
                 correctKeys={currentNote ? [currentNote] : []}
                 pressedKeys={inputNote ? [inputNote] : []}
-                showColor={inputNote != undefined}
                 grayed={!deviceHealthy}
+                resizable={true}
+                showColor={inputNote != undefined}
             />
         </div>
     )

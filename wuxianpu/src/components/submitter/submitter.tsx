@@ -27,7 +27,16 @@ export default function Submitter() {
                 '手动输入',
             ],
         ],
-        ['virtual-piano', [<VirtualPiano />, '虚拟钢琴']],
+        [
+            'virtual-piano',
+            [
+                <VirtualPiano
+                    incrementCorrect={incrementCorrect}
+                    incrementTotal={incrementTotal}
+                />,
+                '虚拟钢琴',
+            ],
+        ],
         [
             'bluetooth-piano',
             [

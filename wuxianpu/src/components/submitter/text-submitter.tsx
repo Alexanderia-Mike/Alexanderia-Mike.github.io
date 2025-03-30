@@ -94,7 +94,7 @@ export function TextSubmitter({
     const spanRef = useRef<HTMLSpanElement | null>(null)
 
     return (
-        <div className="flex flex-col items-center justify-center mb-20">
+        <div className="flex flex-col items-center justify-start min-h-[500px]">
             <SelectionPanel
                 elements={[
                     { label: '音名 (固定调)', value: false },
