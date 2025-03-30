@@ -84,7 +84,7 @@ export default function MIDIPiano({
     }, [inputNote])
 
     return (
-        <div className="mb-20">
+        <div className="min-h-[500px]">
             <div className="flex flex-row justify-center items-center">
                 <span
                     className={clsx(

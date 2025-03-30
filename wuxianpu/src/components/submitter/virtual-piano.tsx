@@ -48,7 +48,7 @@ export default function VirtualPiano({
     }, [inputNote])
 
     return (
-        <div className="mb-20">
+        <div className="min-h-[500px]">
             <div className="flex justify-center items-center flex-wrap">
                 <Toggle
                     label="开启扬声器"

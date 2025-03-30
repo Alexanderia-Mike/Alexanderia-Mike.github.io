@@ -32,12 +32,13 @@ export abstract class PianoKey<
         return clsx(
             this.props.isWhite
                 ? clsx(
-                      'relative flex flex-grow max-w-5 border-r',
+                      'relative flex flex-grow max-w-7 border-r',
                       this.props.grayed && 'border-gray-300',
                       !this.props.grayed && 'border-black',
                       this.props.idx == 0 && 'border-l',
-                      this.props.resizable && 'h-14 sm:h-20 md:h-24 lg:h-32',
-                      !this.props.resizable && 'h-44'
+                      this.props.resizable &&
+                          'h-14 sm:h-20 md:h-24 lg:h-32 xl:h-36 2xl:h-40',
+                      !this.props.resizable && 'h-36'
                   )
                 : clsx(
                       'w-2/3 h-2/3 absolute -translate-x-1/2 z-10',
