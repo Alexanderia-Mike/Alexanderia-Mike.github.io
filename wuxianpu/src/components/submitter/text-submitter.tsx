@@ -10,10 +10,6 @@ import { ControlContext, NoteContext } from '../../common/context'
 import { checkAnswerNote, checkAnswerSolfege } from './lib/check-answer'
 import clsx from 'clsx'
 import { DropdownMenu } from '../../common/dropdownmenu/dropdownmenu'
-import { Sharp } from '../staff/symbols/accidentals/sharp'
-import { Flat } from '../staff/symbols/accidentals/flat'
-import { DoubleSharp } from '../staff/symbols/accidentals/double_sharp'
-import { DoubleFlat } from '../staff/symbols/accidentals/double_flat'
 import { PitchNotation } from '../../common/notes-utils/pitch-notation'
 import { SelectionPanel } from '../../common/selectionpanel/selectionpanel'
 import { GeneralSolfege } from '../../common/notes-utils/solfege'
@@ -40,7 +36,6 @@ export function TextSubmitter({
         if (inputRef.current) {
             const inputString = inputRef.current.value
             const combinedInputString = accidentalString + inputString
-            console.log(`combinedInputString is ${combinedInputString}`)
             const parsed = parseInput(combinedInputString)
             if (parsed == undefined) {
                 if (spanRef.current)

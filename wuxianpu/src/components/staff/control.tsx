@@ -19,7 +19,6 @@ function generateRandomNoteName(
     clef: Clef,
     accidental: AccidentalOption
 ): NoteName {
-    // after adding 调号, will need to add Natural symbol to it
     const candidates = whiteKeyNoteNames[clef]
     const whiteKey = randomSelect(candidates)
     switch (accidental) {

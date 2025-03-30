@@ -1,5 +1,4 @@
 import { NoteName } from '../../../../common/notes-utils/notes'
-import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
 import { Piano, PianoProps, PianoStates } from './piano'
 import { PlayableKey } from './piano-key'
 import { ReactNode } from 'react'

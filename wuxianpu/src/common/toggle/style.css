@@ -28,10 +28,10 @@
     transition: transform 0.3s ease;
 }
 
-.slider:has(input[type="checkbox"]:checked) {
+.slider:has(input[type='checkbox']:checked) {
     background-color: #46a823a2;
 }
 
-.slider:has(input[type="checkbox"]:checked):before {
+.slider:has(input[type='checkbox']:checked):before {
     transform: translateX(30px);
 }

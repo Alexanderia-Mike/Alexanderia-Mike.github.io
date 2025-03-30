@@ -1,5 +1,3 @@
-import { RefObject, useRef } from 'react'
-
 function getCssProperty(element: HTMLElement, property: string) {
     const computedStyle = window.getComputedStyle(element)
     const leftValue = computedStyle.getPropertyValue(property)
@@ -43,11 +41,9 @@ export function handleScroll(
     }
 
     const handleThumbWidth = () => {
-        // thumb width
         const wrapperDisplayWidth = container.clientWidth
         const displayRatio = wrapperDisplayWidth / wrapper.scrollWidth
         scrollThumb.style.width = `${scrollBar.clientWidth * displayRatio}px`
-        // console.log(`scrollbar width = ${scrollBar.clientWidth}, display ratio = ${displayRatio}, new client width = ${scrollThumb.clientWidth}`)
     }
 
     const handleThumbPosition = (startLeft: number, deltaX: number) => {
@@ -58,7 +54,6 @@ export function handleScroll(
                 scrollBar.clientWidth - scrollThumb.clientWidth
             )
         )
-        // console.log(`original left = ${startLeft}, deltaX = ${deltaX}, max left = ${scrollBar.clientWidth - scrollThumb.clientWidth}, new left = ${newLeft}`)
         scrollThumb.style.left = `${newLeft}px`
     }
 

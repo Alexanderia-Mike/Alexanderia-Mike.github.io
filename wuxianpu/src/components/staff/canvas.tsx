@@ -64,7 +64,6 @@ function drawNote(
     keySignature: KeySignature
 ) {
     // note dot
-    console.log(`note name is ${note.name.toString()}`)
     const baseHeight = clef == Clef.TREBLE ? TREBLE_HEIGHT : BASS_HEIGHT
     ctx.beginPath()
     ctx.arc(noteX, note.y + baseHeight, 7, 0, 2 * Math.PI)

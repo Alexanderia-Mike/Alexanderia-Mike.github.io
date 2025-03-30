@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import { BaseSymbol, CompositeSymbol } from '../common'
 import { Flat } from './flat'
 

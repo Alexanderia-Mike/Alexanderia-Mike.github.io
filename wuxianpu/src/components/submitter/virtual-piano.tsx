@@ -15,10 +15,6 @@ import {
 
 interface VirtualPianoProps extends SubmitterInterface {}
 
-/**
- * TODO issues:
- *  3. scrollbar does not show on my phone, so need to implement a customized scrollbar in piano interface
- */
 export default function VirtualPiano({
     incrementCorrect,
     incrementTotal,

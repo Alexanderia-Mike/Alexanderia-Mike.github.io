@@ -1,4 +1,3 @@
-
 export interface Hiddable {
     hide?: boolean
 }
@@ -10,5 +9,3 @@ export interface ExtraClassNames {
 export interface WithChildren {
     children?: React.ReactNode
 }
-
-

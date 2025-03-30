@@ -142,10 +142,6 @@ export function noteNameToSolfege(
             : noteName.whiteKeyNote.octave - 1
     const tonic = getKeySignatureTonics(keySignature, octave)
     const interval = getInterval(tonic, noteName)
-    console.log(`tonic = ${tonic}`)
-    console.log(`noteName = ${noteName}`)
-    console.log(`interval = ${interval}`)
-
     const solfege = (interval + 1) as Solfege
     const accidental = (getSemitoneCount(tonic, noteName) -
         getSolfegeSeminoteCount(solfege)) as Accidental

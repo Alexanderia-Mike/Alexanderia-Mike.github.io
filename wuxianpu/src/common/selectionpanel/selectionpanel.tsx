@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 import { ExtraClassNames, Hiddable } from '../common'
 import clsx from 'clsx'
 
