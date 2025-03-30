@@ -35,9 +35,8 @@ export abstract class Piano<
         return (
             <div
                 className={clsx(
-                    'flex justify-center relative',
-                    this.props.resizable && 'h-14 sm:h-20 md:h-24 lg:h-32',
-                    !this.props.resizable && 'overflow-x-scroll h-44 piano'
+                    'flex justify-center relative h-60',
+                    !this.props.resizable && 'piano'
                 )}
             >
                 <div
