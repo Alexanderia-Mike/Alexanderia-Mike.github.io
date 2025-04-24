@@ -36,7 +36,8 @@ export default function VirtualPiano({
                 currentNote,
                 incrementTotal,
                 incrementCorrect,
-                triggerNewNote
+                triggerNewNote,
+                pitchNotation
             )
             setFeedback(displayContent)
         }
