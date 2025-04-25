@@ -95,6 +95,7 @@ export default function Control({
         if (value == undefined) {
             setRandomClef(true)
         } else {
+            setRandomClef(false)
             updateClef(value)
         }
     }
