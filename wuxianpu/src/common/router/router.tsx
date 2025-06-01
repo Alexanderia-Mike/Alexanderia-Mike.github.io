@@ -9,25 +9,28 @@ export interface RouteConfig {
 
 interface RouterProps {
     routes: RouteConfig[]
-    defaultElement?: ReactNode
+    defaultRoute?: string
     onRouteChange?: (path: string) => void
     classNames?: {
-        navColor?: string,
-        contentColor?: string,
         navContainer?: string
         navItem?: string
         activeNavItem?: string
         contentContainer?: string
+        navColor: string
+        contentColor: string
     }
 }
 
 export function Router({
     routes,
-    defaultElement,
+    defaultRoute,
     onRouteChange,
-    classNames = {},
+    classNames = {
+        navColor: 'bg-white',
+        contentColor: 'bg-custom-bg',
+    },
 }: RouterProps) {
-    const [currentRoute, setCurrentRoute] = useState<string>('')
+    const [currentRoute, setCurrentRoute] = useState<string>(defaultRoute || '')
 
     const activeNavDecoratorStart = (
         <div className={clsx("absolute w-3 h-3 -translate-x-full bottom-0 left-0", classNames.contentColor)}>
@@ -46,9 +49,9 @@ export function Router({
     }
 
     const getCurrentPage = () => {
-        if (!currentRoute) return defaultElement
+        if (!currentRoute) return null
         const route = routes.find(r => r.path === currentRoute)
-        return route ? route.element : defaultElement
+        return route ? route.element : null
     }
 
     return (
@@ -66,7 +69,9 @@ export function Router({
                         onClick={() => handleRouteChange(route.path)}
                     >
                         {currentRoute === route.path && activeNavDecoratorStart}
-                        <div className={`py-2 px-5 rounded-xl hover:${classNames.contentColor} hover:z-10 active:bg-slate-500 active:z-10`}>
+                        <div className={clsx(
+                            'py-2 px-5 rounded-xl hover:z-10 active:bg-slate-500 hover:bg-slate-100 active:z-10',
+                        )}>
                             {route.label}
                         </div>
                         {currentRoute === route.path && activeNavDecoratorEnd}

@@ -31,10 +31,9 @@ export default function Wuxianpu() {
         >
             <ControlContext.Provider value={{ newNoteTrigger, triggerNewNote }}>
             <div className="bg-custom-bg">
-                <h1 className="text-[#333] text-3xl mt-5">五线谱练习工具</h1>
-                    <Staff />
-                    <Submitter />
-                </div>
+                <Staff />
+                <Submitter />
+            </div>
             </ControlContext.Provider>
 
         </NoteContext.Provider>

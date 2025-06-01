@@ -65,7 +65,7 @@ export default function Submitter() {
             <div className="mt-5">
                 <Router
                     routes={routes}
-                    defaultElement={defaultSubmitter}
+                    defaultRoute="text-submitter"
                     onRouteChange={() => setInputNote(undefined)}
                     classNames={{
                         navColor: 'bg-custom-bg',
