@@ -1,38 +1,25 @@
-import { useState } from 'react'
-import Staff from './components/staff/staff'
-import { OptionalNote } from './common/notes-utils/notes'
-import Submitter from './components/submitter/submitter'
-import { ControlContext, NoteContext } from './common/context'
-import { KeySignature } from './common/notes-utils/key-signature'
+import Wuxianpu from './apps/wuxianpu'
+import { Router, RouteConfig } from './common/router/router'
 
 export default function App() {
-    const [currentNote, updateCurrentNote] = useState<OptionalNote>(undefined)
-    const [inputNote, setInputNote] = useState<OptionalNote>(undefined)
-    const [newNoteTrigger, setNewNoteTrigger] = useState<boolean>(false)
-    const [keySignature, setKeySignature] = useState<KeySignature>(
-        KeySignature.C
-    )
-
-    const triggerNewNote = () => {
-        setNewNoteTrigger(!newNoteTrigger)
-    }
+    const routes: RouteConfig[] = [
+        {
+            path: 'wuxianpu',
+            element: <Wuxianpu />,
+            label: '五线谱练习'
+        }
+    ]
 
     return (
-        <NoteContext.Provider
-            value={{
-                currentNote,
-                updateCurrentNote,
-                inputNote,
-                setInputNote,
-                keySignature,
-                setKeySignature,
+        <Router
+            routes={routes}
+            defaultElement={<Wuxianpu />}
+            classNames={{
+                navContainer: 'mb-5',
+                contentContainer: 'px-4',
+                contentColor: 'bg-custom-bg',
+                navColor: 'bg-white'
             }}
-        >
-            <ControlContext.Provider value={{ newNoteTrigger, triggerNewNote }}>
-                <h1 className="text-[#333] text-3xl mt-5">五线谱练习工具</h1>
-                <Staff />
-                <Submitter />
-            </ControlContext.Provider>
-        </NoteContext.Provider>
+        />
     )
 }
