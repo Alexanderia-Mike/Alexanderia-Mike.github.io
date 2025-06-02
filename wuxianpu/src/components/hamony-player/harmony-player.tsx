@@ -14,6 +14,7 @@ import {
 } from '../submitter/lib/piano/piano-audios'
 import { noteValueToNoteName } from '../../common/notes-utils/utils'
 import Toggle from '../../common/toggle/toggle'
+import * as Tone from 'tone' // Import Tone.js
 
 function getRandomNotePairInRange(
     minNote: NoteName,
@@ -52,33 +53,26 @@ export function HarmonyPlayer() {
     const [notes, setNotes] = useState<[NoteName, NoteName] | null>(null)
     const [volumeRatio, setVolumeRatio] = useState(50) // 0-100, representing percentage for lower note
     const [isPlaying, setIsPlaying] = useState(false)
+
     const sampler = getSampler()
+    const lowerNoteGain = new Tone.Gain(volumeRatio / 100).toDestination()
+    const higherNoteGain = new Tone.Gain(
+        (100 - volumeRatio) / 100
+    ).toDestination()
+
+    sampler.connect(lowerNoteGain)
+    sampler.connect(higherNoteGain)
 
     const playHarmony = () => {
         if (!isToneEnabled()) return
 
-        const newNotes = getRandomNotePairInRange(
-            new NoteName(new WhiteKeyNoteName(NoteNameBase.A, 2)),
-            new NoteName(new WhiteKeyNoteName(NoteNameBase.D, 5)),
-            12 // Max difference of 12 semitones (1 octave)
-        )
+        const newNotes = getRandomHarmonyInterval()
         setNotes(newNotes)
         setIsPlaying(true)
 
-        // Play both notes with their respective volumes
-        const lowerNoteVolume = volumeRatio / 100
-        const higherNoteVolume = (100 - volumeRatio) / 100
-
-        sampler.triggerAttack(
-            noteToSampleId(newNotes[0]),
-            undefined,
-            lowerNoteVolume
-        )
-        sampler.triggerAttack(
-            noteToSampleId(newNotes[1]),
-            undefined,
-            higherNoteVolume
-        )
+        // Play both notes routed through their respective gain nodes
+        sampler.triggerAttack(noteToSampleId(newNotes[0]))
+        sampler.triggerAttack(noteToSampleId(newNotes[1]))
     }
 
     const stopHarmony = () => {
@@ -89,23 +83,10 @@ export function HarmonyPlayer() {
         setIsPlaying(false)
     }
 
-    // Update volumes when slider changes
+    // Update gain nodes when slider changes
     useEffect(() => {
-        if (!isToneEnabled() || !notes || !isPlaying) return
-
-        const lowerNoteVolume = volumeRatio / 100
-        const higherNoteVolume = (100 - volumeRatio) / 100
-
-        sampler.triggerAttack(
-            noteToSampleId(notes[0]),
-            undefined,
-            lowerNoteVolume
-        )
-        sampler.triggerAttack(
-            noteToSampleId(notes[1]),
-            undefined,
-            higherNoteVolume
-        )
+        lowerNoteGain.gain.value = volumeRatio / 100
+        higherNoteGain.gain.value = (100 - volumeRatio) / 100
     }, [volumeRatio])
 
     return (
