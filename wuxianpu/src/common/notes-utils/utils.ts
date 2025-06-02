@@ -84,6 +84,25 @@ export function parseWhiteKeyNoteName(
     }
 }
 
+export function noteValueToNoteName(noteValue: number): NoteName {
+    const octave = Math.floor(noteValue / 12) - 1
+    const noteValueWithinOctave = noteValue % 12
+    const noteBase = Object.values(NoteNameBase)
+        .filter((v) => typeof v === 'number')
+        .filter((v) => v <= noteValueWithinOctave)
+        .sort((a, b) => b - a)[0] as NoteNameBase
+    const accidental = (noteValueWithinOctave - noteBase) as Accidental
+
+    const whiteKeyNoteName = new WhiteKeyNoteName(noteBase, octave)
+    return new NoteName(whiteKeyNoteName, accidental)
+}
+
+export function adjustNote(note: NoteName, semitoneCount: number): NoteName {
+    const noteValue = note.valueOf()
+    const newNoteValue = noteValue + semitoneCount
+    return noteValueToNoteName(newNoteValue)
+}
+
 export function parseNoteName(
     noteString: string,
     pitchNotation: PitchNotation
