@@ -7,24 +7,25 @@ export default function App() {
         {
             path: 'wuxianpu',
             element: <Wuxianpu />,
-            label: '五线谱练习'
+            label: '五线谱练习',
         },
         {
             path: 'harmony',
             element: <HarmonySinging />,
-            label: '和声音程模唱练习'
-        }
+            label: '和声音程模唱练习',
+        },
     ]
 
     return (
         <Router
+            urlRouter={true}
             routes={routes}
             defaultRoute="wuxianpu"
             classNames={{
                 navContainer: 'mb-5',
                 contentContainer: 'px-4',
                 contentColor: 'bg-custom-bg',
-                navColor: 'bg-white'
+                navColor: 'bg-white',
             }}
         />
     )
