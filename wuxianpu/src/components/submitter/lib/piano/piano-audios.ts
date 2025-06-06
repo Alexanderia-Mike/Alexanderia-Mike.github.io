@@ -14,6 +14,10 @@ export function noteToSampleId(note: NoteName): string {
             return `${NoteNameBase[note.whiteKeyNote.noteNameBase]}b${
                 note.whiteKeyNote.octave
             }`
+        case Accidental.SHARP:
+            return `${NoteNameBase[note.whiteKeyNote.noteNameBase]}#${
+                note.whiteKeyNote.octave
+            }`
         default:
             throw Error(
                 `note ${note.toString(PitchNotation.SCIENTIFIC)} not allowed!`
