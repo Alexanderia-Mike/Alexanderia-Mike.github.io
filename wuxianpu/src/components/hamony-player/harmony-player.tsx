@@ -62,15 +62,25 @@ export function HarmonyPlayer() {
     const lowerNoteGainRef = useRef<Tone.Gain | null>(null)
     const higherNoteGainRef = useRef<Tone.Gain | null>(null)
 
-    const playHarmony = (newNotes: [NoteName, NoteName]) => {
+    const playHarmony = (
+        newNotes: [NoteName, NoteName],
+        oldNotes: [NoteName, NoteName] | null = null
+    ) => {
         if (!isToneEnabled()) return
 
-        // stop first
-        lowerSampler.triggerRelease(noteToSampleId(newNotes[0]))
-        higherSampler.triggerRelease(noteToSampleId(newNotes[1]))
+        if (oldNotes) {
+            lowerSampler.triggerRelease(noteToSampleId(oldNotes[0]))
+            higherSampler.triggerRelease(noteToSampleId(oldNotes[1]))
+        }
 
-        lowerSampler.triggerAttack(noteToSampleId(newNotes[0]))
-        higherSampler.triggerAttack(noteToSampleId(newNotes[1]))
+        lowerSampler.triggerAttack(
+            noteToSampleId(newNotes[0]),
+            Tone.now() + 0.01
+        )
+        higherSampler.triggerAttack(
+            noteToSampleId(newNotes[1]),
+            Tone.now() + 0.01
+        )
     }
 
     const setVolumes = () => {
@@ -88,8 +98,8 @@ export function HarmonyPlayer() {
             higherSampler.connect(higherNoteGain)
             higherNoteGainRef.current = higherNoteGain
         }
-        lowerNoteGainRef.current.gain.value = volumeRatio / 100
-        higherNoteGainRef.current.gain.value = (200 - volumeRatio) / 100
+        lowerNoteGainRef.current.gain.value = (200 - volumeRatio) / 100
+        higherNoteGainRef.current.gain.value = volumeRatio / 100
     }
 
     // Update gain nodes when slider changes
@@ -100,8 +110,8 @@ export function HarmonyPlayer() {
             label={'播放新和声'}
             onClick={() => {
                 const newNotes = getRandomHarmonyInterval()
+                playHarmony(newNotes, notes)
                 setNotes(newNotes)
-                playHarmony(newNotes)
             }}
             hide={!toneEnabled}
             classNames="my-2"
@@ -110,7 +120,11 @@ export function HarmonyPlayer() {
 
     const replayButton = (
         <Button
-            onClick={() => notes && playHarmony(notes)}
+            onClick={() => {
+                if (notes) {
+                    playHarmony(notes, notes)
+                }
+            }}
             label={'重新播放'}
             hide={!toneEnabled}
             classNames="my-2"
@@ -155,8 +169,8 @@ export function HarmonyPlayer() {
                         className="w-full"
                     />
                     <div className="flex justify-between text-sm text-gray-600">
-                        <span>低音: {volumeRatio}%</span>
-                        <span>高音: {200 - volumeRatio}%</span>
+                        <span>低音: {100 - volumeRatio / 2}%</span>
+                        <span>高音: {volumeRatio / 2}%</span>
                     </div>
                     {notes && showAnswer && (
                         <div className="flex justify-between text-sm text-gray-600">
