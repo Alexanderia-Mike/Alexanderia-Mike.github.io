@@ -8,8 +8,6 @@ import clsx from 'clsx'
 import { FloatingDiv } from '../../common/floatingdiv/floatingdiv'
 import ReadOnlyPiano from './lib/piano/readonly-piano'
 
-let lastTimestamp = 0
-
 export default function MIDIPiano({
     incrementCorrect,
     incrementTotal,
@@ -19,6 +17,7 @@ export default function MIDIPiano({
     const [feedback, setFeedback] = useState('')
     const { currentNote, inputNote, setInputNote } = useContext(NoteContext)
     const { triggerNewNote } = useContext(ControlContext)
+    const lastTimestamp = useRef(0)
 
     const deviceError = (message: string) => {
         setDeviceHealthy(false)
@@ -49,10 +48,10 @@ export default function MIDIPiano({
                         return
                     }
                     const timestamp = message.timeStamp
-                    if (timestamp == lastTimestamp) {
+                    if (timestamp == lastTimestamp.current) {
                         return
                     }
-                    lastTimestamp = timestamp
+                    lastTimestamp.current = timestamp
                     const noteName = midiToNoteName(keyNote)
                     setInputNote(noteName)
                 }
@@ -64,21 +63,17 @@ export default function MIDIPiano({
 
     useEffect(() => {
         setupMidi()
-    })
+    }, [])
 
-    const isFirst = useRef(true)
     useEffect(() => {
-        if (!isFirst.current) {
-            const [_, displayContent] = checkAnswerNote(
-                inputNote,
-                currentNote,
-                incrementTotal,
-                incrementCorrect,
-                triggerNewNote
-            )
-            setFeedback(displayContent)
-        }
-        isFirst.current = false
+        const [_, displayContent] = checkAnswerNote(
+            inputNote,
+            currentNote,
+            incrementTotal,
+            incrementCorrect,
+            triggerNewNote
+        )
+        setFeedback(displayContent)
     }, [inputNote])
 
     return (
