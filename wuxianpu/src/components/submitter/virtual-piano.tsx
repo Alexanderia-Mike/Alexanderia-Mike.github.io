@@ -13,12 +13,10 @@ import {
     isToneEnabled,
 } from './lib/piano/piano-audios'
 
-interface VirtualPianoProps extends SubmitterInterface {}
-
 export default function VirtualPiano({
     incrementCorrect,
     incrementTotal,
-}: VirtualPianoProps) {
+}: SubmitterInterface) {
     const { currentNote, inputNote, setInputNote } = useContext(NoteContext)
     const [feedback, setFeedback] = useState('')
     const { triggerNewNote } = useContext(ControlContext)

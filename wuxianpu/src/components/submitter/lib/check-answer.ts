@@ -14,8 +14,6 @@ function checkAnswerCommon<T>(
     incrementCorrect: () => void,
     triggerNewNote: () => void
 ): [boolean, string] {
-    console.log(`input is ${input}, answer is ${expected}`)
-
     const inputIsDefined = input != undefined
     const expectedIsDefined = expected != undefined
 
@@ -52,7 +50,7 @@ export function checkAnswerNote(
     return checkAnswerCommon<NoteName>(
         inputNote,
         currentNote,
-        (a, b) => (strict ? a.equals(b) : a.valueOf() == b.valueOf()),
+        (a, b) => (strict ? a.equals(b) : a.valueOf() === b.valueOf()),
         (n) => n.toString(pitchNotation),
         incrementTotal,
         incrementCorrect,

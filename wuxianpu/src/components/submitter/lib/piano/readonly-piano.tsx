@@ -1,5 +1,5 @@
 import { NoteName } from '../../../../common/notes-utils/notes'
-import { Piano, PianoProps, PianoStates } from './piano'
+import { Piano, PianoProps } from './piano'
 import { ReadOnlyKey } from './piano-key'
 import { ReactNode } from 'react'
 
@@ -9,7 +9,7 @@ interface ReadOnlyPianoProps extends PianoProps {
 
 export default class ReadOnlyPiano extends Piano<
     ReadOnlyPianoProps,
-    PianoStates
+    object
 > {
     protected override getKey(
         i: number,

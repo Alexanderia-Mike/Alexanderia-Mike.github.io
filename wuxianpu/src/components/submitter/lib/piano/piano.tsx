@@ -18,11 +18,9 @@ export interface PianoProps {
     grayed?: boolean
 }
 
-export interface PianoStates {}
-
 export abstract class Piano<
     T1 extends PianoProps,
-    T2 extends PianoStates
+    T2 extends object
 > extends Component<T1, T2> {
     protected abstract getKey(
         i: number,

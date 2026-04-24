@@ -4,7 +4,7 @@ import { ExtraClassNames, Hiddable, WithChildren } from '../common'
 import clsx from 'clsx'
 
 interface ButtonProps extends Hiddable, ExtraClassNames, WithChildren {
-    label: String
+    label: string
     onClick: MouseEventHandler<HTMLButtonElement>
 }
 
