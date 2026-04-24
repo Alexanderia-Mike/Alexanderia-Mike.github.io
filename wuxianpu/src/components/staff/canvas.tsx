@@ -27,7 +27,7 @@ function drawStaffSingle(
     baseHeight: number,
     canvasWidth: number,
     noteX: number,
-    considerNote: Boolean,
+    considerNote: boolean,
     note: Note | undefined
 ) {
     ctx.strokeStyle = considerNote ? '#000' : '#aaa'
@@ -151,11 +151,7 @@ export default function Canvas({
         }
     }
 
-    useEffect(refreshCanvas, [clef, noteName])
-    useEffect(() => {
-        window.addEventListener('resize', refreshCanvas)
-        return () => window.removeEventListener('resize', refreshCanvas)
-    })
+    useEffect(refreshCanvas, [clef, noteName, windowWidth])
 
 
     return (
