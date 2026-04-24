@@ -32,11 +32,7 @@ export function DropdownMenu<T>({
 
     useEffect(() => {
         if (defaultIndex != undefined) {
-            if (defaultIndex >= elements.length) {
-                console.log(
-                    `default index ${defaultIndex} is larger than the element length ${elements.length}`
-                )
-            } else {
+            if (defaultIndex < elements.length) {
                 updateSelectedElmt(elements[defaultIndex])
             }
         }

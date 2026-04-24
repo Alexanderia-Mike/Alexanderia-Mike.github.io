@@ -11,13 +11,11 @@ export async function getMidi(): Promise<MIDIAccess> {
     try {
         if (!midiAccess) {
             midiAccess = await navigator.requestMIDIAccess()
-            console.log('successfully get midiAccess')
         }
         return midiAccess
     } catch (e) {
         const error = e as Error
         const errMessage = `错误❌：您的设备/浏览器不支持 MIDI API，请使用电脑端的 Chrome / Edge / Opera 浏览器`
-        console.log(error.message)
         throw Error(errMessage)
     }
 }

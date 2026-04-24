@@ -50,14 +50,16 @@ function getRandomHarmonyInterval(): [NoteName, NoteName] {
     return [note1, note2]
 }
 
-const higherSampler = getSampler(false, true)
-const lowerSampler = getSampler(false, true)
-
 export function HarmonyPlayer() {
     const [notes, setNotes] = useState<[NoteName, NoteName] | null>(null)
     const [volumeRatio, setVolumeRatio] = useState(100) // 0-200, representing percentage for lower note
     const [showAnswer, setShowAnswer] = useState(false)
     const [toneEnabled, setToneEnabled] = useState(isToneEnabled())
+
+    const higherSamplerRef = useRef<ReturnType<typeof getSampler> | null>(null)
+    const lowerSamplerRef = useRef<ReturnType<typeof getSampler> | null>(null)
+    if (higherSamplerRef.current === null) higherSamplerRef.current = getSampler(false, true)
+    if (lowerSamplerRef.current === null) lowerSamplerRef.current = getSampler(false, true)
 
     const lowerNoteGainRef = useRef<Tone.Gain | null>(null)
     const higherNoteGainRef = useRef<Tone.Gain | null>(null)
@@ -69,15 +71,15 @@ export function HarmonyPlayer() {
         if (!isToneEnabled()) return
 
         if (oldNotes) {
-            lowerSampler.triggerRelease(noteToSampleId(oldNotes[0]))
-            higherSampler.triggerRelease(noteToSampleId(oldNotes[1]))
+            lowerSamplerRef.current!.triggerRelease(noteToSampleId(oldNotes[0]))
+            higherSamplerRef.current!.triggerRelease(noteToSampleId(oldNotes[1]))
         }
 
-        lowerSampler.triggerAttack(
+        lowerSamplerRef.current!.triggerAttack(
             noteToSampleId(newNotes[0]),
             Tone.now() + 0.01
         )
-        higherSampler.triggerAttack(
+        higherSamplerRef.current!.triggerAttack(
             noteToSampleId(newNotes[1]),
             Tone.now() + 0.01
         )
@@ -88,14 +90,14 @@ export function HarmonyPlayer() {
             const lowerNoteGain = new Tone.Gain(
                 volumeRatio / 100
             ).toDestination()
-            lowerSampler.connect(lowerNoteGain)
+            lowerSamplerRef.current!.connect(lowerNoteGain)
             lowerNoteGainRef.current = lowerNoteGain
         }
         if (higherNoteGainRef.current === null) {
             const higherNoteGain = new Tone.Gain(
                 (200 - volumeRatio) / 100
             ).toDestination()
-            higherSampler.connect(higherNoteGain)
+            higherSamplerRef.current!.connect(higherNoteGain)
             higherNoteGainRef.current = higherNoteGain
         }
         lowerNoteGainRef.current.gain.value = (200 - volumeRatio) / 100
@@ -104,6 +106,16 @@ export function HarmonyPlayer() {
 
     // Update gain nodes when slider changes
     useEffect(setVolumes, [volumeRatio])
+
+    // Dispose Tone.js audio nodes on unmount
+    useEffect(() => {
+        return () => {
+            higherSamplerRef.current!.dispose()
+            lowerSamplerRef.current!.dispose()
+            lowerNoteGainRef.current?.dispose()
+            higherNoteGainRef.current?.dispose()
+        }
+    }, [])
 
     const playNewButton = (
         <Button

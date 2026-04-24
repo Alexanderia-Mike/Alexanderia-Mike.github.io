@@ -8,6 +8,10 @@ import {
 import { PitchNotation } from '../../../../common/notes-utils/pitch-notation'
 import { getSampler, isToneEnabled, noteToSampleId } from './piano-audios'
 
+const KEY_COLOR_CORRECT = '#7CFC00'
+const KEY_COLOR_ANSWER = 'yellow'
+const KEY_COLOR_WRONG = 'red'
+
 export interface PianoKeyProps {
     idx: number
     note: NoteName
@@ -54,11 +58,11 @@ export abstract class PianoKey<
         }
         const isPressed = this.props.isPressed || this.state.isPressed
         return this.props.isCorrect && isPressed
-            ? { backgroundColor: '#7CFC00' }
+            ? { backgroundColor: KEY_COLOR_CORRECT }
             : this.props.isCorrect
-            ? { backgroundColor: 'yellow' }
+            ? { backgroundColor: KEY_COLOR_ANSWER }
             : isPressed
-            ? { backgroundColor: 'red' }
+            ? { backgroundColor: KEY_COLOR_WRONG }
             : {}
     }
     override render(): ReactNode {
@@ -76,10 +80,8 @@ export abstract class PianoKey<
         )
     }
 }
-interface ReadOnlyKeyProps extends PianoKeyProps {}
-
-export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
-    constructor(props: ReadOnlyKeyProps) {
+export class ReadOnlyKey extends PianoKey<PianoKeyProps, PianoKeyStates> {
+    constructor(props: PianoKeyProps) {
         super(props)
         this.state = { isPressed: props.isPressed }
     }

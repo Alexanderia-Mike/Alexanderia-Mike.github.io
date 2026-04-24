@@ -4,6 +4,7 @@ import {
     NoteName,
     OptionalNote,
     Accidental,
+    AccidentalOption,
 } from '../../common/notes-utils/notes'
 import Toggle from '../../common/toggle/toggle'
 import { Clef } from './clef'
@@ -22,7 +23,7 @@ function generateRandomNoteName(
     const candidates = whiteKeyNoteNames[clef]
     const whiteKey = randomSelect(candidates)
     switch (accidental) {
-        case AccidentalOption.NO_SHENGJIANG:
+        case AccidentalOption.NO_ACCIDENTAL:
             return whiteKey
         case AccidentalOption.SHARP_ONLY:
             return whiteKey.copy(
@@ -62,14 +63,6 @@ function generateRandomClef(): Clef {
     return randomSelect([Clef.TREBLE, Clef.BASS])
 }
 
-enum AccidentalOption {
-    NO_SHENGJIANG = 1,
-    SHARP_ONLY = 2,
-    FLAT_ONLY = 3,
-    SHARP_FLAT_ONLY = 4,
-    RANDOM_SHARP_FLAT = 5,
-}
-
 export default function Control({
     clef,
     updateNoteName,
@@ -84,8 +77,8 @@ export default function Control({
     const [randomClef, setRandomClef] = useState<boolean>(false)
     const [autoGenerate, setAutoGenerate] = useState<boolean>(false)
     const [scanAnimate, setScanAnimate] = useState<boolean>(false)
-    const [accidental, setShengjiang] = useState<AccidentalOption>(
-        AccidentalOption.NO_SHENGJIANG
+    const [accidental, setAccidental] = useState<AccidentalOption>(
+        AccidentalOption.NO_ACCIDENTAL
     )
 
     const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
@@ -205,7 +198,7 @@ export default function Control({
                     elements={[
                         {
                             label: '无升降音',
-                            value: AccidentalOption.NO_SHENGJIANG,
+                            value: AccidentalOption.NO_ACCIDENTAL,
                         },
                         { label: '仅升音', value: AccidentalOption.SHARP_ONLY },
                         { label: '仅降音', value: AccidentalOption.FLAT_ONLY },
@@ -218,7 +211,7 @@ export default function Control({
                             value: AccidentalOption.RANDOM_SHARP_FLAT,
                         },
                     ]}
-                    onSelect={(value) => setShengjiang(value)}
+                    onSelect={(value) => setAccidental(value)}
                     label="升降号"
                     classNames="w-40"
                     defaultIndex={0}
