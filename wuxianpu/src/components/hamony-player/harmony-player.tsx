@@ -105,6 +105,16 @@ export function HarmonyPlayer() {
     // Update gain nodes when slider changes
     useEffect(setVolumes, [volumeRatio])
 
+    // Dispose Tone.js audio nodes on unmount
+    useEffect(() => {
+        return () => {
+            higherSamplerRef.current.dispose()
+            lowerSamplerRef.current.dispose()
+            lowerNoteGainRef.current?.dispose()
+            higherNoteGainRef.current?.dispose()
+        }
+    }, [])
+
     const playNewButton = (
         <Button
             label={'播放新和声'}
