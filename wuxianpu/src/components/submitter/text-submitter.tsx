@@ -28,65 +28,59 @@ export function TextSubmitter({
     const [pitchNotation, setPitchNotation] = useState<PitchNotation>(
         PitchNotation.HELMHOLTZ
     )
+    const [feedbackText, setFeedbackText] = useState('')
 
-    const submitButtonTemplate = <T,>(
+    function handleSubmit<T>(
         parseInput: (str: string) => T | undefined,
         checkAnswer: (v: T) => string
-    ) => {
+    ) {
         if (inputRef.current) {
             const inputString = inputRef.current.value
             const combinedInputString = accidentalString + inputString
             const parsed = parseInput(combinedInputString)
             if (parsed == undefined) {
-                if (spanRef.current)
-                    spanRef.current.innerText = `不能识别 ${inputRef.current.value}！`
+                setFeedbackText(`不能识别 ${inputRef.current.value}！`)
             } else {
-                const displayContent = checkAnswer(parsed)
-                if (spanRef.current) {
-                    spanRef.current.innerText = displayContent
-                }
+                setFeedbackText(checkAnswer(parsed))
             }
         }
     }
 
+    const checkAnswerSolfegeWrapper = (solfege: GeneralSolfege): string => {
+        const [_, displayContent] = checkAnswerSolfege(
+            solfege,
+            currentNote && noteNameToSolfege(currentNote, keySignature),
+            incrementTotal,
+            incrementCorrect,
+            triggerNewNote
+        )
+        return displayContent
+    }
+
+    const checkAnswerNoteWrapper = (note: NoteName): string => {
+        setInputNote(note)
+        const [_, displayContent] = checkAnswerNote(
+            note,
+            currentNote,
+            incrementTotal,
+            incrementCorrect,
+            triggerNewNote,
+            pitchNotation,
+            true
+        )
+        return displayContent
+    }
+
     const submitButtonOnClick = () => {
         if (useSolfege) {
-            submitButtonTemplate(
-                parseGeneralSolfege,
-                (solfege: GeneralSolfege) => {
-                    const [_, displayContent] = checkAnswerSolfege(
-                        solfege,
-                        currentNote &&
-                            noteNameToSolfege(currentNote, keySignature),
-                        incrementTotal,
-                        incrementCorrect,
-                        triggerNewNote
-                    )
-                    return displayContent
-                }
-            )
+            handleSubmit(parseGeneralSolfege, checkAnswerSolfegeWrapper)
         } else {
-            submitButtonTemplate(
-                (noteString: string) =>
-                    parseNoteName(noteString, pitchNotation),
-                (note: NoteName) => {
-                    setInputNote(note)
-                    const [_, displayContent] = checkAnswerNote(
-                        note,
-                        currentNote,
-                        incrementTotal,
-                        incrementCorrect,
-                        triggerNewNote,
-                        pitchNotation,
-                        true
-                    )
-                    return displayContent
-                }
+            handleSubmit(
+                (noteString: string) => parseNoteName(noteString, pitchNotation),
+                checkAnswerNoteWrapper
             )
         }
     }
-
-    const spanRef = useRef<HTMLSpanElement | null>(null)
 
     return (
         <div className="flex flex-col items-center justify-start min-h-[500px]">
@@ -172,10 +166,9 @@ export function TextSubmitter({
                 />
                 <Button label={'提交答案'} onClick={submitButtonOnClick} />
             </div>
-            <span
-                className="mt-3 text-center text-orange-400"
-                ref={spanRef}
-            ></span>
+            <span className="mt-3 text-center text-orange-400">
+                {feedbackText}
+            </span>
         </div>
     )
 }
