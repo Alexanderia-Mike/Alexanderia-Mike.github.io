@@ -20,8 +20,8 @@ export enum KeySignature {
 
 type KeySignatureEntry = {
     tonic: (octave: number) => NoteName
-    sharpNotes: NoteNameBase[]
-    flatNotes: NoteNameBase[]
+    readonly sharpNotes: readonly NoteNameBase[]
+    readonly flatNotes: readonly NoteNameBase[]
 }
 
 const KEY_SIGNATURE_TABLE: Record<KeySignature, KeySignatureEntry> = {
@@ -62,7 +62,7 @@ const KEY_SIGNATURE_TABLE: Record<KeySignature, KeySignatureEntry> = {
     },
     [KeySignature.SHARP_C]: {
         tonic: (octave) => new NoteName(new WhiteKeyNoteName(NoteNameBase.C, octave), Accidental.SHARP),
-        sharpNotes: [NoteNameBase.F, NoteNameBase.C, NoteNameBase.G, NoteNameBase.D, NoteNameBase.A, NoteNameBase.E, NoteNameBase.C],
+        sharpNotes: [NoteNameBase.F, NoteNameBase.C, NoteNameBase.G, NoteNameBase.D, NoteNameBase.A, NoteNameBase.E, NoteNameBase.B],
         flatNotes: [],
     },
     [KeySignature.F]: {
@@ -117,11 +117,11 @@ export function getKeySignatureTonics(
 
 export function getSharpNotesForKey(
     keySignature: KeySignature
-): NoteNameBase[] {
+): readonly NoteNameBase[] {
     return KEY_SIGNATURE_TABLE[keySignature].sharpNotes
 }
 
-export function getFlatNotesForKey(keySignature: KeySignature): NoteNameBase[] {
+export function getFlatNotesForKey(keySignature: KeySignature): readonly NoteNameBase[] {
     return KEY_SIGNATURE_TABLE[keySignature].flatNotes
 }
 
