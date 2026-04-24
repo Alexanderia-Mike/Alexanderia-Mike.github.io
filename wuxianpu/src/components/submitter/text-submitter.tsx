@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Button from '../../common/button/button'
 import {
     noteNameToSolfege,
@@ -58,7 +58,6 @@ export function TextSubmitter({
     }
 
     const checkAnswerNoteWrapper = (note: NoteName): string => {
-        setInputNote(note)
         const [_, displayContent] = checkAnswerNote(
             note,
             currentNote,
@@ -71,10 +70,19 @@ export function TextSubmitter({
         return displayContent
     }
 
+    useEffect(() => {
+        setFeedbackText('')
+    }, [useSolfege])
+
     const submitButtonOnClick = () => {
         if (useSolfege) {
             handleSubmit(parseGeneralSolfege, checkAnswerSolfegeWrapper)
         } else {
+            const noteString = accidentalString + (inputRef.current?.value ?? '')
+            const note = parseNoteName(noteString, pitchNotation)
+            if (note !== undefined) {
+                setInputNote(note)
+            }
             handleSubmit(
                 (noteString: string) => parseNoteName(noteString, pitchNotation),
                 checkAnswerNoteWrapper
