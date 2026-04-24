@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ControlContext, NoteContext } from '../../common/context'
 import { PlayableKey } from './lib/piano/piano-key'
 import PlayablePiano from './lib/piano/playable-piano'
@@ -26,20 +26,16 @@ export default function VirtualPiano({
         setInputNote(k.props.note)
     }
 
-    const isFirst = useRef(true)
     useEffect(() => {
-        if (!isFirst.current) {
-            const [_, displayContent] = checkAnswerNote(
-                inputNote,
-                currentNote,
-                incrementTotal,
-                incrementCorrect,
-                triggerNewNote,
-                pitchNotation
-            )
-            setFeedback(displayContent)
-        }
-        isFirst.current = false
+        const [_, displayContent] = checkAnswerNote(
+            inputNote,
+            currentNote,
+            incrementTotal,
+            incrementCorrect,
+            triggerNewNote,
+            pitchNotation
+        )
+        setFeedback(displayContent)
     }, [inputNote])
 
     return (
