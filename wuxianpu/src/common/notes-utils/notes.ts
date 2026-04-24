@@ -105,7 +105,7 @@ export class NoteName {
 export type OptionalNote = NoteName | undefined
 
 export enum AccidentalOption {
-    NO_SHENGJIANG = 1,
+    NO_ACCIDENTAL = 1,
     SHARP_ONLY = 2,
     FLAT_ONLY = 3,
     SHARP_FLAT_ONLY = 4,

@@ -23,7 +23,7 @@ function generateRandomNoteName(
     const candidates = whiteKeyNoteNames[clef]
     const whiteKey = randomSelect(candidates)
     switch (accidental) {
-        case AccidentalOption.NO_SHENGJIANG:
+        case AccidentalOption.NO_ACCIDENTAL:
             return whiteKey
         case AccidentalOption.SHARP_ONLY:
             return whiteKey.copy(
@@ -78,7 +78,7 @@ export default function Control({
     const [autoGenerate, setAutoGenerate] = useState<boolean>(false)
     const [scanAnimate, setScanAnimate] = useState<boolean>(false)
     const [accidental, setAccidental] = useState<AccidentalOption>(
-        AccidentalOption.NO_SHENGJIANG
+        AccidentalOption.NO_ACCIDENTAL
     )
 
     const { newNoteTrigger, triggerNewNote } = useContext(ControlContext)
@@ -198,7 +198,7 @@ export default function Control({
                     elements={[
                         {
                             label: '无升降音',
-                            value: AccidentalOption.NO_SHENGJIANG,
+                            value: AccidentalOption.NO_ACCIDENTAL,
                         },
                         { label: '仅升音', value: AccidentalOption.SHARP_ONLY },
                         { label: '仅降音', value: AccidentalOption.FLAT_ONLY },
