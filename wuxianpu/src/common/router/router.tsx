@@ -1,6 +1,6 @@
 import { JSX, useState } from "react";
 import clsx from "clsx";
-import { HashRouter, NavLink, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, NavLink, Route, Routes } from "react-router-dom";
 
 export interface RouteConfig {
   path: string;
@@ -124,7 +124,9 @@ export function Router({
             <Route
               key={-1}
               path="*"
-              element={routes.find((r) => r.path === defaultRoute)?.element}
+              element={
+                <Navigate to={defaultRoute ?? routes[0]?.path ?? "/"} replace />
+              }
             />
             {routes.map((route, idx) => (
               <Route key={idx} path={route.path} element={route.element} />
