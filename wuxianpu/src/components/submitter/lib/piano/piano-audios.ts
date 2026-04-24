@@ -118,7 +118,6 @@ function createNewSample() {
             B7: 'assets/audio_compressed/Piano.ff.B7.mp3',
             C8: 'assets/audio_compressed/Piano.ff.C8.mp3',
         },
-        onload: () => console.log('sampler loaded'),
         release: 1.5,
     })
 }

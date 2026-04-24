@@ -80,10 +80,8 @@ export abstract class PianoKey<
         )
     }
 }
-interface ReadOnlyKeyProps extends PianoKeyProps {}
-
-export class ReadOnlyKey extends PianoKey<ReadOnlyKeyProps, PianoKeyStates> {
-    constructor(props: ReadOnlyKeyProps) {
+export class ReadOnlyKey extends PianoKey<PianoKeyProps, PianoKeyStates> {
+    constructor(props: PianoKeyProps) {
         super(props)
         this.state = { isPressed: props.isPressed }
     }

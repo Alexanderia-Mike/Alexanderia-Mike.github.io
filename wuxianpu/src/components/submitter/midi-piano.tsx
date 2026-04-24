@@ -10,12 +10,10 @@ import ReadOnlyPiano from './lib/piano/readonly-piano'
 
 let lastTimestamp = 0
 
-interface MIDIPianoProps extends SubmitterInterface {}
-
 export default function MIDIPiano({
     incrementCorrect,
     incrementTotal,
-}: MIDIPianoProps) {
+}: SubmitterInterface) {
     const [deviceMessage, setDeviceMessage] = useState('')
     const [deviceHealthy, setDeviceHealthy] = useState(true)
     const [feedback, setFeedback] = useState('')

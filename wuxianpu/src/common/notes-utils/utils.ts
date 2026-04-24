@@ -125,8 +125,6 @@ export function parseSolfege(solfegeString: string): Solfege | undefined {
     try {
         return parseInt(solfegeString) as Solfege
     } catch (e) {
-        console.log(`cannot parse ${solfegeString} as Solfege`)
-        console.log((e as Error).message)
         return undefined
     }
 }
