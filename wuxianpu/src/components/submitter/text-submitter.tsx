@@ -24,7 +24,7 @@ export function TextSubmitter({
     const { triggerNewNote } = useContext(ControlContext)
     const [useSolfege, setUseSolfege] = useState(false)
 
-    const [accidentalString, setShengjiangString] = useState('')
+    const [accidentalString, setAccidentalString] = useState('')
     const [pitchNotation, setPitchNotation] = useState<PitchNotation>(
         PitchNotation.HELMHOLTZ
     )
@@ -152,7 +152,7 @@ export function TextSubmitter({
                             value: '三重降 ',
                         },
                     ]}
-                    onSelect={(value) => setShengjiangString(value)}
+                    onSelect={(value) => setAccidentalString(value)}
                     label="升降号"
                     defaultIndex={0}
                     classNames="flex-grow-0"
