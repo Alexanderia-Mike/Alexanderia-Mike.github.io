@@ -1,4 +1,5 @@
 import { JSX, useContext, useEffect, useRef, useState } from 'react'
+import { useWindowSize } from '../../common/useWindowSize'
 import { Clef } from './clef'
 import { Note, noteNameToNote } from './notes_mapping'
 import { OptionalNote, Accidental } from '../../common/notes-utils/notes'
@@ -105,9 +106,12 @@ export default function Canvas({
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const note = noteName && noteNameToNote(noteName, clef)
     const [accidental, setAccidental] = useState<JSX.Element>(<></>)
-    const [trebleLeft, setTrebleLeft] = useState(TREBLE_LEFT)
-    const [bassLeft, setBassLeft] = useState(BASS_LEFT)
-    const [noteXRatio, setNoteXRatio] = useState(0.5)
+    const { width: windowWidth } = useWindowSize()
+
+    const trebleLeft = windowWidth < 768 ? TREBLE_LEFT_PHONE : TREBLE_LEFT
+    const bassLeft = windowWidth < 768 ? BASS_LEFT_PHONE : BASS_LEFT
+    const noteXRatio =
+        windowWidth < 640 ? 0.8 : windowWidth < 768 ? 0.65 : 0.5
 
     const { keySignature } = useContext(NoteContext)
 
@@ -153,29 +157,6 @@ export default function Canvas({
         return () => window.removeEventListener('resize', refreshCanvas)
     })
 
-    useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth
-            if (width < 768) {
-                setBassLeft(BASS_LEFT_PHONE)
-                setTrebleLeft(TREBLE_LEFT_PHONE)
-                if (width < 640) {
-                    setNoteXRatio(0.8)
-                } else if (width < 768) {
-                    setNoteXRatio(0.65)
-                }
-            } else {
-                setBassLeft(BASS_LEFT)
-                setTrebleLeft(TREBLE_LEFT)
-                setNoteXRatio(0.5)
-            }
-        }
-        handleResize()
-        window.addEventListener('resize', handleResize)
-        return () => {
-            window.removeEventListener('resize', handleResize)
-        }
-    })
 
     return (
         <div className="relative w-full">
