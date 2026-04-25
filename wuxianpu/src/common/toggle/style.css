@@ -1,37 +1,37 @@
 /* Toggle switch styles */
 .toggle {
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .toggle .slider {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
-    margin-right: 10px;
-    background-color: #ccc;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  margin-right: 10px;
+  background-color: #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .toggle .slider:before {
-    position: absolute;
-    content: '';
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
 }
 
-.slider:has(input[type='checkbox']:checked) {
-    background-color: #46a823a2;
+.slider:has(input[type="checkbox"]:checked) {
+  background-color: #46a823a2;
 }
 
-.slider:has(input[type='checkbox']:checked):before {
-    transform: translateX(30px);
+.slider:has(input[type="checkbox"]:checked):before {
+  transform: translateX(30px);
 }

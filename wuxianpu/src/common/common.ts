@@ -1,11 +1,11 @@
 export interface Hiddable {
-    hide?: boolean
+  hide?: boolean;
 }
 
 export interface ExtraClassNames {
-    classNames?: string
+  classNames?: string;
 }
 
 export interface WithChildren {
-    children?: React.ReactNode
+  children?: React.ReactNode;
 }

@@ -1,8 +1,8 @@
 function getCssProperty(element: HTMLElement, property: string) {
-    const computedStyle = window.getComputedStyle(element)
-    const leftValue = computedStyle.getPropertyValue(property)
-    const value = parseFloat(leftValue)
-    return isNaN(value) ? 0 : value
+  const computedStyle = window.getComputedStyle(element);
+  const leftValue = computedStyle.getPropertyValue(property);
+  const value = parseFloat(leftValue);
+  return isNaN(value) ? 0 : value;
 }
 
 /**
@@ -25,91 +25,91 @@ function getCssProperty(element: HTMLElement, property: string) {
  *          wrapper.left = (container.width - wrapper.width) / 2
  */
 export function handleScroll(
-    container: HTMLElement,
-    wrapper: HTMLElement,
-    scrollBar: HTMLElement,
-    scrollThumb: HTMLElement
+  container: HTMLElement,
+  wrapper: HTMLElement,
+  scrollBar: HTMLElement,
+  scrollThumb: HTMLElement,
 ) {
-    const handleScrollBar = () => {
-        if (wrapper.scrollWidth <= container.clientWidth) {
-            scrollBar.style.display = 'none'
-            wrapper.style.top = `0px`
-        } else {
-            scrollBar.style.display = ''
-            wrapper.style.top = `${scrollBar.clientHeight * 1.1}px`
-        }
+  const handleScrollBar = () => {
+    if (wrapper.scrollWidth <= container.clientWidth) {
+      scrollBar.style.display = "none";
+      wrapper.style.top = `0px`;
+    } else {
+      scrollBar.style.display = "";
+      wrapper.style.top = `${scrollBar.clientHeight * 1.1}px`;
     }
+  };
 
-    const handleThumbWidth = () => {
-        const wrapperDisplayWidth = container.clientWidth
-        const displayRatio = wrapperDisplayWidth / wrapper.scrollWidth
-        scrollThumb.style.width = `${scrollBar.clientWidth * displayRatio}px`
+  const handleThumbWidth = () => {
+    const wrapperDisplayWidth = container.clientWidth;
+    const displayRatio = wrapperDisplayWidth / wrapper.scrollWidth;
+    scrollThumb.style.width = `${scrollBar.clientWidth * displayRatio}px`;
+  };
+
+  const handleThumbPosition = (startLeft: number, deltaX: number) => {
+    const newLeft = Math.max(
+      0,
+      Math.min(
+        startLeft + deltaX,
+        scrollBar.clientWidth - scrollThumb.clientWidth,
+      ),
+    );
+    scrollThumb.style.left = `${newLeft}px`;
+  };
+
+  const handleWrapperPosition = () => {
+    if (wrapper.scrollWidth > container.clientWidth) {
+      const scrollRatio =
+        getCssProperty(scrollThumb, "left") / scrollBar.clientWidth;
+      wrapper.style.left = `${-scrollRatio * wrapper.scrollWidth}px`;
+    } else {
+      wrapper.style.left = `${
+        (container.clientWidth - wrapper.clientWidth) / 2
+      }px`;
     }
+  };
 
-    const handleThumbPosition = (startLeft: number, deltaX: number) => {
-        const newLeft = Math.max(
-            0,
-            Math.min(
-                startLeft + deltaX,
-                scrollBar.clientWidth - scrollThumb.clientWidth
-            )
-        )
-        scrollThumb.style.left = `${newLeft}px`
-    }
+  const resizeHandler = () => {
+    handleScrollBar();
+    handleThumbWidth();
+    scrollThumb.style.left = `0px`;
+    handleWrapperPosition();
+  };
 
-    const handleWrapperPosition = () => {
-        if (wrapper.scrollWidth > container.clientWidth) {
-            const scrollRatio =
-                getCssProperty(scrollThumb, 'left') / scrollBar.clientWidth
-            wrapper.style.left = `${-scrollRatio * wrapper.scrollWidth}px`
-        } else {
-            wrapper.style.left = `${
-                (container.clientWidth - wrapper.clientWidth) / 2
-            }px`
-        }
-    }
+  const handleThumbDrag = (event: MouseEvent | TouchEvent) => {
+    event.preventDefault();
 
-    const resizeHandler = () => {
-        handleScrollBar()
-        handleThumbWidth()
-        scrollThumb.style.left = `0px`
-        handleWrapperPosition()
-    }
+    const startX =
+      "touches" in event ? event.touches[0].clientX : event.clientX;
+    const thumbStartLeft = Math.min(getCssProperty(scrollThumb, "left"));
 
-    const handleThumbDrag = (event: MouseEvent | TouchEvent) => {
-        event.preventDefault()
+    const moveHandler = (moveEvent: MouseEvent | TouchEvent) => {
+      const clientX =
+        "touches" in moveEvent
+          ? moveEvent.touches[0].clientX
+          : moveEvent.clientX;
+      const deltaX = clientX - startX;
+      handleScrollBar();
+      handleThumbWidth();
+      handleThumbPosition(thumbStartLeft, deltaX);
+      handleWrapperPosition();
+    };
 
-        const startX =
-            'touches' in event ? event.touches[0].clientX : event.clientX
-        const thumbStartLeft = Math.min(getCssProperty(scrollThumb, 'left'))
+    const upHandler = () => {
+      document.removeEventListener("mousemove", moveHandler);
+      document.removeEventListener("mouseup", upHandler);
+      document.removeEventListener("touchmove", moveHandler);
+      document.removeEventListener("touchend", upHandler);
+    };
 
-        const moveHandler = (moveEvent: MouseEvent | TouchEvent) => {
-            const clientX =
-                'touches' in moveEvent
-                    ? moveEvent.touches[0].clientX
-                    : moveEvent.clientX
-            const deltaX = clientX - startX
-            handleScrollBar()
-            handleThumbWidth()
-            handleThumbPosition(thumbStartLeft, deltaX)
-            handleWrapperPosition()
-        }
+    document.addEventListener("mousemove", moveHandler);
+    document.addEventListener("mouseup", upHandler);
+    document.addEventListener("touchmove", moveHandler);
+    document.addEventListener("touchend", upHandler);
+  };
 
-        const upHandler = () => {
-            document.removeEventListener('mousemove', moveHandler)
-            document.removeEventListener('mouseup', upHandler)
-            document.removeEventListener('touchmove', moveHandler)
-            document.removeEventListener('touchend', upHandler)
-        }
-
-        document.addEventListener('mousemove', moveHandler)
-        document.addEventListener('mouseup', upHandler)
-        document.addEventListener('touchmove', moveHandler)
-        document.addEventListener('touchend', upHandler)
-    }
-
-    scrollThumb.addEventListener('mousedown', handleThumbDrag)
-    scrollThumb.addEventListener('touchstart', handleThumbDrag)
-    window.addEventListener('resize', resizeHandler)
-    resizeHandler()
+  scrollThumb.addEventListener("mousedown", handleThumbDrag);
+  scrollThumb.addEventListener("touchstart", handleThumbDrag);
+  window.addEventListener("resize", resizeHandler);
+  resizeHandler();
 }

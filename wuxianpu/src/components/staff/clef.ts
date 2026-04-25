@@ -1,4 +1,4 @@
 export enum Clef {
-    BASS = 'Bass',
-    TREBLE = 'Treble',
+  BASS = "Bass",
+  TREBLE = "Treble",
 }

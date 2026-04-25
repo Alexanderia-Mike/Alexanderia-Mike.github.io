@@ -1,134 +1,132 @@
-import { PitchNotation } from './pitch-notation'
+import { PitchNotation } from "./pitch-notation";
 
 export enum NoteNameBase {
-    C = 0,
-    D = 2,
-    E = 4,
-    F = 5,
-    G = 7,
-    A = 9,
-    B = 11,
+  C = 0,
+  D = 2,
+  E = 4,
+  F = 5,
+  G = 7,
+  A = 9,
+  B = 11,
 }
 
 // base value = 12
 export class WhiteKeyNoteName {
-    noteNameBase: NoteNameBase
-    octave: number // same to scientific notation
-    constructor(noteNameBase: NoteNameBase, octave: number) {
-        this.noteNameBase = noteNameBase
-        this.octave = octave
-    }
-    valueOf(): number {
-        return 12 + this.octave * 12 + this.noteNameBase
-    }
-    equals(other: WhiteKeyNoteName): boolean {
-        return (
-            this.noteNameBase == other.noteNameBase &&
-            this.octave == other.octave
-        )
-    }
-    toString(pitchNotation: PitchNotation): string {
-        const noteNameBaseString = NoteNameBase[this.noteNameBase]
-        switch (pitchNotation) {
-            case PitchNotation.SCIENTIFIC:
-                return noteNameBaseString + this.octave
-            case PitchNotation.HELMHOLTZ:
-                if (this.octave < 2) {
-                    return noteNameBaseString + (2 - this.octave)
-                } else if (this.octave == 2) {
-                    return noteNameBaseString
-                } else if (this.octave == 3) {
-                    return noteNameBaseString.toLowerCase()
-                } else {
-                    return noteNameBaseString.toLowerCase() + (this.octave - 3)
-                }
+  noteNameBase: NoteNameBase;
+  octave: number; // same to scientific notation
+  constructor(noteNameBase: NoteNameBase, octave: number) {
+    this.noteNameBase = noteNameBase;
+    this.octave = octave;
+  }
+  valueOf(): number {
+    return 12 + this.octave * 12 + this.noteNameBase;
+  }
+  equals(other: WhiteKeyNoteName): boolean {
+    return (
+      this.noteNameBase == other.noteNameBase && this.octave == other.octave
+    );
+  }
+  toString(pitchNotation: PitchNotation): string {
+    const noteNameBaseString = NoteNameBase[this.noteNameBase];
+    switch (pitchNotation) {
+      case PitchNotation.SCIENTIFIC:
+        return noteNameBaseString + this.octave;
+      case PitchNotation.HELMHOLTZ:
+        if (this.octave < 2) {
+          return noteNameBaseString + (2 - this.octave);
+        } else if (this.octave == 2) {
+          return noteNameBaseString;
+        } else if (this.octave == 3) {
+          return noteNameBaseString.toLowerCase();
+        } else {
+          return noteNameBaseString.toLowerCase() + (this.octave - 3);
         }
     }
+  }
 }
 
 export enum Accidental {
-    NONE = 0,
-    SHARP = 1,
-    FLAT = -1,
-    DOUBLE_SHARP = 2,
-    DOUBLE_FLAT = -2,
-    TRIPLE_SHARP = 3,
-    TRIPLE_FLAT = -3,
+  NONE = 0,
+  SHARP = 1,
+  FLAT = -1,
+  DOUBLE_SHARP = 2,
+  DOUBLE_FLAT = -2,
+  TRIPLE_SHARP = 3,
+  TRIPLE_FLAT = -3,
 }
 export const accidentalToString: Record<Accidental, string> = {
-    [Accidental.NONE]: '',
-    [Accidental.SHARP]: '升',
-    [Accidental.FLAT]: '降',
-    [Accidental.DOUBLE_SHARP]: '重升',
-    [Accidental.DOUBLE_FLAT]: '重降',
-    [Accidental.TRIPLE_SHARP]: '三重升',
-    [Accidental.TRIPLE_FLAT]: '三重降',
-}
+  [Accidental.NONE]: "",
+  [Accidental.SHARP]: "升",
+  [Accidental.FLAT]: "降",
+  [Accidental.DOUBLE_SHARP]: "重升",
+  [Accidental.DOUBLE_FLAT]: "重降",
+  [Accidental.TRIPLE_SHARP]: "三重升",
+  [Accidental.TRIPLE_FLAT]: "三重降",
+};
 
-const standardFreq = 440.0
-const standardNote = new WhiteKeyNoteName(NoteNameBase.A, 4)
+const standardFreq = 440.0;
+const standardNote = new WhiteKeyNoteName(NoteNameBase.A, 4);
 
 export class NoteName {
-    whiteKeyNote: WhiteKeyNoteName
-    accidental: Accidental
-    constructor(
-        whiteKeyNote: WhiteKeyNoteName,
-        accidental: Accidental = Accidental.NONE
-    ) {
-        this.whiteKeyNote = whiteKeyNote
-        this.accidental = accidental
-    }
-    toString(pitchNotation: PitchNotation = PitchNotation.HELMHOLTZ): string {
-        let whiteKeyName = this.whiteKeyNote.toString(pitchNotation)
-        return accidentalToString[this.accidental] + whiteKeyName
-    }
-    valueOf(): number {
-        return this.whiteKeyNote.valueOf() + this.accidental
-    }
-    equals(other: NoteName): boolean {
-        return (
-            this.accidental == other.accidental &&
-            this.whiteKeyNote.equals(other.whiteKeyNote)
-        )
-    }
-    toFrequency(): number {
-        return (
-            standardFreq *
-            Math.pow(2, (this.valueOf() - standardNote.valueOf()) / 12)
-        )
-    }
-    copy(newAccidental: Accidental): NoteName {
-        return new NoteName(this.whiteKeyNote, newAccidental)
-    }
+  whiteKeyNote: WhiteKeyNoteName;
+  accidental: Accidental;
+  constructor(
+    whiteKeyNote: WhiteKeyNoteName,
+    accidental: Accidental = Accidental.NONE,
+  ) {
+    this.whiteKeyNote = whiteKeyNote;
+    this.accidental = accidental;
+  }
+  toString(pitchNotation: PitchNotation = PitchNotation.HELMHOLTZ): string {
+    let whiteKeyName = this.whiteKeyNote.toString(pitchNotation);
+    return accidentalToString[this.accidental] + whiteKeyName;
+  }
+  valueOf(): number {
+    return this.whiteKeyNote.valueOf() + this.accidental;
+  }
+  equals(other: NoteName): boolean {
+    return (
+      this.accidental == other.accidental &&
+      this.whiteKeyNote.equals(other.whiteKeyNote)
+    );
+  }
+  toFrequency(): number {
+    return (
+      standardFreq * Math.pow(2, (this.valueOf() - standardNote.valueOf()) / 12)
+    );
+  }
+  copy(newAccidental: Accidental): NoteName {
+    return new NoteName(this.whiteKeyNote, newAccidental);
+  }
 }
 
-export type OptionalNote = NoteName | undefined
+export type OptionalNote = NoteName | undefined;
 
 export enum AccidentalOption {
-    NO_ACCIDENTAL = 1,
-    SHARP_ONLY = 2,
-    FLAT_ONLY = 3,
-    SHARP_FLAT_ONLY = 4,
-    RANDOM_SHARP_FLAT = 5,
+  NO_ACCIDENTAL = 1,
+  SHARP_ONLY = 2,
+  FLAT_ONLY = 3,
+  SHARP_FLAT_ONLY = 4,
+  RANDOM_SHARP_FLAT = 5,
 }
 
 function getAllWhiteKeys(): WhiteKeyNoteName[] {
-    let whiteKeys: WhiteKeyNoteName[] = []
-    for (let octave = 0; octave <= 8; octave++) {
-        if (octave == 0) {
-            whiteKeys.push(new WhiteKeyNoteName(NoteNameBase.A, octave))
-            whiteKeys.push(new WhiteKeyNoteName(NoteNameBase.B, octave))
-        } else if (octave == 8) {
-            whiteKeys.push(new WhiteKeyNoteName(NoteNameBase.C, octave))
-        } else {
-            for (let noteNameBase of Object.entries(NoteNameBase)
-                .filter(([_, v]) => typeof v == 'number')
-                .map(([_, v]) => v as NoteNameBase)
-                .sort((a, b) => a - b)) {
-                whiteKeys.push(new WhiteKeyNoteName(noteNameBase, octave))
-            }
-        }
+  let whiteKeys: WhiteKeyNoteName[] = [];
+  for (let octave = 0; octave <= 8; octave++) {
+    if (octave == 0) {
+      whiteKeys.push(new WhiteKeyNoteName(NoteNameBase.A, octave));
+      whiteKeys.push(new WhiteKeyNoteName(NoteNameBase.B, octave));
+    } else if (octave == 8) {
+      whiteKeys.push(new WhiteKeyNoteName(NoteNameBase.C, octave));
+    } else {
+      for (let noteNameBase of Object.entries(NoteNameBase)
+        .filter(([_, v]) => typeof v == "number")
+        .map(([_, v]) => v as NoteNameBase)
+        .sort((a, b) => a - b)) {
+        whiteKeys.push(new WhiteKeyNoteName(noteNameBase, octave));
+      }
     }
-    return whiteKeys
+  }
+  return whiteKeys;
 }
-export const ALL_WHITE_KEYS: WhiteKeyNoteName[] = getAllWhiteKeys()
+export const ALL_WHITE_KEYS: WhiteKeyNoteName[] = getAllWhiteKeys();

@@ -1,4 +1,4 @@
 export interface SubmitterInterface {
-    incrementCorrect: () => void
-    incrementTotal: () => void
+  incrementCorrect: () => void;
+  incrementTotal: () => void;
 }
