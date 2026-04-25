@@ -66,11 +66,15 @@ function drawNote(
 ) {
   // note dot
   const baseHeight = clef == Clef.TREBLE ? TREBLE_HEIGHT : BASS_HEIGHT;
+  const oldLineWidth = ctx.lineWidth;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.arc(noteX, note.y + baseHeight, 7, 0, 2 * Math.PI);
-  ctx.fillStyle = "#000";
-  ctx.fill();
+  // ctx.arc(noteX, note.y + baseHeight, 10, 0, 2 * Math.PI);
+  ctx.ellipse(noteX, note.y + baseHeight, 11, 9, 0, 0, 2 * Math.PI);
+  // ctx.fillStyle = "#000";
+  // ctx.fill();
   ctx.stroke();
+  ctx.lineWidth = oldLineWidth;
   // up down symbol
   const x = noteX - 30;
   const y = note.y + baseHeight;
