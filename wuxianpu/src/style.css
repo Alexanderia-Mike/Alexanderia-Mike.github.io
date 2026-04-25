@@ -17,3 +17,34 @@
     animation: scanEffect 1s linear forwards;
   }
 }
+
+input[type="range"].appearance-none::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 25%;
+  background: #916e56;
+  cursor: pointer;
+  margin-top: -6px;
+  /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); */
+}
+
+input[type="range"].appearance-none::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 25%;
+  background: #916e56;
+  cursor: pointer;
+  margin-top: -6px;
+  /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); */
+}
+
+input[type="range"].appearance-none::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 0px;
+}
+
+input[type="range"].appearance-none::-moz-range-track {
+  height: 10px;
+  border-radius: 0px;
+}

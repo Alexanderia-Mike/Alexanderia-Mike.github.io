@@ -143,6 +143,8 @@ export function HarmonyPlayer() {
     />
   );
 
+  console.log(`notes=${notes}`);
+  console.log(`showAnswer=${showAnswer}`);
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-4 mx-auto">
       <div className="flex my-5 flex-row justify-center items-center flex-wrap">
@@ -178,16 +180,25 @@ export function HarmonyPlayer() {
             max="200"
             value={volumeRatio}
             onChange={(e) => setVolumeRatio(Number(e.target.value))}
-            className="w-full"
+            className="w-full appearance-none rounded-full"
+            style={{
+              background: `linear-gradient(to right, #baa79b ${volumeRatio / 2}%, #ab8971 ${volumeRatio / 2}%)`,
+            }}
           />
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>低音: {100 - volumeRatio / 2}%</span>
-            <span>高音: {volumeRatio / 2}%</span>
+          <div className="flex justify-between text-sm">
+            <span className="text-[#baa79b]">
+              低音: {100 - volumeRatio / 2}%
+            </span>
+            <span className="text-[#ab8971]">高音: {volumeRatio / 2}%</span>
           </div>
           {notes && showAnswer && (
             <div className="flex justify-between text-sm text-gray-600">
-              <span>低音: {notes[0].toString(PitchNotation.SCIENTIFIC)}</span>
-              <span>高音: {notes[1].toString(PitchNotation.SCIENTIFIC)}</span>
+              <span className="text-[#baa79b]">
+                低音: {notes[0].toString(PitchNotation.SCIENTIFIC)}
+              </span>
+              <span className="text-[#ab8971]">
+                高音: {notes[1].toString(PitchNotation.SCIENTIFIC)}
+              </span>
             </div>
           )}
         </div>
