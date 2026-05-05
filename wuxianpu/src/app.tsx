@@ -1,13 +1,13 @@
 import HarmonySinging from "./apps/harmony-singing";
-import Wuxianpu from "./apps/wuxianpu";
+import StaffSingleNote from "./apps/staff-single-note";
 import { Router, RouteConfig } from "./common/router/router";
 
 export default function App() {
   const routes: RouteConfig[] = [
     {
       path: "wuxianpu",
-      element: <Wuxianpu />,
-      label: "五线谱练习",
+      element: <StaffSingleNote />,
+      label: "五线谱单音练习",
     },
     {
       path: "harmony",

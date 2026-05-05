@@ -6,7 +6,7 @@ import Submitter from "../components/submitter/submitter";
 import { KeySignature } from "../common/notes-utils/key-signature";
 import { OptionalNote } from "../common/notes-utils/notes";
 
-export default function Wuxianpu() {
+export default function StaffSingleNote() {
   const [currentNote, updateCurrentNote] = useState<OptionalNote>(undefined);
   const [inputNote, setInputNote] = useState<OptionalNote>(undefined);
   const [newNoteTrigger, setNewNoteTrigger] = useState<boolean>(false);

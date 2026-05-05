@@ -30,7 +30,7 @@ import {
   WhiteKeyNoteName,
 } from "../../common/notes-utils/notes";
 import * as utils from "../../common/utils";
-import Wuxianpu from "../wuxianpu";
+import StaffSingleNote from "../staff-single-note";
 
 const makeC4 = () =>
   new NoteName(new WhiteKeyNoteName(NoteNameBase.C, 4), Accidental.NONE);
@@ -48,7 +48,7 @@ beforeEach(() => {
 
 describe("generate note", () => {
   it("clicking the generate button causes the canvas to redraw", () => {
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
     const ctx = getCanvasCtx();
     const strokesBefore = ctx.stroke.mock.calls.length;
 
@@ -63,7 +63,7 @@ describe("generate note", () => {
 
 describe("answer submission", () => {
   it("submitting a correct answer shows the correct feedback message", () => {
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
 
     // Generate a note first
     act(() => {
@@ -81,7 +81,7 @@ describe("answer submission", () => {
   });
 
   it("submitting a wrong answer shows the wrong feedback message", () => {
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
 
     act(() => {
       fireEvent.click(screen.getByText("生成练习题"));
@@ -106,7 +106,7 @@ describe("auto-generation", () => {
       advanceTimers: (delay) => jest.advanceTimersByTime(delay),
     });
 
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
     const ctx = getCanvasCtx();
 
     // Enable auto-generate: click the label that wraps the hidden checkbox
