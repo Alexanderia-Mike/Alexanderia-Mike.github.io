@@ -2,6 +2,18 @@ jest.mock("../../common/utils", () => ({
   randomSelect: jest.fn(),
 }));
 
+const mockTriggerAttack = jest.fn();
+
+jest.mock("../../components/submitter/lib/piano/piano-audios", () => ({
+  getSampler: jest.fn(() => ({ triggerAttack: mockTriggerAttack })),
+  noteToSampleId: jest.fn((note: unknown) =>
+    String((note as { valueOf: () => number }).valueOf()),
+  ),
+  enableTone: jest.fn().mockResolvedValue(undefined),
+  disableTone: jest.fn(),
+  isToneEnabled: jest.fn(() => false),
+}));
+
 import { fireEvent, render, screen } from "@testing-library/react";
 import * as utils from "../../common/utils";
 import {
@@ -34,9 +46,13 @@ import {
 import { KeySignature } from "../../common/notes-utils/key-signature";
 import ChordCanvas from "../../components/chord-canvas/chord-canvas";
 import ChordControl from "../../components/chord-canvas/chord-control";
+import ChordTextSubmitter from "../../components/chord-submitter/chord-text-submitter";
+import MultiSelectPiano from "../../components/chord-submitter/lib/multi-select-piano";
+import ChordVirtualPiano from "../../components/chord-submitter/chord-virtual-piano";
 
 // Always pick the first element — deterministic but valid
 beforeEach(() => {
+  mockTriggerAttack.mockClear();
   (utils.randomSelect as jest.Mock).mockImplementation(
     (arr: unknown[]) => arr[0],
   );
@@ -56,6 +72,16 @@ function makeChord(
   acc = Accidental.NONE,
 ) {
   return new Chord(makeNote(base, 4, acc), type);
+}
+
+// Cycling mock: successive randomSelect calls return different array elements.
+// Resets automatically via beforeEach. Call at the start of any test that needs
+// generateWrongOptions to produce distinct results.
+function rotatingMock() {
+  let count = 0;
+  (utils.randomSelect as jest.Mock).mockImplementation((arr: unknown[]) => {
+    return arr[count++ % arr.length];
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -637,5 +663,437 @@ describe("ChordControl", () => {
     fireEvent.click(screen.getByText("G大调 / E小调"));
     fireEvent.click(screen.getByText("生成练习题"));
     expect(capturedKey).toBe(KeySignature.G);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Milestone 3: ChordTextSubmitter
+// ---------------------------------------------------------------------------
+
+describe("ChordTextSubmitter", () => {
+  function makeKnownVoicing(): ChordVoicing {
+    const chord = makeChord(NoteNameBase.C, ChordTypeName.MAJOR_TRIAD);
+    return new ChordVoicing(chord, chord.getChordToneNoteNames());
+  }
+
+  it("no voicing + submit shows 请先生成练习题!", () => {
+    render(
+      <ChordTextSubmitter
+        voicing={undefined}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("text-submitter-message")).toHaveTextContent(
+      "请先生成练习题!",
+    );
+  });
+
+  it("4 option buttons appear when a voicing is provided", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    expect(screen.getAllByTestId(/^option-/)).toHaveLength(4);
+  });
+
+  it("4 options show distinct labels in fullChinese mode", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    const buttons = screen.getAllByTestId(/^option-/);
+    const labels = buttons.map((b) => b.textContent ?? "");
+    expect(new Set(labels).size).toBe(4);
+  });
+
+  it("selecting the correct option and submitting shows 正确✅", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    const correctLabel = getFullChineseName(voicing);
+    fireEvent.click(screen.getByText(correctLabel));
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("text-submitter-message")).toHaveTextContent(
+      "正确✅",
+    );
+  });
+
+  it("correct option gets green styling after correct submission", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    const correctLabel = getFullChineseName(voicing);
+    fireEvent.click(screen.getByText(correctLabel));
+    fireEvent.click(screen.getByText("提交答案"));
+    const correctButton = screen.getByText(correctLabel).closest("button");
+    expect(correctButton?.className).toContain("bg-green-100");
+  });
+
+  it("selecting wrong option shows 错误❌, wrong=red, correct=green", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    const correctLabel = getFullChineseName(voicing);
+    const allButtons = screen.getAllByTestId(/^option-/);
+    const wrongButton = allButtons.find((b) => b.textContent !== correctLabel)!;
+    fireEvent.click(wrongButton);
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("text-submitter-message")).toHaveTextContent(
+      "错误❌",
+    );
+    expect(wrongButton.className).toContain("bg-red-100");
+    const correctButton = screen.getByText(correctLabel).closest("button");
+    expect(correctButton?.className).toContain("bg-green-100");
+  });
+
+  it("displayMode 文字全称 shows Chinese name of correct option by default", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    expect(screen.getByText(getFullChineseName(voicing))).toBeInTheDocument();
+  });
+
+  it("displayMode 和弦固定标记 shows chord symbol of correct option", () => {
+    rotatingMock();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    // open dropdown and select chord symbol mode
+    fireEvent.click(screen.getByText("文字全称"));
+    fireEvent.click(screen.getByText("和弦固定标记"));
+    expect(screen.getByText(getChordSymbol(voicing))).toBeInTheDocument();
+  });
+
+  it("autoGenerate=true calls onTriggerNewChord on correct answer", () => {
+    rotatingMock();
+    const onTriggerNewChord = jest.fn();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    fireEvent.click(screen.getByText(getFullChineseName(voicing)));
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(onTriggerNewChord).toHaveBeenCalledTimes(1);
+  });
+
+  it("autoGenerate=true does NOT call onTriggerNewChord on wrong answer", () => {
+    rotatingMock();
+    const onTriggerNewChord = jest.fn();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    const correctLabel = getFullChineseName(voicing);
+    const wrongButton = screen
+      .getAllByTestId(/^option-/)
+      .find((b) => b.textContent !== correctLabel)!;
+    fireEvent.click(wrongButton);
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+  });
+
+  it("autoGenerate=false does NOT call onTriggerNewChord even on correct answer", () => {
+    rotatingMock();
+    const onTriggerNewChord = jest.fn();
+    const voicing = makeKnownVoicing();
+    render(
+      <ChordTextSubmitter
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    fireEvent.click(screen.getByText(getFullChineseName(voicing)));
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Milestone 4: MultiSelectPiano
+// ---------------------------------------------------------------------------
+
+describe("MultiSelectPiano", () => {
+  it("clicking a key calls onNotesChange with that note included", () => {
+    const onNotesChange = jest.fn();
+    render(
+      <MultiSelectPiano
+        onNotesChange={onNotesChange}
+        speakerEnabled={false}
+        keyColors={new Map()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60")); // C4
+    const lastCall: NoteName[] =
+      onNotesChange.mock.calls[onNotesChange.mock.calls.length - 1][0];
+    expect(lastCall.some((n) => n.valueOf() === 60)).toBe(true);
+  });
+
+  it("clicking the same key twice removes it via onNotesChange", () => {
+    const onNotesChange = jest.fn();
+    render(
+      <MultiSelectPiano
+        onNotesChange={onNotesChange}
+        speakerEnabled={false}
+        keyColors={new Map()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60")); // add C4
+    fireEvent.click(screen.getByTestId("piano-key-60")); // remove C4
+    const lastCall: NoteName[] =
+      onNotesChange.mock.calls[onNotesChange.mock.calls.length - 1][0];
+    expect(lastCall.some((n) => n.valueOf() === 60)).toBe(false);
+  });
+
+  it("triggerAttack is called when a key is added with speaker on", () => {
+    render(
+      <MultiSelectPiano
+        onNotesChange={jest.fn()}
+        speakerEnabled={true}
+        keyColors={new Map()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60"));
+    expect(mockTriggerAttack).toHaveBeenCalledTimes(1);
+  });
+
+  it("triggerAttack is NOT called when removing a key (even with speaker on)", () => {
+    render(
+      <MultiSelectPiano
+        onNotesChange={jest.fn()}
+        speakerEnabled={true}
+        keyColors={new Map()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60")); // add
+    mockTriggerAttack.mockClear();
+    fireEvent.click(screen.getByTestId("piano-key-60")); // remove
+    expect(mockTriggerAttack).not.toHaveBeenCalled();
+  });
+
+  it("triggerAttack is NOT called when speaker is off", () => {
+    render(
+      <MultiSelectPiano
+        onNotesChange={jest.fn()}
+        speakerEnabled={false}
+        keyColors={new Map()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60"));
+    expect(mockTriggerAttack).not.toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Milestone 4: ChordVirtualPiano
+// ---------------------------------------------------------------------------
+
+describe("ChordVirtualPiano", () => {
+  it("no voicing + submit shows 请先生成练习题!", () => {
+    render(
+      <ChordVirtualPiano
+        voicing={undefined}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("virtual-piano-message")).toHaveTextContent(
+      "请先生成练习题!",
+    );
+  });
+
+  it("submitting all correct keys shows 正确✅ and green keys (C major triad)", () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordVirtualPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60")); // C4
+    fireEvent.click(screen.getByTestId("piano-key-64")); // E4
+    fireEvent.click(screen.getByTestId("piano-key-67")); // G4
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("virtual-piano-message")).toHaveTextContent(
+      "正确✅",
+    );
+    expect(screen.getByTestId("piano-key-60")).toHaveStyle({
+      backgroundColor: "#7CFC00",
+    });
+  });
+
+  it("submitting wrong/missing keys shows 错误❌ with correct color coding (C minor triad)", () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MINOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    // voicing.notes: C4(60), Eb4(63), G4(67)
+    render(
+      <ChordVirtualPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60")); // C4 — correct
+    fireEvent.click(screen.getByTestId("piano-key-64")); // E4 — wrong (should be Eb4)
+    // G4(67) not clicked — missing → yellow
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("virtual-piano-message")).toHaveTextContent(
+      "错误❌",
+    );
+    expect(screen.getByTestId("piano-key-60")).toHaveStyle({
+      backgroundColor: "#7CFC00",
+    }); // green
+    expect(screen.getByTestId("piano-key-64")).toHaveStyle({
+      backgroundColor: "red",
+    }); // red (wrong)
+    expect(screen.getByTestId("piano-key-63")).toHaveStyle({
+      backgroundColor: "yellow",
+    }); // yellow (Eb4 missing)
+    expect(screen.getByTestId("piano-key-67")).toHaveStyle({
+      backgroundColor: "yellow",
+    }); // yellow (G4 missing)
+  });
+
+  it("submitting all correct keys shows 正确✅ (C major-major seventh)", () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_MAJOR_SEVENTH,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    // voicing.notes: C4(60), E4(64), G4(67), B4(71)
+    render(
+      <ChordVirtualPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60"));
+    fireEvent.click(screen.getByTestId("piano-key-64"));
+    fireEvent.click(screen.getByTestId("piano-key-67"));
+    fireEvent.click(screen.getByTestId("piano-key-71")); // B4
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(screen.getByTestId("virtual-piano-message")).toHaveTextContent(
+      "正确✅",
+    );
+  });
+
+  it("autoGenerate=true calls onTriggerNewChord on correct answer", () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    const onTriggerNewChord = jest.fn();
+    render(
+      <ChordVirtualPiano
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60"));
+    fireEvent.click(screen.getByTestId("piano-key-64"));
+    fireEvent.click(screen.getByTestId("piano-key-67"));
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(onTriggerNewChord).toHaveBeenCalledTimes(1);
+  });
+
+  it("autoGenerate=false does NOT call onTriggerNewChord even on correct answer", () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    const onTriggerNewChord = jest.fn();
+    render(
+      <ChordVirtualPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60"));
+    fireEvent.click(screen.getByTestId("piano-key-64"));
+    fireEvent.click(screen.getByTestId("piano-key-67"));
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+  });
+
+  it("autoGenerate=true does NOT call onTriggerNewChord on wrong answer", () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    const onTriggerNewChord = jest.fn();
+    render(
+      <ChordVirtualPiano
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("piano-key-60")); // C4 only — incomplete
+    fireEvent.click(screen.getByText("提交答案"));
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
   });
 });

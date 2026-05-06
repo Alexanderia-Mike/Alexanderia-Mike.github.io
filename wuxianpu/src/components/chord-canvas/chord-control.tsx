@@ -11,9 +11,11 @@ import clsx from "clsx";
 export default function ChordControl({
   onGenerate,
   newChordTrigger,
+  onAutoGenerateChange,
 }: {
   onGenerate: (voicing: ChordVoicing, keySignature: KeySignature) => void;
   newChordTrigger: boolean;
+  onAutoGenerateChange?: (v: boolean) => void;
 }) {
   const [keySignature, setKeySignature] = useState<KeySignature>(
     KeySignature.C,
@@ -49,7 +51,11 @@ export default function ChordControl({
         )}
       >
         <Toggle
-          onChange={() => setAutoGenerate(!autoGenerate)}
+          onChange={() => {
+            const next = !autoGenerate;
+            setAutoGenerate(next);
+            onAutoGenerateChange?.(next);
+          }}
           label="自动出题"
           render={() => (
             <div className="flex items-center">

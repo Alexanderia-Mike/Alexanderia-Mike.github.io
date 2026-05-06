@@ -56,6 +56,7 @@ export default function ChordTextSubmitter({
     ]);
     setOptions(shuffled);
     setCorrectIndex(ci);
+    setMessage("请选择正确的和弦名称");
     setOptionModes(
       shuffled.map(() => (Math.random() < 0.5 ? "fullChinese" : "chordSymbol")),
     );
