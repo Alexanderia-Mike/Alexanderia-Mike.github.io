@@ -2,6 +2,7 @@ jest.mock("../../common/utils", () => ({
   randomSelect: jest.fn(),
 }));
 
+import { fireEvent, render, screen } from "@testing-library/react";
 import * as utils from "../../common/utils";
 import {
   Accidental,
@@ -30,6 +31,9 @@ import {
   getChordSymbol,
   getFullChineseName,
 } from "../../common/chord-utils/chord-names";
+import { KeySignature } from "../../common/notes-utils/key-signature";
+import ChordCanvas from "../../components/chord-canvas/chord-canvas";
+import ChordControl from "../../components/chord-canvas/chord-control";
 
 // Always pick the first element — deterministic but valid
 beforeEach(() => {
@@ -489,5 +493,149 @@ describe("generateRandomVoicing", () => {
       const v = generateRandomVoicing(InversionMode.NO_INVERSION);
       expect(v.getInversionIndex()).toBe(0);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Milestone 2: ChordCanvas
+// ---------------------------------------------------------------------------
+
+function makeVoicing(notes: NoteName[]): ChordVoicing {
+  const chord = new Chord(notes[0], ChordTypeName.MAJOR_TRIAD);
+  return new ChordVoicing(chord, notes);
+}
+
+function getCanvasCtx() {
+  const canvas = document.querySelector("canvas") as HTMLCanvasElement;
+  return canvas.getContext("2d") as jest.Mocked<CanvasRenderingContext2D>;
+}
+
+describe("ChordCanvas", () => {
+  it("renders N ellipses for an N-note chord", () => {
+    const voicing = makeVoicing([
+      makeNote(NoteNameBase.C, 4),
+      makeNote(NoteNameBase.E, 4),
+      makeNote(NoteNameBase.G, 4),
+    ]);
+    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    const ctx = getCanvasCtx();
+    expect(ctx.ellipse.mock.calls.length).toBe(3);
+  });
+
+  it("note with octave < 4 is drawn in the bass-staff y range", () => {
+    // G2 in bass: note.y = 170, absolute y = 170 + BASS_HEIGHT(140) = 310
+    const voicing = makeVoicing([makeNote(NoteNameBase.G, 2)]);
+    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    const ctx = getCanvasCtx();
+    const y = ctx.ellipse.mock.calls[0][1] as number;
+    expect(y).toBeGreaterThan(200);
+  });
+
+  it("note with octave >= 4 is drawn in the treble-staff y range", () => {
+    // G4 in treble: note.y = 150, absolute y = 150 + TREBLE_HEIGHT(-19) = 131
+    const voicing = makeVoicing([makeNote(NoteNameBase.G, 4)]);
+    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    const ctx = getCanvasCtx();
+    const y = ctx.ellipse.mock.calls[0][1] as number;
+    expect(y).toBeLessThan(200);
+  });
+
+  it("C4 and D4 adjacent notes get different x positions", () => {
+    // D4 is 1 white-key above C4, so D4 (higher note) is offset +22px
+    const voicing = makeVoicing([
+      makeNote(NoteNameBase.C, 4),
+      makeNote(NoteNameBase.D, 4),
+    ]);
+    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    const ctx = getCanvasCtx();
+    expect(ctx.ellipse.mock.calls.length).toBe(2);
+    const x0 = ctx.ellipse.mock.calls[0][0] as number;
+    const x1 = ctx.ellipse.mock.calls[1][0] as number;
+    expect(x0).not.toBe(x1);
+  });
+
+  it("non-adjacent notes (E.g. C4 and E4) share the same x position", () => {
+    const voicing = makeVoicing([
+      makeNote(NoteNameBase.C, 4),
+      makeNote(NoteNameBase.E, 4),
+    ]);
+    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    const ctx = getCanvasCtx();
+    const x0 = ctx.ellipse.mock.calls[0][0] as number;
+    const x1 = ctx.ellipse.mock.calls[1][0] as number;
+    expect(x0).toBe(x1);
+  });
+
+  it("Bb4 shows accidental in C major but not in Bb major", () => {
+    const voicing = makeVoicing([makeNote(NoteNameBase.B, 4, Accidental.FLAT)]);
+    const { rerender } = render(
+      <ChordCanvas voicing={voicing} keySignature={KeySignature.C} />,
+    );
+    // C major has no flats: Bb is not in key → accidental shown
+    expect(screen.getByTestId("chord-accidentals").children.length).toBe(1);
+
+    // FLAT_B major has Bb in key → no accidental
+    rerender(
+      <ChordCanvas voicing={voicing} keySignature={KeySignature.FLAT_B} />,
+    );
+    expect(screen.getByTestId("chord-accidentals").children.length).toBe(0);
+  });
+
+  it("renders nothing on canvas when voicing is undefined", () => {
+    render(<ChordCanvas voicing={undefined} keySignature={KeySignature.C} />);
+    const ctx = getCanvasCtx();
+    expect(ctx.ellipse.mock.calls.length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Milestone 2: ChordControl
+// ---------------------------------------------------------------------------
+
+describe("ChordControl", () => {
+  it("clicking generate button calls onGenerate with a voicing", () => {
+    let captured: ChordVoicing | undefined;
+    render(
+      <ChordControl
+        onGenerate={(v) => {
+          captured = v;
+        }}
+        newChordTrigger={false}
+      />,
+    );
+    fireEvent.click(screen.getByText("生成练习题"));
+    expect(captured).toBeDefined();
+    expect(captured!.notes.length).toBeGreaterThan(0);
+  });
+
+  it("default NO_INVERSION mode always generates root-position voicings", () => {
+    let captured: ChordVoicing | undefined;
+    render(
+      <ChordControl
+        onGenerate={(v) => {
+          captured = v;
+        }}
+        newChordTrigger={false}
+      />,
+    );
+    fireEvent.click(screen.getByText("生成练习题"));
+    expect(captured!.getInversionIndex()).toBe(0);
+  });
+
+  it("onGenerate receives the current key signature", () => {
+    let capturedKey: KeySignature | undefined;
+    render(
+      <ChordControl
+        onGenerate={(_, ks) => {
+          capturedKey = ks;
+        }}
+        newChordTrigger={false}
+      />,
+    );
+    // Default key is C major — select G major from dropdown
+    fireEvent.click(screen.getByText("C大调 / A小调"));
+    fireEvent.click(screen.getByText("G大调 / E小调"));
+    fireEvent.click(screen.getByText("生成练习题"));
+    expect(capturedKey).toBe(KeySignature.G);
   });
 });
