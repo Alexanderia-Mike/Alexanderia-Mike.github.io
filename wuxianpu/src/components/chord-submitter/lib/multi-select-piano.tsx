@@ -84,7 +84,7 @@ export default function MultiSelectPiano({
   return (
     <div
       ref={containerRef}
-      className="flex relative piano flex-col justify-start items-center h-[300px] overflow-hidden"
+      className="flex relative piano flex-col justify-start items-center h-[200px] overflow-hidden"
     >
       <div
         ref={scrollBarRef}

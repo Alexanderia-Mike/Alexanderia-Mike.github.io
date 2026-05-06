@@ -64,7 +64,7 @@ export default function ChordExercise() {
           onAutoGenerateChange={setAutoGenerate}
         />
       </div>
-      <div className="mx-auto max-w-[1200px] p-[20px]">
+      <div className="mx-auto">
         <Router
           routes={routes}
           defaultRoute="chord-text"
