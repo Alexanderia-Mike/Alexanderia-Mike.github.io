@@ -72,6 +72,11 @@ export default function ChordExercise() {
         />
       ),
     },
+    {
+      path: "midi-piano",
+      label: "MIDI钢琴",
+      element: <div className="mb-5">正在开发中...</div>,
+    },
   ];
 
   return (
@@ -101,7 +106,7 @@ export default function ChordExercise() {
         total={total}
         setTotal={setTotal}
       />
-      <div className="mx-auto">
+      <div className="mx-auto mt-5">
         <Router
           routes={routes}
           defaultRoute="chord-text"
