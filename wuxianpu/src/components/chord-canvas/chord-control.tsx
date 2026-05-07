@@ -25,9 +25,14 @@ export default function ChordControl({
   );
   const [autoGenerate, setAutoGenerate] = useState<boolean>(false);
   const [scanAnimate, setScanAnimate] = useState<boolean>(false);
+  const [allowNonDiatonic, setAllowNonDiatonic] = useState<boolean>(true);
 
   const generateButtonOnClick = () => {
-    const voicing = generateRandomVoicing(inversionMode);
+    const voicing = generateRandomVoicing(
+      inversionMode,
+      keySignature,
+      !allowNonDiatonic,
+    );
     onGenerate(voicing, keySignature);
   };
 
@@ -63,6 +68,11 @@ export default function ChordControl({
               <FloatingDiv content="当回答正确后，自动出下一题" width={20} />
             </div>
           )}
+        />
+        <Toggle
+          onChange={() => setAllowNonDiatonic((v) => !v)}
+          checked={allowNonDiatonic}
+          label="允许离调和弦"
         />
         <DropdownMenu
           elements={[

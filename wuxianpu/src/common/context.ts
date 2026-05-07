@@ -9,6 +9,8 @@ interface NoteContextInterface {
   setInputNote: React.Dispatch<React.SetStateAction<OptionalNote>>;
   keySignature: KeySignature;
   setKeySignature: React.Dispatch<React.SetStateAction<KeySignature>>;
+  speakerEnabled: boolean;
+  setSpeakerEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const NoteContext = createContext<NoteContextInterface>({
@@ -18,6 +20,8 @@ export const NoteContext = createContext<NoteContextInterface>({
   setInputNote: () => null,
   keySignature: KeySignature.C,
   setKeySignature: () => null,
+  speakerEnabled: false,
+  setSpeakerEnabled: () => null,
 });
 
 interface ControlContextInterface {

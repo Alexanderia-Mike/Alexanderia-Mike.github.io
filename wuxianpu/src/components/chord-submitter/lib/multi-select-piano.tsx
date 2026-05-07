@@ -42,6 +42,7 @@ export default function MultiSelectPiano({
 }) {
   const [selectedNotes, setSelectedNotes] = useState<NoteName[]>([]);
   const samplerRef = useRef(getSampler());
+  const pendingReleaseRef = useRef<Set<string>>(new Set());
   const containerRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const scrollBarRef = useRef<HTMLDivElement>(null);
@@ -63,20 +64,34 @@ export default function MultiSelectPiano({
     }
   }, []);
 
+  const onKeyMouseDown = (note: NoteName, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const isSelected = selectedNotes.some(
+      (n) => n.valueOf() === note.valueOf(),
+    );
+    if (!isSelected && speakerEnabled) {
+      samplerRef.current.triggerAttack(noteToSampleId(note));
+      pendingReleaseRef.current.add(note.valueOf().toString());
+    }
+  };
+
+  const onKeyMouseUp = (note: NoteName, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const key = note.valueOf().toString();
+    if (pendingReleaseRef.current.has(key)) {
+      samplerRef.current.triggerRelease(noteToSampleId(note));
+      pendingReleaseRef.current.delete(key);
+    }
+  };
+
   const handleKeyClick = (note: NoteName, e: React.MouseEvent) => {
     e.stopPropagation();
     const alreadySelected = selectedNotes.some(
       (n) => n.valueOf() === note.valueOf(),
     );
-    let next: NoteName[];
-    if (alreadySelected) {
-      next = selectedNotes.filter((n) => n.valueOf() !== note.valueOf());
-    } else {
-      next = [...selectedNotes, note];
-      if (speakerEnabled) {
-        samplerRef.current.triggerAttack(noteToSampleId(note));
-      }
-    }
+    const next = alreadySelected
+      ? selectedNotes.filter((n) => n.valueOf() !== note.valueOf())
+      : [...selectedNotes, note];
     setSelectedNotes(next);
     onNotesChange(next);
   };
@@ -115,6 +130,9 @@ export default function MultiSelectPiano({
                 i === 0 && "border-l",
               )}
               style={getKeyStyle(whiteNote, selectedNotes, keyColors)}
+              onMouseDown={(e) => onKeyMouseDown(whiteNote, e)}
+              onMouseUp={(e) => onKeyMouseUp(whiteNote, e)}
+              onMouseLeave={(e) => onKeyMouseUp(whiteNote, e)}
               onClick={(e) => handleKeyClick(whiteNote, e)}
             >
               {blackNote && (
@@ -122,6 +140,9 @@ export default function MultiSelectPiano({
                   data-testid={`piano-key-${blackNote.valueOf()}`}
                   className="black-key w-2/3 h-2/3 absolute -translate-x-1/2 z-10 bg-black rounded-b-md cursor-pointer select-none hover:bg-gray-500 active:bg-gray-400"
                   style={getKeyStyle(blackNote, selectedNotes, keyColors)}
+                  onMouseDown={(e) => onKeyMouseDown(blackNote, e)}
+                  onMouseUp={(e) => onKeyMouseUp(blackNote, e)}
+                  onMouseLeave={(e) => onKeyMouseUp(blackNote, e)}
                   onClick={(e) => handleKeyClick(blackNote, e)}
                 />
               )}

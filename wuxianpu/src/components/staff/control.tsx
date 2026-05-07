@@ -130,6 +130,7 @@ export default function Control({
         )}
       >
         <Toggle
+          id="auto-generate-toggle"
           onChange={autoGenerateToggleOnChange}
           label="自动出题"
           render={() => (

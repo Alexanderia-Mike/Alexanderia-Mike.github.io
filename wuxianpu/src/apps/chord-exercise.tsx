@@ -6,7 +6,12 @@ import ChordCanvas from "../components/chord-canvas/chord-canvas";
 import ChordControl from "../components/chord-canvas/chord-control";
 import ChordTextSubmitter from "../components/chord-submitter/chord-text-submitter";
 import ChordVirtualPiano from "../components/chord-submitter/chord-virtual-piano";
+import ScoreBoard from "../components/submitter/score-board";
 import { Router, RouteConfig } from "../common/router/router";
+import {
+  disableTone,
+  enableTone,
+} from "../components/submitter/lib/piano/piano-audios";
 
 export default function ChordExercise() {
   const [voicing, setVoicing] = useState<ChordVoicing | undefined>(undefined);
@@ -15,6 +20,19 @@ export default function ChordExercise() {
   );
   const [newChordTrigger, setNewChordTrigger] = useState<boolean>(false);
   const [autoGenerate, setAutoGenerate] = useState<boolean>(false);
+  const [correct, setCorrect] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
+  const [speakerEnabled, setSpeakerEnabled] = useState<boolean>(false);
+
+  const handleSpeakerToggle = () => {
+    if (speakerEnabled) {
+      disableTone();
+      setSpeakerEnabled(false);
+    } else {
+      void enableTone();
+      setSpeakerEnabled(true);
+    }
+  };
 
   const handleGenerate = (v: ChordVoicing, ks: KeySignature) => {
     setVoicing(v);
@@ -22,6 +40,8 @@ export default function ChordExercise() {
   };
 
   const triggerNewChord = () => setNewChordTrigger((t) => !t);
+  const incrementCorrect = () => setCorrect((c) => c + 1);
+  const incrementTotal = () => setTotal((t) => t + 1);
 
   const routes: RouteConfig[] = [
     {
@@ -32,6 +52,8 @@ export default function ChordExercise() {
           voicing={voicing}
           autoGenerate={autoGenerate}
           onTriggerNewChord={triggerNewChord}
+          incrementCorrect={incrementCorrect}
+          incrementTotal={incrementTotal}
         />
       ),
     },
@@ -43,6 +65,10 @@ export default function ChordExercise() {
           voicing={voicing}
           autoGenerate={autoGenerate}
           onTriggerNewChord={triggerNewChord}
+          incrementCorrect={incrementCorrect}
+          incrementTotal={incrementTotal}
+          speakerEnabled={speakerEnabled}
+          onSpeakerToggle={handleSpeakerToggle}
         />
       ),
     },
@@ -57,13 +83,24 @@ export default function ChordExercise() {
           "md:flex-row",
         )}
       >
-        <ChordCanvas voicing={voicing} keySignature={keySignature} />
+        <ChordCanvas
+          voicing={voicing}
+          keySignature={keySignature}
+          speakerEnabled={speakerEnabled}
+          onSpeakerToggle={handleSpeakerToggle}
+        />
         <ChordControl
           onGenerate={handleGenerate}
           newChordTrigger={newChordTrigger}
           onAutoGenerateChange={setAutoGenerate}
         />
       </div>
+      <ScoreBoard
+        correct={correct}
+        setCorrect={setCorrect}
+        total={total}
+        setTotal={setTotal}
+      />
       <div className="mx-auto">
         <Router
           routes={routes}

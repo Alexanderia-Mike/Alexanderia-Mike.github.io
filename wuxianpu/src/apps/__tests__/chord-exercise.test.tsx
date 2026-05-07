@@ -49,6 +49,7 @@ import ChordControl from "../../components/chord-canvas/chord-control";
 import ChordTextSubmitter from "../../components/chord-submitter/chord-text-submitter";
 import MultiSelectPiano from "../../components/chord-submitter/lib/multi-select-piano";
 import ChordVirtualPiano from "../../components/chord-submitter/chord-virtual-piano";
+import ChordExercise from "../chord-exercise";
 
 // Always pick the first element — deterministic but valid
 beforeEach(() => {
@@ -543,7 +544,14 @@ describe("ChordCanvas", () => {
       makeNote(NoteNameBase.E, 4),
       makeNote(NoteNameBase.G, 4),
     ]);
-    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    render(
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
+    );
     const ctx = getCanvasCtx();
     expect(ctx.ellipse.mock.calls.length).toBe(3);
   });
@@ -551,7 +559,14 @@ describe("ChordCanvas", () => {
   it("note with octave < 4 is drawn in the bass-staff y range", () => {
     // G2 in bass: note.y = 170, absolute y = 170 + BASS_HEIGHT(140) = 310
     const voicing = makeVoicing([makeNote(NoteNameBase.G, 2)]);
-    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    render(
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
+    );
     const ctx = getCanvasCtx();
     const y = ctx.ellipse.mock.calls[0][1] as number;
     expect(y).toBeGreaterThan(200);
@@ -560,7 +575,14 @@ describe("ChordCanvas", () => {
   it("note with octave >= 4 is drawn in the treble-staff y range", () => {
     // G4 in treble: note.y = 150, absolute y = 150 + TREBLE_HEIGHT(-19) = 131
     const voicing = makeVoicing([makeNote(NoteNameBase.G, 4)]);
-    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    render(
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
+    );
     const ctx = getCanvasCtx();
     const y = ctx.ellipse.mock.calls[0][1] as number;
     expect(y).toBeLessThan(200);
@@ -572,7 +594,14 @@ describe("ChordCanvas", () => {
       makeNote(NoteNameBase.C, 4),
       makeNote(NoteNameBase.D, 4),
     ]);
-    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    render(
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
+    );
     const ctx = getCanvasCtx();
     expect(ctx.ellipse.mock.calls.length).toBe(2);
     const x0 = ctx.ellipse.mock.calls[0][0] as number;
@@ -585,7 +614,14 @@ describe("ChordCanvas", () => {
       makeNote(NoteNameBase.C, 4),
       makeNote(NoteNameBase.E, 4),
     ]);
-    render(<ChordCanvas voicing={voicing} keySignature={KeySignature.C} />);
+    render(
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
+    );
     const ctx = getCanvasCtx();
     const x0 = ctx.ellipse.mock.calls[0][0] as number;
     const x1 = ctx.ellipse.mock.calls[1][0] as number;
@@ -595,20 +631,37 @@ describe("ChordCanvas", () => {
   it("Bb4 shows accidental in C major but not in Bb major", () => {
     const voicing = makeVoicing([makeNote(NoteNameBase.B, 4, Accidental.FLAT)]);
     const { rerender } = render(
-      <ChordCanvas voicing={voicing} keySignature={KeySignature.C} />,
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
     );
     // C major has no flats: Bb is not in key → accidental shown
     expect(screen.getByTestId("chord-accidentals").children.length).toBe(1);
 
     // FLAT_B major has Bb in key → no accidental
     rerender(
-      <ChordCanvas voicing={voicing} keySignature={KeySignature.FLAT_B} />,
+      <ChordCanvas
+        voicing={voicing}
+        keySignature={KeySignature.FLAT_B}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
     );
     expect(screen.getByTestId("chord-accidentals").children.length).toBe(0);
   });
 
   it("renders nothing on canvas when voicing is undefined", () => {
-    render(<ChordCanvas voicing={undefined} keySignature={KeySignature.C} />);
+    render(
+      <ChordCanvas
+        voicing={undefined}
+        keySignature={KeySignature.C}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
+      />,
+    );
     const ctx = getCanvasCtx();
     expect(ctx.ellipse.mock.calls.length).toBe(0);
   });
@@ -676,7 +729,7 @@ describe("ChordTextSubmitter", () => {
     return new ChordVoicing(chord, chord.getChordToneNoteNames());
   }
 
-  it("no voicing + submit shows 请先生成练习题!", () => {
+  it("no voicing shows no option buttons", () => {
     render(
       <ChordTextSubmitter
         voicing={undefined}
@@ -684,10 +737,7 @@ describe("ChordTextSubmitter", () => {
         onTriggerNewChord={jest.fn()}
       />,
     );
-    fireEvent.click(screen.getByText("提交答案"));
-    expect(screen.getByTestId("text-submitter-message")).toHaveTextContent(
-      "请先生成练习题!",
-    );
+    expect(screen.queryAllByTestId(/^option-/)).toHaveLength(0);
   });
 
   it("4 option buttons appear when a voicing is provided", () => {
@@ -718,7 +768,7 @@ describe("ChordTextSubmitter", () => {
     expect(new Set(labels).size).toBe(4);
   });
 
-  it("selecting the correct option and submitting shows 正确✅", () => {
+  it("clicking the correct option shows 正确✅", () => {
     rotatingMock();
     const voicing = makeKnownVoicing();
     render(
@@ -728,15 +778,13 @@ describe("ChordTextSubmitter", () => {
         onTriggerNewChord={jest.fn()}
       />,
     );
-    const correctLabel = getFullChineseName(voicing);
-    fireEvent.click(screen.getByText(correctLabel));
-    fireEvent.click(screen.getByText("提交答案"));
+    fireEvent.click(screen.getByText(getFullChineseName(voicing)));
     expect(screen.getByTestId("text-submitter-message")).toHaveTextContent(
       "正确✅",
     );
   });
 
-  it("correct option gets green styling after correct submission", () => {
+  it("correct option gets green styling after clicking it", () => {
     rotatingMock();
     const voicing = makeKnownVoicing();
     render(
@@ -748,12 +796,11 @@ describe("ChordTextSubmitter", () => {
     );
     const correctLabel = getFullChineseName(voicing);
     fireEvent.click(screen.getByText(correctLabel));
-    fireEvent.click(screen.getByText("提交答案"));
     const correctButton = screen.getByText(correctLabel).closest("button");
     expect(correctButton?.className).toContain("bg-green-100");
   });
 
-  it("selecting wrong option shows 错误❌, wrong=red, correct=green", () => {
+  it("clicking wrong option shows 错误❌, wrong=red, correct=green", () => {
     rotatingMock();
     const voicing = makeKnownVoicing();
     render(
@@ -767,7 +814,6 @@ describe("ChordTextSubmitter", () => {
     const allButtons = screen.getAllByTestId(/^option-/);
     const wrongButton = allButtons.find((b) => b.textContent !== correctLabel)!;
     fireEvent.click(wrongButton);
-    fireEvent.click(screen.getByText("提交答案"));
     expect(screen.getByTestId("text-submitter-message")).toHaveTextContent(
       "错误❌",
     );
@@ -817,7 +863,6 @@ describe("ChordTextSubmitter", () => {
       />,
     );
     fireEvent.click(screen.getByText(getFullChineseName(voicing)));
-    fireEvent.click(screen.getByText("提交答案"));
     expect(onTriggerNewChord).toHaveBeenCalledTimes(1);
   });
 
@@ -837,7 +882,6 @@ describe("ChordTextSubmitter", () => {
       .getAllByTestId(/^option-/)
       .find((b) => b.textContent !== correctLabel)!;
     fireEvent.click(wrongButton);
-    fireEvent.click(screen.getByText("提交答案"));
     expect(onTriggerNewChord).not.toHaveBeenCalled();
   });
 
@@ -853,7 +897,6 @@ describe("ChordTextSubmitter", () => {
       />,
     );
     fireEvent.click(screen.getByText(getFullChineseName(voicing)));
-    fireEvent.click(screen.getByText("提交答案"));
     expect(onTriggerNewChord).not.toHaveBeenCalled();
   });
 });
@@ -894,7 +937,7 @@ describe("MultiSelectPiano", () => {
     expect(lastCall.some((n) => n.valueOf() === 60)).toBe(false);
   });
 
-  it("triggerAttack is called when a key is added with speaker on", () => {
+  it("triggerAttack is called on mouseDown of an unselected key with speaker on", () => {
     render(
       <MultiSelectPiano
         onNotesChange={jest.fn()}
@@ -902,7 +945,7 @@ describe("MultiSelectPiano", () => {
         keyColors={new Map()}
       />,
     );
-    fireEvent.click(screen.getByTestId("piano-key-60"));
+    fireEvent.mouseDown(screen.getByTestId("piano-key-60"));
     expect(mockTriggerAttack).toHaveBeenCalledTimes(1);
   });
 
@@ -944,6 +987,8 @@ describe("ChordVirtualPiano", () => {
         voicing={undefined}
         autoGenerate={false}
         onTriggerNewChord={jest.fn()}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByText("提交答案"));
@@ -963,6 +1008,8 @@ describe("ChordVirtualPiano", () => {
         voicing={voicing}
         autoGenerate={false}
         onTriggerNewChord={jest.fn()}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByTestId("piano-key-60")); // C4
@@ -989,6 +1036,8 @@ describe("ChordVirtualPiano", () => {
         voicing={voicing}
         autoGenerate={false}
         onTriggerNewChord={jest.fn()}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByTestId("piano-key-60")); // C4 — correct
@@ -1024,6 +1073,8 @@ describe("ChordVirtualPiano", () => {
         voicing={voicing}
         autoGenerate={false}
         onTriggerNewChord={jest.fn()}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByTestId("piano-key-60"));
@@ -1048,6 +1099,8 @@ describe("ChordVirtualPiano", () => {
         voicing={voicing}
         autoGenerate={true}
         onTriggerNewChord={onTriggerNewChord}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByTestId("piano-key-60"));
@@ -1069,6 +1122,8 @@ describe("ChordVirtualPiano", () => {
         voicing={voicing}
         autoGenerate={false}
         onTriggerNewChord={onTriggerNewChord}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByTestId("piano-key-60"));
@@ -1090,10 +1145,52 @@ describe("ChordVirtualPiano", () => {
         voicing={voicing}
         autoGenerate={true}
         onTriggerNewChord={onTriggerNewChord}
+        speakerEnabled={false}
+        onSpeakerToggle={() => {}}
       />,
     );
     fireEvent.click(screen.getByTestId("piano-key-60")); // C4 only — incomplete
     fireEvent.click(screen.getByText("提交答案"));
     expect(onTriggerNewChord).not.toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Speaker toggle sync (ChordExercise integration)
+// ---------------------------------------------------------------------------
+
+describe("speaker toggle sync (chord exercise)", () => {
+  it("canvas and virtual-piano speaker toggles stay in sync", () => {
+    render(<ChordExercise />);
+
+    // Navigate to the virtual piano submitter so both toggles are visible
+    fireEvent.click(screen.getByText("虚拟钢琴"));
+
+    const canvasLabel = document.querySelector(
+      "#chord-canvas-speaker-toggle label.slider",
+    ) as HTMLElement;
+    const pianoLabel = document.querySelector(
+      "#chord-virtual-piano-speaker-toggle label.slider",
+    ) as HTMLElement;
+    const canvasInput = document.querySelector(
+      "#chord-canvas-speaker-toggle input",
+    ) as HTMLInputElement;
+    const pianoInput = document.querySelector(
+      "#chord-virtual-piano-speaker-toggle input",
+    ) as HTMLInputElement;
+
+    // Initially both off
+    expect(canvasInput.checked).toBe(false);
+    expect(pianoInput.checked).toBe(false);
+
+    // Toggle canvas on → piano should also turn on
+    fireEvent.click(canvasLabel);
+    expect(canvasInput.checked).toBe(true);
+    expect(pianoInput.checked).toBe(true);
+
+    // Toggle piano off → canvas should also turn off
+    fireEvent.click(pianoLabel);
+    expect(canvasInput.checked).toBe(false);
+    expect(pianoInput.checked).toBe(false);
   });
 });

@@ -6,6 +6,11 @@ import {
 } from "../notes-utils/notes";
 import { randomSelect } from "../utils";
 import { Chord, ChordTypeName, ChordVoicing, InversionMode } from "./chord";
+import {
+  KeySignature,
+  getLeadingTone,
+  noteInKeys,
+} from "../notes-utils/key-signature";
 
 // Canvas valid range: A1 to E6 (inclusive)
 export const CANVAS_LOW = new NoteName(
@@ -217,10 +222,24 @@ export function generateGeneralizedVoicing(chord: Chord): ChordVoicing {
   return new ChordVoicing(cc, unique);
 }
 
-// Pick a random chord type + root, then generate a voicing per the inversion mode.
-export function generateRandomVoicing(
-  inversionMode: InversionMode,
-): ChordVoicing {
+export function isDiatonicChord(
+  voicing: ChordVoicing,
+  keySignature: KeySignature,
+): boolean {
+  const leadingTone = getLeadingTone(keySignature);
+  return voicing.notes.every((note) => {
+    if (noteInKeys(note, keySignature)) return true;
+    if (
+      leadingTone &&
+      note.whiteKeyNote.noteNameBase === leadingTone.noteNameBase &&
+      note.accidental === leadingTone.accidental
+    )
+      return true;
+    return false;
+  });
+}
+
+function generateOneVoicing(inversionMode: InversionMode): ChordVoicing {
   const type = randomSelect(ALL_CHORD_TYPES);
   const rootSpec = randomSelect(STANDARD_ROOTS);
   const chord = new Chord(
@@ -230,7 +249,6 @@ export function generateRandomVoicing(
     ),
     type,
   );
-
   switch (inversionMode) {
     case InversionMode.NO_INVERSION:
       return generateRootPosition(chord);
@@ -243,6 +261,22 @@ export function generateRandomVoicing(
     case InversionMode.GENERALIZED_INVERSIONS:
       return generateGeneralizedVoicing(chord);
   }
+}
+
+// Pick a random chord type + root, then generate a voicing per the inversion mode.
+// When keySignature and diatonicOnly are provided, retries until a diatonic chord is found.
+export function generateRandomVoicing(
+  inversionMode: InversionMode,
+  keySignature?: KeySignature,
+  diatonicOnly?: boolean,
+): ChordVoicing {
+  if (!diatonicOnly || keySignature === undefined)
+    return generateOneVoicing(inversionMode);
+  for (let i = 0; i < 500; i++) {
+    const voicing = generateOneVoicing(inversionMode);
+    if (isDiatonicChord(voicing, keySignature)) return voicing;
+  }
+  return generateOneVoicing(inversionMode);
 }
 
 // Generate `count` wrong options with slash symbols different from correct and each other.

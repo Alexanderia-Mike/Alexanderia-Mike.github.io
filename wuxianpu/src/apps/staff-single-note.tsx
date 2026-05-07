@@ -13,6 +13,7 @@ export default function StaffSingleNote() {
   const [keySignature, setKeySignature] = useState<KeySignature>(
     KeySignature.C,
   );
+  const [speakerEnabled, setSpeakerEnabled] = useState<boolean>(false);
 
   const triggerNewNote = () => {
     setNewNoteTrigger(!newNoteTrigger);
@@ -27,6 +28,8 @@ export default function StaffSingleNote() {
         setInputNote,
         keySignature,
         setKeySignature,
+        speakerEnabled,
+        setSpeakerEnabled,
       }}
     >
       <ControlContext.Provider value={{ newNoteTrigger, triggerNewNote }}>

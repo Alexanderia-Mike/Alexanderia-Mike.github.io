@@ -7,6 +7,12 @@ import {
   NoteNameBase,
   WhiteKeyNoteName,
 } from "../../common/notes-utils/notes";
+import {
+  getSampler,
+  noteToSampleId,
+} from "../submitter/lib/piano/piano-audios";
+import Toggle from "../../common/toggle/toggle";
+import Button from "../../common/button/button";
 import { Sharp } from "../staff/symbols/accidentals/sharp";
 import { Flat } from "../staff/symbols/accidentals/flat";
 import { DoubleSharp } from "../staff/symbols/accidentals/double_sharp";
@@ -108,13 +114,29 @@ function buildAccidentalElement(
 export default function ChordCanvas({
   voicing,
   keySignature,
+  speakerEnabled,
+  onSpeakerToggle,
 }: {
   voicing: ChordVoicing | undefined;
   keySignature: KeySignature;
+  speakerEnabled: boolean;
+  onSpeakerToggle: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [accidentals, setAccidentals] = useState<JSX.Element[]>([]);
+  const samplerRef = useRef(getSampler());
+  const releaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { width: windowWidth } = useWindowSize();
+
+  const handlePlay = () => {
+    if (!speakerEnabled || !voicing) return;
+    if (releaseTimerRef.current) clearTimeout(releaseTimerRef.current);
+    const ids = voicing.notes.map(noteToSampleId);
+    ids.forEach((id) => samplerRef.current.triggerAttack(id));
+    releaseTimerRef.current = setTimeout(() => {
+      ids.forEach((id) => samplerRef.current.triggerRelease(id));
+    }, 1500);
+  };
 
   const trebleLeft = windowWidth < 768 ? TREBLE_LEFT_PHONE : TREBLE_LEFT;
   const bassLeft = windowWidth < 768 ? BASS_LEFT_PHONE : BASS_LEFT;
@@ -205,6 +227,21 @@ export default function ChordCanvas({
 
   return (
     <div className="relative w-full">
+      <div className="absolute top-2 right-2 z-10 flex items-center">
+        <Toggle
+          id="chord-canvas-speaker-toggle"
+          label="开启扬声器"
+          onChange={onSpeakerToggle}
+          checked={speakerEnabled}
+          classNames="flex-grow-0"
+        />
+        <Button
+          label="播放和弦"
+          onClick={handlePlay}
+          hide={!speakerEnabled || !voicing}
+          classNames="my-2"
+        />
+      </div>
       <Treble width={100} x={trebleLeft} y={113 + TREBLE_HEIGHT} />
       {getKeySignatureSymbol(keySignature, Clef.TREBLE, {
         x: trebleLeft,

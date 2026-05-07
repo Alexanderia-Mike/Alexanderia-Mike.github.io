@@ -213,6 +213,67 @@ export function getFlatNotesForKey(
   return KEY_SIGNATURE_TABLE[keySignature].flatNotes;
 }
 
+type LeadingTone = { noteNameBase: NoteNameBase; accidental: Accidental };
+
+// Raised 7th of the relative natural minor (harmonic minor leading tone) for each key.
+// Keys where the raised 7th would require a double-sharp (B, SHARP_F, SHARP_C) are omitted.
+const LEADING_TONE_TABLE: Partial<Record<KeySignature, LeadingTone>> = {
+  [KeySignature.C]: {
+    noteNameBase: NoteNameBase.G,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.G]: {
+    noteNameBase: NoteNameBase.D,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.D]: {
+    noteNameBase: NoteNameBase.A,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.A]: {
+    noteNameBase: NoteNameBase.E,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.E]: {
+    noteNameBase: NoteNameBase.B,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.F]: {
+    noteNameBase: NoteNameBase.C,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.FLAT_B]: {
+    noteNameBase: NoteNameBase.F,
+    accidental: Accidental.SHARP,
+  },
+  [KeySignature.FLAT_E]: {
+    noteNameBase: NoteNameBase.B,
+    accidental: Accidental.NONE,
+  },
+  [KeySignature.FLAT_A]: {
+    noteNameBase: NoteNameBase.E,
+    accidental: Accidental.NONE,
+  },
+  [KeySignature.FLAT_D]: {
+    noteNameBase: NoteNameBase.A,
+    accidental: Accidental.NONE,
+  },
+  [KeySignature.FLAT_G]: {
+    noteNameBase: NoteNameBase.D,
+    accidental: Accidental.NONE,
+  },
+  [KeySignature.FLAT_C]: {
+    noteNameBase: NoteNameBase.G,
+    accidental: Accidental.NONE,
+  },
+};
+
+export function getLeadingTone(
+  keySignature: KeySignature,
+): LeadingTone | undefined {
+  return LEADING_TONE_TABLE[keySignature];
+}
+
 export function noteInKeys(
   noteName: NoteName,
   keySignature: KeySignature,

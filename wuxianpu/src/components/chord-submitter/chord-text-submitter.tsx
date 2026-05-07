@@ -7,7 +7,6 @@ import {
   getFullChineseName,
 } from "../../common/chord-utils/chord-names";
 import { DropdownMenu } from "../../common/dropdownmenu/dropdownmenu";
-import Button from "../../common/button/button";
 
 type PerOptionMode = "fullChinese" | "chordSymbol";
 type DisplayMode = PerOptionMode | "mixed";
@@ -28,10 +27,14 @@ export default function ChordTextSubmitter({
   voicing,
   autoGenerate,
   onTriggerNewChord,
+  incrementCorrect,
+  incrementTotal,
 }: {
   voicing: ChordVoicing | undefined;
   autoGenerate: boolean;
   onTriggerNewChord: () => void;
+  incrementCorrect?: () => void;
+  incrementTotal?: () => void;
 }) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("fullChinese");
   const [options, setOptions] = useState<ChordVoicing[]>([]);
@@ -74,8 +77,6 @@ export default function ChordTextSubmitter({
     const base =
       "px-4 py-3 rounded-lg text-sm transition-colors text-left w-full";
     if (!submitted) {
-      if (selectedIndex === idx)
-        return clsx(base, "border-2 border-blue-500 bg-blue-100");
       return clsx(
         base,
         "border border-slate-300 bg-white hover:bg-slate-50 cursor-pointer",
@@ -88,18 +89,14 @@ export default function ChordTextSubmitter({
     return clsx(base, "border border-slate-300 bg-white");
   };
 
-  const handleSubmit = () => {
-    if (!voicing) {
-      setMessage("请先生成练习题!");
-      return;
-    }
-    if (selectedIndex === null) {
-      setMessage("请先选择一个答案!");
-      return;
-    }
+  const handleOptionClick = (idx: number) => {
+    if (submitted || !voicing) return;
+    setSelectedIndex(idx);
     setSubmitted(true);
-    if (selectedIndex === correctIndex) {
+    incrementTotal?.();
+    if (idx === correctIndex) {
       setMessage("正确✅");
+      incrementCorrect?.();
       if (autoGenerate) onTriggerNewChord();
     } else {
       setMessage("错误❌");
@@ -124,15 +121,12 @@ export default function ChordTextSubmitter({
             key={idx}
             data-testid={`option-${idx}`}
             className={getButtonClass(idx)}
-            onClick={() => {
-              if (!submitted) setSelectedIndex(idx);
-            }}
+            onClick={() => handleOptionClick(idx)}
           >
             {getOptionLabel(opt, idx)}
           </button>
         ))}
       </div>
-      <Button label="提交答案" onClick={handleSubmit} />
       <span className="mt-3 text-center" data-testid="text-submitter-message">
         {message}
       </span>

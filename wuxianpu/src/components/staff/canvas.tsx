@@ -3,6 +3,14 @@ import { useWindowSize } from "../../common/useWindowSize";
 import { Clef } from "./clef";
 import { Note, noteNameToNote } from "./notes_mapping";
 import { OptionalNote, Accidental } from "../../common/notes-utils/notes";
+import {
+  disableTone,
+  enableTone,
+  getSampler,
+  noteToSampleId,
+} from "../submitter/lib/piano/piano-audios";
+import Toggle from "../../common/toggle/toggle";
+import Button from "../../common/button/button";
 import { Sharp } from "./symbols/accidentals/sharp";
 import { Flat } from "./symbols/accidentals/flat";
 import { DoubleSharp } from "./symbols/accidentals/double_sharp";
@@ -110,7 +118,30 @@ export default function Canvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const note = noteName && noteNameToNote(noteName, clef);
   const [accidental, setAccidental] = useState<JSX.Element>(<></>);
+  const samplerRef = useRef(getSampler());
+  const releaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { width: windowWidth } = useWindowSize();
+  const { speakerEnabled, setSpeakerEnabled } = useContext(NoteContext);
+
+  const handleSpeakerToggle = () => {
+    if (speakerEnabled) {
+      disableTone();
+      setSpeakerEnabled(false);
+    } else {
+      void enableTone();
+      setSpeakerEnabled(true);
+    }
+  };
+
+  const handlePlay = () => {
+    if (!speakerEnabled || !noteName) return;
+    if (releaseTimerRef.current) clearTimeout(releaseTimerRef.current);
+    const id = noteToSampleId(noteName);
+    samplerRef.current.triggerAttack(id);
+    releaseTimerRef.current = setTimeout(() => {
+      samplerRef.current.triggerRelease(id);
+    }, 1500);
+  };
 
   const trebleLeft = windowWidth < 768 ? TREBLE_LEFT_PHONE : TREBLE_LEFT;
   const bassLeft = windowWidth < 768 ? BASS_LEFT_PHONE : BASS_LEFT;
@@ -158,6 +189,21 @@ export default function Canvas({
 
   return (
     <div className="relative w-full">
+      <div className="absolute top-2 right-2 z-10 flex items-center">
+        <Toggle
+          id="canvas-speaker-toggle"
+          label="开启扬声器"
+          onChange={handleSpeakerToggle}
+          checked={speakerEnabled}
+          classNames="flex-grow-0"
+        />
+        <Button
+          label="播放单音"
+          onClick={handlePlay}
+          hide={!speakerEnabled || !noteName}
+          classNames="my-2"
+        />
+      </div>
       <Treble
         width={100}
         x={trebleLeft}

@@ -8,7 +8,6 @@ import {
 import MultiSelectPiano from "./lib/multi-select-piano";
 import Toggle from "../../common/toggle/toggle";
 import Button from "../../common/button/button";
-import { disableTone, enableTone } from "../submitter/lib/piano/piano-audios";
 import { SelectionPanel } from "../../common/selectionpanel/selectionpanel";
 import { PitchNotation } from "../../common/notes-utils/pitch-notation";
 
@@ -16,17 +15,24 @@ export default function ChordVirtualPiano({
   voicing,
   autoGenerate,
   onTriggerNewChord,
+  incrementCorrect,
+  incrementTotal,
+  speakerEnabled,
+  onSpeakerToggle,
 }: {
   voicing: ChordVoicing | undefined;
   autoGenerate: boolean;
   onTriggerNewChord: () => void;
+  incrementCorrect?: () => void;
+  incrementTotal?: () => void;
+  speakerEnabled: boolean;
+  onSpeakerToggle: () => void;
 }) {
   const [selectedNotes, setSelectedNotes] = useState<NoteName[]>([]);
   const [keyColors, setKeyColors] = useState<
     Map<string, "green" | "red" | "yellow" | null>
   >(new Map());
   const [message, setMessage] = useState<string>("");
-  const [speakerEnabled, setSpeakerEnabled] = useState<boolean>(false);
   const [pianoKey, setPianoKey] = useState(0);
   const [pitchNotation, setPitchNotation] = useState<PitchNotation>(
     PitchNotation.HELMHOLTZ,
@@ -38,16 +44,6 @@ export default function ChordVirtualPiano({
     setMessage("");
     setPianoKey((k) => k + 1);
   }, [voicing]);
-
-  const handleSpeakerToggle = () => {
-    if (speakerEnabled) {
-      disableTone();
-      setSpeakerEnabled(false);
-    } else {
-      void enableTone();
-      setSpeakerEnabled(true);
-    }
-  };
 
   const handleSubmit = () => {
     if (!voicing) {
@@ -81,8 +77,10 @@ export default function ChordVirtualPiano({
         selectedNotes.some((s) => s.valueOf() === n.valueOf()),
       );
 
+    incrementTotal?.();
     if (allCorrect) {
       setMessage("正确✅");
+      incrementCorrect?.();
       if (autoGenerate) onTriggerNewChord();
     } else {
       setMessage("错误❌");
@@ -98,8 +96,9 @@ export default function ChordVirtualPiano({
       )}
       <div className="flex justify-center items-center flex-wrap">
         <Toggle
+          id="chord-virtual-piano-speaker-toggle"
           label="开启扬声器"
-          onChange={handleSpeakerToggle}
+          onChange={onSpeakerToggle}
           checked={speakerEnabled}
           classNames="flex-grow-0"
         />

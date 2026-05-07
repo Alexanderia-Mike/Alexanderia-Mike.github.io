@@ -98,6 +98,42 @@ describe("answer submission", () => {
   });
 });
 
+describe("speaker toggle sync", () => {
+  it("canvas and virtual-piano speaker toggles stay in sync", () => {
+    render(<StaffSingleNote />);
+
+    // Navigate to the virtual piano submitter so both toggles are visible
+    fireEvent.click(screen.getByText("虚拟钢琴"));
+
+    const canvasLabel = document.querySelector(
+      "#canvas-speaker-toggle label.slider",
+    ) as HTMLElement;
+    const pianoLabel = document.querySelector(
+      "#virtual-piano-speaker-toggle label.slider",
+    ) as HTMLElement;
+    const canvasInput = document.querySelector(
+      "#canvas-speaker-toggle input",
+    ) as HTMLInputElement;
+    const pianoInput = document.querySelector(
+      "#virtual-piano-speaker-toggle input",
+    ) as HTMLInputElement;
+
+    // Initially both off
+    expect(canvasInput.checked).toBe(false);
+    expect(pianoInput.checked).toBe(false);
+
+    // Toggle canvas on → piano should also turn on
+    fireEvent.click(canvasLabel);
+    expect(canvasInput.checked).toBe(true);
+    expect(pianoInput.checked).toBe(true);
+
+    // Toggle piano off → canvas should also turn off
+    fireEvent.click(pianoLabel);
+    expect(canvasInput.checked).toBe(false);
+    expect(pianoInput.checked).toBe(false);
+  });
+});
+
 describe("auto-generation", () => {
   it("a correct answer triggers the next note after 1 second", async () => {
     // Use userEvent.setup with advanceTimers for proper fake-timer integration
@@ -111,7 +147,7 @@ describe("auto-generation", () => {
 
     // Enable auto-generate: click the label that wraps the hidden checkbox
     const toggleLabel = document.querySelector(
-      ".toggle label.slider",
+      "#auto-generate-toggle label.slider",
     ) as HTMLElement;
     await user.click(toggleLabel);
 
