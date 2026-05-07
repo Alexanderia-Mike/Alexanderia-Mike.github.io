@@ -6,13 +6,14 @@ import Submitter from "../components/submitter/submitter";
 import { KeySignature } from "../common/notes-utils/key-signature";
 import { OptionalNote } from "../common/notes-utils/notes";
 
-export default function Wuxianpu() {
+export default function StaffSingleNote() {
   const [currentNote, updateCurrentNote] = useState<OptionalNote>(undefined);
   const [inputNote, setInputNote] = useState<OptionalNote>(undefined);
   const [newNoteTrigger, setNewNoteTrigger] = useState<boolean>(false);
   const [keySignature, setKeySignature] = useState<KeySignature>(
     KeySignature.C,
   );
+  const [speakerEnabled, setSpeakerEnabled] = useState<boolean>(false);
 
   const triggerNewNote = () => {
     setNewNoteTrigger(!newNoteTrigger);
@@ -27,6 +28,8 @@ export default function Wuxianpu() {
         setInputNote,
         keySignature,
         setKeySignature,
+        speakerEnabled,
+        setSpeakerEnabled,
       }}
     >
       <ControlContext.Provider value={{ newNoteTrigger, triggerNewNote }}>

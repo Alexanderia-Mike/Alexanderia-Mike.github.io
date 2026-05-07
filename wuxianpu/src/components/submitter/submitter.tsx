@@ -61,7 +61,6 @@ export default function Submitter() {
         total={total}
         setTotal={setTotal}
       />
-      <hr className="mb-5 mt-10" />
       <div className="mt-5">
         <Router
           routes={routes}

@@ -1,4 +1,4 @@
-# 五线谱练习 (Wuxianpu)
+# 五线谱练习 (StaffSingleNote)
 
 A web app for practicing staff notation reading, built with React 19 and TypeScript.
 
@@ -23,13 +23,13 @@ A second mode, **Harmony Singing**, plays chords and intervals using sampled aud
 
 ## Tech Stack
 
-| Layer | Library |
-|-------|---------|
-| UI framework | React 19, TypeScript 5 |
-| Bundler | Webpack 5 |
-| Styling | Tailwind CSS 3 |
-| Audio | Tone.js 15 |
-| MIDI input | Web MIDI API (browser-native) |
+| Layer        | Library                       |
+| ------------ | ----------------------------- |
+| UI framework | React 19, TypeScript 5        |
+| Bundler      | Webpack 5                     |
+| Styling      | Tailwind CSS 3                |
+| Audio        | Tone.js 15                    |
+| MIDI input   | Web MIDI API (browser-native) |
 
 ## Project Structure
 

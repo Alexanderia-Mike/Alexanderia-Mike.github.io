@@ -7,7 +7,8 @@ interface ToggleProps extends Hiddable, ExtraClassNames {
   onChange: ChangeEventHandler;
   label: string;
   render?: () => ReactNode;
-  checked?: boolean; // default status at initalization
+  checked?: boolean;
+  id?: string;
 }
 
 export default function Toggle({
@@ -17,6 +18,7 @@ export default function Toggle({
   checked,
   render,
   classNames,
+  id,
 }: ToggleProps) {
   const inputElmt = (
     <input
@@ -25,11 +27,12 @@ export default function Toggle({
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         onChange(event);
       }}
-      defaultChecked={checked}
+      checked={checked ?? false}
     />
   );
   return (
     <div
+      id={id}
       className={clsx(
         "toggle mx-5 flex flex-grow flex-shrink-0 my-3",
         classNames,

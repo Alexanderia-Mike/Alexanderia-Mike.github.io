@@ -7,17 +7,19 @@ import { checkAnswerNote } from "./lib/check-answer";
 import { SelectionPanel } from "../../common/selectionpanel/selectionpanel";
 import { PitchNotation } from "../../common/notes-utils/pitch-notation";
 import Toggle from "../../common/toggle/toggle";
-import {
-  disableTone,
-  enableTone,
-  isToneEnabled,
-} from "./lib/piano/piano-audios";
+import { disableTone, enableTone } from "./lib/piano/piano-audios";
 
 export default function VirtualPiano({
   incrementCorrect,
   incrementTotal,
 }: SubmitterInterface) {
-  const { currentNote, inputNote, setInputNote } = useContext(NoteContext);
+  const {
+    currentNote,
+    inputNote,
+    setInputNote,
+    speakerEnabled,
+    setSpeakerEnabled,
+  } = useContext(NoteContext);
   const [feedback, setFeedback] = useState("");
   const { triggerNewNote } = useContext(ControlContext);
   const [pitchNotation, setPitchNotation] = useState(PitchNotation.HELMHOLTZ);
@@ -42,9 +44,18 @@ export default function VirtualPiano({
     <div className="min-h-[500px]">
       <div className="flex justify-center items-center flex-wrap">
         <Toggle
+          id="virtual-piano-speaker-toggle"
           label="开启扬声器"
-          onChange={isToneEnabled() ? disableTone : enableTone}
-          checked={isToneEnabled()}
+          onChange={() => {
+            if (speakerEnabled) {
+              disableTone();
+              setSpeakerEnabled(false);
+            } else {
+              void enableTone();
+              setSpeakerEnabled(true);
+            }
+          }}
+          checked={speakerEnabled}
           classNames="flex-grow-0"
         />
         <SelectionPanel

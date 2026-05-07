@@ -30,7 +30,7 @@ import {
   WhiteKeyNoteName,
 } from "../../common/notes-utils/notes";
 import * as utils from "../../common/utils";
-import Wuxianpu from "../wuxianpu";
+import StaffSingleNote from "../staff-single-note";
 
 const makeC4 = () =>
   new NoteName(new WhiteKeyNoteName(NoteNameBase.C, 4), Accidental.NONE);
@@ -48,7 +48,7 @@ beforeEach(() => {
 
 describe("generate note", () => {
   it("clicking the generate button causes the canvas to redraw", () => {
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
     const ctx = getCanvasCtx();
     const strokesBefore = ctx.stroke.mock.calls.length;
 
@@ -63,7 +63,7 @@ describe("generate note", () => {
 
 describe("answer submission", () => {
   it("submitting a correct answer shows the correct feedback message", () => {
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
 
     // Generate a note first
     act(() => {
@@ -81,7 +81,7 @@ describe("answer submission", () => {
   });
 
   it("submitting a wrong answer shows the wrong feedback message", () => {
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
 
     act(() => {
       fireEvent.click(screen.getByText("生成练习题"));
@@ -98,6 +98,42 @@ describe("answer submission", () => {
   });
 });
 
+describe("speaker toggle sync", () => {
+  it("canvas and virtual-piano speaker toggles stay in sync", () => {
+    render(<StaffSingleNote />);
+
+    // Navigate to the virtual piano submitter so both toggles are visible
+    fireEvent.click(screen.getByText("虚拟钢琴"));
+
+    const canvasLabel = document.querySelector(
+      "#canvas-speaker-toggle label.slider",
+    ) as HTMLElement;
+    const pianoLabel = document.querySelector(
+      "#virtual-piano-speaker-toggle label.slider",
+    ) as HTMLElement;
+    const canvasInput = document.querySelector(
+      "#canvas-speaker-toggle input",
+    ) as HTMLInputElement;
+    const pianoInput = document.querySelector(
+      "#virtual-piano-speaker-toggle input",
+    ) as HTMLInputElement;
+
+    // Initially both off
+    expect(canvasInput.checked).toBe(false);
+    expect(pianoInput.checked).toBe(false);
+
+    // Toggle canvas on → piano should also turn on
+    fireEvent.click(canvasLabel);
+    expect(canvasInput.checked).toBe(true);
+    expect(pianoInput.checked).toBe(true);
+
+    // Toggle piano off → canvas should also turn off
+    fireEvent.click(pianoLabel);
+    expect(canvasInput.checked).toBe(false);
+    expect(pianoInput.checked).toBe(false);
+  });
+});
+
 describe("auto-generation", () => {
   it("a correct answer triggers the next note after 1 second", async () => {
     // Use userEvent.setup with advanceTimers for proper fake-timer integration
@@ -106,12 +142,12 @@ describe("auto-generation", () => {
       advanceTimers: (delay) => jest.advanceTimersByTime(delay),
     });
 
-    render(<Wuxianpu />);
+    render(<StaffSingleNote />);
     const ctx = getCanvasCtx();
 
     // Enable auto-generate: click the label that wraps the hidden checkbox
     const toggleLabel = document.querySelector(
-      ".toggle label.slider",
+      "#auto-generate-toggle label.slider",
     ) as HTMLElement;
     await user.click(toggleLabel);
 
