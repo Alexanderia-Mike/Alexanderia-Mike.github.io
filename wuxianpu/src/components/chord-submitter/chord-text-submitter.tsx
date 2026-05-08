@@ -104,17 +104,19 @@ export default function ChordTextSubmitter({
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full">
-      <DropdownMenu
-        elements={[
-          { label: "文字全称", value: "fullChinese" as DisplayMode },
-          { label: "和弦固定标记", value: "chordSymbol" as DisplayMode },
-          { label: "混合", value: "mixed" as DisplayMode },
-        ]}
-        onSelect={(value) => setDisplayMode(value)}
-        defaultIndex={0}
-        label="显示模式"
-      />
+    <div className="flex flex-col items-center p-4 w-full min-h-[500px]">
+      <div className="flex">
+        <DropdownMenu
+          elements={[
+            { label: "文字全称", value: "fullChinese" as DisplayMode },
+            { label: "和弦固定标记", value: "chordSymbol" as DisplayMode },
+            { label: "混合", value: "mixed" as DisplayMode },
+          ]}
+          onSelect={(value) => setDisplayMode(value)}
+          defaultIndex={0}
+          label="显示模式"
+        />
+      </div>
       <div className="grid grid-cols-2 gap-3 my-4 w-full max-w-md">
         {options.map((opt, idx) => (
           <button

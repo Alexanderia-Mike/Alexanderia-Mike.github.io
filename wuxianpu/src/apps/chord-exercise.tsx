@@ -6,6 +6,7 @@ import ChordCanvas from "../components/chord-canvas/chord-canvas";
 import ChordControl from "../components/chord-canvas/chord-control";
 import ChordTextSubmitter from "../components/chord-submitter/chord-text-submitter";
 import ChordVirtualPiano from "../components/chord-submitter/chord-virtual-piano";
+import ChordMidiPiano from "../components/chord-submitter/chord-midi-piano";
 import ScoreBoard from "../components/submitter/score-board";
 import { Router, RouteConfig } from "../common/router/router";
 import {
@@ -75,7 +76,15 @@ export default function ChordExercise() {
     {
       path: "midi-piano",
       label: "MIDI钢琴",
-      element: <div className="mb-5">正在开发中...</div>,
+      element: (
+        <ChordMidiPiano
+          voicing={voicing}
+          autoGenerate={autoGenerate}
+          onTriggerNewChord={triggerNewChord}
+          incrementCorrect={incrementCorrect}
+          incrementTotal={incrementTotal}
+        />
+      ),
     },
   ];
 

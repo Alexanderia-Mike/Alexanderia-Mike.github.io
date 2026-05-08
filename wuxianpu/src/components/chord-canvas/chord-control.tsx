@@ -25,7 +25,7 @@ export default function ChordControl({
   );
   const [autoGenerate, setAutoGenerate] = useState<boolean>(false);
   const [scanAnimate, setScanAnimate] = useState<boolean>(false);
-  const [allowNonDiatonic, setAllowNonDiatonic] = useState<boolean>(true);
+  const [allowNonDiatonic, setAllowNonDiatonic] = useState<boolean>(false);
 
   const generateButtonOnClick = () => {
     const voicing = generateRandomVoicing(
@@ -61,6 +61,7 @@ export default function ChordControl({
             setAutoGenerate(next);
             onAutoGenerateChange?.(next);
           }}
+          checked={autoGenerate}
           label="自动出题"
           render={() => (
             <div className="flex items-center">
