@@ -67,7 +67,11 @@ export abstract class PianoKey<
   }
   override render(): ReactNode {
     return (
-      <div className={this.getClassNames()} style={this.colorStyle()}>
+      <div
+        className={this.getClassNames()}
+        style={this.colorStyle()}
+        data-testid={`piano-key-${this.props.note.valueOf()}`}
+      >
         {this.props.children}
         <div className="w-full h-full flex flex-col justify-end items-center">
           <span>

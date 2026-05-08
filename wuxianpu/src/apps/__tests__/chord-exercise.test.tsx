@@ -2,6 +2,25 @@ jest.mock("../../common/utils", () => ({
   randomSelect: jest.fn(),
 }));
 
+// Captured by the handleMidiMessages mock so tests can fire synthetic MIDI events
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let capturedMidiHandler: ((event: any) => void) | null = null;
+
+jest.mock("../../components/submitter/lib/midi", () => ({
+  getMidi: jest.fn().mockResolvedValue({
+    inputs: {
+      size: 1,
+      values: () => [{ name: "Test MIDI Device" }],
+    },
+  }),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleMidiMessages: jest.fn((_: unknown, handler: (event: any) => void) => {
+    capturedMidiHandler = handler;
+  }),
+  midiToNoteName: jest.requireActual("../../components/submitter/lib/midi")
+    .midiToNoteName,
+}));
+
 const mockTriggerAttack = jest.fn();
 
 jest.mock("../../components/submitter/lib/piano/piano-audios", () => ({
@@ -14,7 +33,13 @@ jest.mock("../../components/submitter/lib/piano/piano-audios", () => ({
   isToneEnabled: jest.fn(() => false),
 }));
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import * as utils from "../../common/utils";
 import {
   Accidental,
@@ -50,10 +75,12 @@ import ChordTextSubmitter from "../../components/chord-submitter/chord-text-subm
 import MultiSelectPiano from "../../components/chord-submitter/lib/multi-select-piano";
 import ChordVirtualPiano from "../../components/chord-submitter/chord-virtual-piano";
 import ChordExercise from "../chord-exercise";
+import ChordMidiPiano from "../../components/chord-submitter/chord-midi-piano";
 
 // Always pick the first element — deterministic but valid
 beforeEach(() => {
   mockTriggerAttack.mockClear();
+  capturedMidiHandler = null;
   (utils.randomSelect as jest.Mock).mockImplementation(
     (arr: unknown[]) => arr[0],
   );
@@ -1192,5 +1219,263 @@ describe("speaker toggle sync (chord exercise)", () => {
     fireEvent.click(pianoLabel);
     expect(canvasInput.checked).toBe(false);
     expect(pianoInput.checked).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ChordMidiPiano tests
+// ---------------------------------------------------------------------------
+
+function fireMidiNoteOn(midiNumber: number) {
+  capturedMidiHandler?.({ data: [144, midiNumber, 64] });
+}
+
+function fireMidiNoteOff(midiNumber: number) {
+  capturedMidiHandler?.({ data: [128, midiNumber, 0] });
+}
+
+describe("ChordMidiPiano", () => {
+  it("noteOn adds note: correct note green, missing notes yellow", async () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    // voicing.notes: C4(60), E4(64), G4(67)
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    act(() => {
+      fireMidiNoteOn(60); // C4 — in voicing → green
+    });
+    expect(screen.getByTestId("piano-key-60")).toHaveStyle({
+      backgroundColor: "#7CFC00",
+    });
+    // E4 and G4 not yet pressed — yellow (in voicing, missing)
+    expect(screen.getByTestId("piano-key-64")).toHaveStyle({
+      backgroundColor: "yellow",
+    });
+    expect(screen.getByTestId("piano-key-67")).toHaveStyle({
+      backgroundColor: "yellow",
+    });
+  });
+
+  it("noteOff removes note from held notes", async () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    act(() => {
+      fireMidiNoteOn(60);
+    });
+    expect(screen.getByTestId("piano-key-60")).toHaveStyle({
+      backgroundColor: "#7CFC00",
+    });
+
+    act(() => {
+      fireMidiNoteOff(60); // release C4
+    });
+    // C4 no longer held — yellow (in voicing but not held)
+    expect(screen.getByTestId("piano-key-60")).toHaveStyle({
+      backgroundColor: "yellow",
+    });
+  });
+
+  it("wrong note (not in voicing) shows red", async () => {
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={jest.fn()}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    act(() => {
+      fireMidiNoteOn(62); // D4 — NOT in C major triad → red
+    });
+    expect(screen.getByTestId("piano-key-62")).toHaveStyle({
+      backgroundColor: "red",
+    });
+  });
+
+  it("all-correct for 1 second triggers new chord when autoGenerate=true", async () => {
+    const onTriggerNewChord = jest.fn();
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    jest.useFakeTimers();
+    act(() => {
+      fireMidiNoteOn(60); // C4
+      fireMidiNoteOn(64); // E4
+      fireMidiNoteOn(67); // G4
+    });
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(onTriggerNewChord).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
+  });
+
+  it("all-correct released before 1 second does NOT trigger", async () => {
+    const onTriggerNewChord = jest.fn();
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    jest.useFakeTimers();
+    act(() => {
+      fireMidiNoteOn(60);
+      fireMidiNoteOn(64);
+      fireMidiNoteOn(67);
+    });
+    act(() => {
+      jest.advanceTimersByTime(500); // halfway
+    });
+    act(() => {
+      fireMidiNoteOff(67); // release G4 — no longer correct
+    });
+    act(() => {
+      jest.advanceTimersByTime(600); // past original 1s mark
+    });
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it("becomes incorrect mid-second cancels the timer", async () => {
+    const onTriggerNewChord = jest.fn();
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    jest.useFakeTimers();
+    act(() => {
+      fireMidiNoteOn(60);
+      fireMidiNoteOn(64);
+      fireMidiNoteOn(67);
+    });
+    act(() => {
+      jest.advanceTimersByTime(500);
+    });
+    act(() => {
+      fireMidiNoteOn(62); // add D4 — wrong extra note
+    });
+    act(() => {
+      jest.advanceTimersByTime(1000); // past where timer would have fired
+    });
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it("autoGenerate=false does NOT trigger even after 1 second all-correct", async () => {
+    const onTriggerNewChord = jest.fn();
+    const chord = new Chord(
+      makeNote(NoteNameBase.C, 4),
+      ChordTypeName.MAJOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={false}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    jest.useFakeTimers();
+    act(() => {
+      fireMidiNoteOn(60);
+      fireMidiNoteOn(64);
+      fireMidiNoteOn(67);
+    });
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(onTriggerNewChord).not.toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it("answer checking consistent with virtual piano (A minor triad)", async () => {
+    const onTriggerNewChord = jest.fn();
+    const chord = new Chord(
+      makeNote(NoteNameBase.A, 4),
+      ChordTypeName.MINOR_TRIAD,
+    );
+    const voicing = new ChordVoicing(chord, chord.getChordToneNoteNames());
+    // A4(69), C5(72), E5(76)
+    render(
+      <ChordMidiPiano
+        voicing={voicing}
+        autoGenerate={true}
+        onTriggerNewChord={onTriggerNewChord}
+      />,
+    );
+    await waitFor(() => expect(capturedMidiHandler).not.toBeNull());
+
+    jest.useFakeTimers();
+    act(() => {
+      fireMidiNoteOn(69); // A4
+      fireMidiNoteOn(72); // C5
+      fireMidiNoteOn(76); // E5
+    });
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(onTriggerNewChord).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
   });
 });
