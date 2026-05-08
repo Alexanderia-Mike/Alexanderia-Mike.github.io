@@ -89,14 +89,14 @@ export function HarmonyPlayer() {
 
   const setVolumes = () => {
     if (lowerNoteGainRef.current === null) {
-      const lowerNoteGain = new Tone.Gain(volumeRatio / 100).toDestination();
+      const lowerNoteGain = new Tone.Gain(
+        (200 - volumeRatio) / 100,
+      ).toDestination();
       lowerSamplerRef.current!.connect(lowerNoteGain);
       lowerNoteGainRef.current = lowerNoteGain;
     }
     if (higherNoteGainRef.current === null) {
-      const higherNoteGain = new Tone.Gain(
-        (200 - volumeRatio) / 100,
-      ).toDestination();
+      const higherNoteGain = new Tone.Gain(volumeRatio / 100).toDestination();
       higherSamplerRef.current!.connect(higherNoteGain);
       higherNoteGainRef.current = higherNoteGain;
     }
@@ -159,7 +159,7 @@ export function HarmonyPlayer() {
             }
             setToneEnabled(!toneEnabled);
           }}
-          checked={isToneEnabled()}
+          checked={toneEnabled}
           classNames="flex-grow-0"
         />
         {playNewButton}
@@ -186,18 +186,18 @@ export function HarmonyPlayer() {
             }}
           />
           <div className="flex justify-between text-sm">
-            <span className="text-[#baa79b]">
+            <span className="text-[#baa79b]">高音: {volumeRatio / 2}%</span>
+            <span className="text-[#ab8971]">
               低音: {100 - volumeRatio / 2}%
             </span>
-            <span className="text-[#ab8971]">高音: {volumeRatio / 2}%</span>
           </div>
           {notes && showAnswer && (
             <div className="flex justify-between text-sm text-gray-600">
               <span className="text-[#baa79b]">
-                低音: {notes[0].toString(PitchNotation.SCIENTIFIC)}
+                高音: {notes[1].toString(PitchNotation.SCIENTIFIC)}
               </span>
               <span className="text-[#ab8971]">
-                高音: {notes[1].toString(PitchNotation.SCIENTIFIC)}
+                低音: {notes[0].toString(PitchNotation.SCIENTIFIC)}
               </span>
             </div>
           )}
