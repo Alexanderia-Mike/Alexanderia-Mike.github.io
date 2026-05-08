@@ -6,6 +6,21 @@ import {
 } from "../../../../common/notes-utils/notes";
 import { PitchNotation } from "../../../../common/notes-utils/pitch-notation";
 
+const CHROMATIC_FLAT_NAMES = [
+  "C",
+  "Db",
+  "D",
+  "Eb",
+  "E",
+  "F",
+  "Gb",
+  "G",
+  "Ab",
+  "A",
+  "Bb",
+  "B",
+];
+
 export function noteToSampleId(note: NoteName): string {
   switch (note.accidental) {
     case Accidental.NONE:
@@ -18,6 +33,13 @@ export function noteToSampleId(note: NoteName): string {
       return `${NoteNameBase[note.whiteKeyNote.noteNameBase]}#${
         note.whiteKeyNote.octave
       }`;
+    case Accidental.DOUBLE_SHARP:
+    case Accidental.DOUBLE_FLAT: {
+      const midiNum = note.valueOf();
+      const pitchClass = ((midiNum % 12) + 12) % 12;
+      const toneOctave = Math.floor(midiNum / 12) - 1;
+      return `${CHROMATIC_FLAT_NAMES[pitchClass]}${toneOctave}`;
+    }
     default:
       throw Error(
         `note ${note.toString(PitchNotation.SCIENTIFIC)} not allowed!`,

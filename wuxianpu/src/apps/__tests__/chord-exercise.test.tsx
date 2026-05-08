@@ -1291,8 +1291,8 @@ describe("ChordMidiPiano", () => {
     act(() => {
       fireMidiNoteOff(60); // release C4
     });
-    // C4 no longer held — yellow (in voicing but not held)
-    expect(screen.getByTestId("piano-key-60")).toHaveStyle({
+    // no keys held — showColor is false, so no background color
+    expect(screen.getByTestId("piano-key-60")).not.toHaveStyle({
       backgroundColor: "yellow",
     });
   });
