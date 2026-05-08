@@ -75,7 +75,7 @@ export default function ChordExercise() {
     {
       path: "midi-piano",
       label: "MIDI钢琴",
-      element: <div className="mb-5">正在开发中...</div>,
+      element: <div className="mb-5 min-h-[500px]">正在开发中...</div>,
     },
   ];
 

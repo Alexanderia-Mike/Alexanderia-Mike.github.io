@@ -88,7 +88,7 @@ export default function ChordVirtualPiano({
   };
 
   return (
-    <div className="flex flex-col items-center p-4 w-full">
+    <div className="flex flex-col items-center p-4 w-full min-h-[500px]">
       {voicing && (
         <p className="text-center mb-2 text-sm text-slate-600">
           {getFullChineseName(voicing)} ({getChordSymbol(voicing)})
